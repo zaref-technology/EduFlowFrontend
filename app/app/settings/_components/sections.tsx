@@ -3,7 +3,9 @@
 import type { ReactNode } from "react";
 import { ICONS } from "@/components/ui";
 import { WA_ICON } from "@/components/whatsapp-send";
+import { SPARKLE_ICON } from "@/components/ai-chat";
 import { AccountSettings } from "./account";
+import { AiSettings } from "./ai";
 import { BillingSettings } from "./billing";
 import { ClassesSettings } from "./classes";
 import { GradingCard } from "./grading";
@@ -129,6 +131,17 @@ export const SETTINGS_SECTIONS: SettingsSection[] = [
         <MessageHistory />
       </div>
     ),
+  },
+  {
+    id: "ai",
+    label: "AI assistant",
+    hint: "Ask EduFlow, drafts",
+    description: "Let your staff ask questions about the school's records and draft notices and messages with AI.",
+    icon: SPARKLE_ICON,
+    group: "Plan",
+    adminOnly: true,
+    keywords: "ai assistant ask chat gemini question draft write pro",
+    render: () => <AiSettings />,
   },
   {
     id: "billing",

@@ -1,5 +1,6 @@
 "use client";
 
+import { DailySummary } from "@/components/ai-summary";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { useResource } from "@/components/data";
@@ -366,6 +367,8 @@ export default function DashboardPage() {
               <span className="font-medium text-accent">Review →</span>
             </Link>
           )}
+
+          {data.students.total > 0 && <DailySummary />}
 
           {canMark && <TodayStrip data={data} />}
 

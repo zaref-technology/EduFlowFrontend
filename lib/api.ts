@@ -142,6 +142,45 @@ export function refreshSession(): Promise<AuthResult> {
   return refreshPromise;
 }
 
+/**
+ * POSTs `body` and reads a Server-Sent Events reply, calling `onEvent` for each event.
+ * Errors before the stream starts (not allowed, quota…) throw an ApiError like `api`.
+ */
+export async function apiStream(path: string, body: unknown, onEvent: (event: string, data: unknown) => void, signal?: AbortSignal, retried = false): Promise<void> {
+  const headers: Record<string, string> = { "Content-Type": "application/json", Accept: "text/event-stream" };
+  if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}${path}`, { method: "POST", headers, body: JSON.stringify(body), credentials: "include", signal });
+  } catch (err) {
+    if ((err as Error)?.name === "AbortError") throw err;
+    throw new ApiError(0, "NETWORK_ERROR", "Cannot reach the server. Check your internet connection and try again.");
+  }
+  if (!res.ok || !res.headers.get("content-type")?.includes("text/event-stream")) {
+    const err = (await res.json().catch(() => null))?.error;
+    if (!retried && err?.code === "TOKEN_EXPIRED") {
+      await refreshSession();
+      return apiStream(path, body, onEvent, signal, true);
+    }
+    throw new ApiError(res.status, err?.code ?? "UNKNOWN", err?.message || `Request failed (HTTP ${res.status}).`, err?.details);
+  }
+  const reader = res.body!.pipeThrough(new TextDecoderStream()).getReader();
+  let buffer = "";
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buffer += value;
+    let end;
+    while ((end = buffer.indexOf("\n\n")) >= 0) {
+      const block = buffer.slice(0, end);
+      buffer = buffer.slice(end + 2);
+      const event = block.match(/^event: (.*)$/m)?.[1] ?? "message";
+      const data = block.match(/^data: (.*)$/m)?.[1];
+      if (data !== undefined) onEvent(event, JSON.parse(data));
+    }
+  }
+}
+
 export async function api<T>(path: string, options: RequestOptions = {}): Promise<T> {
   try {
     return await send<T>(path, options);

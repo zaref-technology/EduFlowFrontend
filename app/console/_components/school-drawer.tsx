@@ -9,6 +9,7 @@ import { Alert, Badge, Button, Field, ICONS, Icon, Input, Select, Skeleton, cx }
 import { ROLES, api, type Role } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { formatMoney, moneyInput, parseMoney } from "@/lib/fees";
+import { resetAiStatus } from "@/lib/ai";
 import { FEATURE_LABEL, HEALTH_META, STATUS_META, endsText, type Feature, type PlatformPlan, type SchoolDetail } from "@/lib/platform";
 import { Drawer, errorMessage, formatDate, generatePassword, loginShareLink, useResource, type Member } from "./shared";
 
@@ -75,6 +76,7 @@ export function SchoolDrawer({ id, onClose, onChanged }: { id: string; onClose: 
     try {
       await enterSchool(id);
       resetTenantStatus();
+      resetAiStatus();
       forgetSchool();
       router.push("/app/dashboard");
     } catch (err) {

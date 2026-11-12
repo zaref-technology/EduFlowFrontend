@@ -13,6 +13,7 @@ interface Settings {
   updatedAt: string | null;
   cloudinary: { cloudName: string; apiKey: string; folder: string; secretSet: boolean; secretReadable: boolean };
   otp: { enabled: boolean; keySet: boolean; keyReadable: boolean; template: string; requireOnRegister: boolean };
+  ai: { enabled: boolean; keySet: boolean; keyReadable: boolean; model: string; monthlyQuota: number };
   encryptionAvailable: boolean;
 }
 
@@ -40,6 +41,12 @@ const SETTINGS_PAGES = [
     description: "Where schools' logos are stored. Keys are checked with a test upload before saving.",
     icon: "M4 5h16v14H4zM4 15l4-4 4 4 3-3 5 5M15 9h.01",
   },
+  {
+    href: "/console/settings/ai",
+    label: "AI assistant (Gemini)",
+    description: "Ask EduFlow and Write with AI for Pro schools: Gemini key, model and monthly limit per school.",
+    icon: "M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8zM5 3l.6 1.4L7 5l-1.4.6L5 7l-.6-1.4L3 5l1.4-.6z",
+  },
 ] as const;
 
 /** Settings home: one card per settings page, with whether it's set up. */
@@ -49,6 +56,7 @@ export function SettingsHome() {
   const status = (href: string): { ok: boolean; text: string } | null => {
     if (!s) return null;
     if (href.endsWith("support")) return s.supportWhatsapp || s.supportEmail ? { ok: true, text: [s.supportWhatsapp && `+${s.supportWhatsapp}`, s.supportEmail].filter(Boolean).join(" · ") } : { ok: false, text: "Not set" };
+    if (href.endsWith("/ai")) return s.ai.enabled ? { ok: true, text: `On · ${s.ai.model}` } : { ok: false, text: s.ai.keySet ? "Key saved, off" : "Off" };
     if (href.endsWith("sms-otp")) return s.otp.enabled ? { ok: true, text: "On" } : { ok: false, text: s.otp.keySet ? "Key saved, off" : "Off" };
     return s.cloudinary.cloudName && s.cloudinary.secretSet ? { ok: true, text: `On · ${s.cloudinary.cloudName}` } : { ok: false, text: "Off" };
   };
@@ -360,6 +368,221 @@ function OtpCard({ settings, onSaved }: { settings: Settings; onSaved: (s: Setti
               }}
             />
           </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// AI assistant (Gemini)
+// ---------------------------------------------------------------------------
+
+const AI_MODELS = [
+  { id: "gemini-3.8-flash", label: "Gemini 3.8 Flash (recommended)" },
+  { id: "gemini-3.6-flash", label: "Gemini 3.6 Flash" },
+  { id: "gemini-3.5-flash-lite", label: "Gemini 3.5 Flash-Lite (cheapest)" },
+  { id: "gemini-flash-latest", label: "Latest Flash (alias, may change)" },
+];
+
+interface AiUsage {
+  current: AiUsageMonth;
+  previous: AiUsageMonth;
+}
+interface AiUsageMonth {
+  month: string;
+  questions: number;
+  inputTokens: number;
+  outputTokens: number;
+  schools: { id: string; name: string; questions: number; failed: number; inputTokens: number; outputTokens: number }[];
+}
+
+export function AiSettingsPage() {
+  const res = useAdminSettings();
+  return (
+    <>
+      <SettingsBack />
+      <PageHeader title="AI assistant (Gemini)" description="Ask EduFlow and Write with AI, for schools whose plan includes the AI assistant." icon={SETTINGS_PAGES[3].icon} />
+      {res.error && <Alert>{res.error}</Alert>}
+      <div className="max-w-3xl space-y-6">
+        {res.data ? <AiCard settings={res.data} onSaved={res.setData} /> : <Skeleton className="h-96" />}
+        <AiUsageCard />
+      </div>
+    </>
+  );
+}
+
+function AiCard({ settings, onSaved }: { settings: Settings; onSaved: (s: Settings) => void }) {
+  const a = settings.ai;
+  const [form, setForm] = useState({ enabled: a.enabled, apiKey: "", model: a.model, monthlyQuota: String(a.monthlyQuota) });
+  const [busy, setBusy] = useState<"save" | "test" | null>(null);
+  const [message, setMessage] = useState<{ tone: "success" | "danger"; text: string } | null>(null);
+  const custom = !AI_MODELS.some((m) => m.id === form.model);
+  const dirty = form.enabled !== a.enabled || form.apiKey !== "" || form.model !== a.model || form.monthlyQuota !== String(a.monthlyQuota);
+
+  async function save() {
+    setBusy("save");
+    setMessage(null);
+    try {
+      const next = await api<Settings>("/api/admin/settings", {
+        method: "PUT",
+        body: { ai: { enabled: form.enabled, apiKey: form.apiKey.trim(), model: form.model.trim(), monthlyQuota: Number(form.monthlyQuota) || 0 } },
+      });
+      onSaved(next);
+      setForm({ enabled: next.ai.enabled, apiKey: "", model: next.ai.model, monthlyQuota: String(next.ai.monthlyQuota) });
+      setMessage({ tone: "success", text: next.ai.enabled ? "Saved and checked with Gemini. Pro schools can turn on the assistant in Settings → AI assistant." : "Saved. The assistant is off for every school." });
+    } catch (err) {
+      setMessage({ tone: "danger", text: errorMessage(err) });
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function test() {
+    setBusy("test");
+    setMessage(null);
+    try {
+      const r = await api<{ reply: string; ms: number }>("/api/admin/settings/ai/test", { method: "POST" });
+      setMessage({ tone: "success", text: `Gemini answered in ${(r.ms / 1000).toFixed(1)} s: “${r.reply}”` });
+    } catch (err) {
+      setMessage({ tone: "danger", text: errorMessage(err) });
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  return (
+    <section className="rounded-2xl border border-border bg-surface">
+      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border px-5 py-4">
+        <div>
+          <h2 className="font-semibold">Google Gemini</h2>
+          <p className="text-sm text-muted">Schools also need the AI assistant in their plan (Plans → features) and an owner or admin must turn it on.</p>
+        </div>
+        <span className={a.enabled ? "rounded-full bg-success-soft px-2.5 py-0.5 text-xs font-medium text-success" : "rounded-full bg-surface-muted px-2.5 py-0.5 text-xs font-medium text-muted"}>{a.enabled ? "On" : "Off"}</span>
+      </div>
+      <div className="space-y-4 p-5">
+        {message && <Alert tone={message.tone}>{message.text}</Alert>}
+        {!settings.encryptionAvailable && <Alert tone="warning">Set DATA_ENCRYPTION_KEY on the server first; the API key is stored encrypted.</Alert>}
+        {a.keySet && !a.keyReadable && <Alert tone="warning">The saved API key can&apos;t be read (the encryption key changed). Enter it again.</Alert>}
+        <Field
+          label="Gemini API key"
+          htmlFor="ai-key"
+          hint={a.keySet ? "A key is saved. Leave empty to keep it, or paste a new one." : "Create one at aistudio.google.com → Get API key. Use a key from a project with billing on, so school data isn't used for training."}
+        >
+          <Input id="ai-key" type="password" autoComplete="off" value={form.apiKey} onChange={(e) => setForm({ ...form, apiKey: e.target.value })} placeholder={a.keySet ? "•••••••••••••••• (saved)" : "AIza…"} />
+        </Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Model" htmlFor="ai-model" hint={custom ? "A custom model id." : "Flash answers quickly and costs about ₹1 to ₹2 a question."}>
+            <select
+              id="ai-model"
+              value={custom ? "custom" : form.model}
+              onChange={(e) => setForm({ ...form, model: e.target.value === "custom" ? "" : e.target.value })}
+              className="h-10 w-full rounded-lg border border-border bg-surface px-3 text-sm outline-none focus:border-accent"
+            >
+              {AI_MODELS.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.label}
+                </option>
+              ))}
+              <option value="custom">Other model id…</option>
+            </select>
+            {custom && <Input className="mt-2" value={form.model} onChange={(e) => setForm({ ...form, model: e.target.value })} placeholder="gemini-…" aria-label="Model id" />}
+          </Field>
+          <Field label="Questions per school, per month" htmlFor="ai-quota" hint="Chat questions and drafts both count. 0 stops all use.">
+            <Input id="ai-quota" type="number" min={0} max={100000} inputMode="numeric" value={form.monthlyQuota} onChange={(e) => setForm({ ...form, monthlyQuota: e.target.value })} />
+          </Field>
+        </div>
+        <label className="flex items-center gap-3 text-sm">
+          <input type="checkbox" checked={form.enabled} onChange={(e) => setForm({ ...form, enabled: e.target.checked })} className="size-4 accent-[var(--accent)]" />
+          <span>
+            <span className="font-medium">Turn on the AI assistant</span>
+            <span className="text-muted"> for schools whose plan includes it</span>
+          </span>
+        </label>
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          {a.keySet && (
+            <Button variant="secondary" onClick={test} loading={busy === "test"} disabled={busy !== null}>
+              Test the saved key
+            </Button>
+          )}
+          <Button onClick={save} loading={busy === "save"} disabled={!dirty || busy !== null || !form.model.trim()}>
+            Save and check
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const tokens = (n: number) => (n >= 1_000_000 ? `${(n / 1_000_000).toFixed(1)}M` : n >= 1000 ? `${Math.round(n / 1000)}k` : String(n));
+const monthName = (m: string) => new Date(`${m}-01T00:00:00`).toLocaleDateString("en-IN", { month: "long", year: "numeric" });
+
+function AiUsageCard() {
+  const { data, error } = useResource(() => api<AiUsage>("/api/admin/settings/ai/usage"), "console-ai-usage");
+  const [which, setWhich] = useState<"current" | "previous">("current");
+  const m = data?.[which];
+  return (
+    <section className="rounded-2xl border border-border bg-surface">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4">
+        <div>
+          <h2 className="font-semibold">Usage</h2>
+          <p className="text-sm text-muted">Questions and Gemini tokens per school. Check your Google Cloud billing for the exact cost.</p>
+        </div>
+        <div className="flex rounded-lg border border-border p-0.5 text-xs">
+          {(["current", "previous"] as const).map((w) => (
+            <button key={w} onClick={() => setWhich(w)} className={cx("rounded-md px-2.5 py-1 font-medium", which === w ? "bg-accent-soft text-accent" : "text-muted hover:text-foreground")}>
+              {w === "current" ? "This month" : "Last month"}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="space-y-4 p-5">
+        {error && <Alert>{error}</Alert>}
+        {!m ? (
+          <Skeleton className="h-32" />
+        ) : (
+          <>
+            <dl className="grid grid-cols-3 gap-3">
+              {[
+                ["Questions", m.questions.toLocaleString("en-IN")],
+                ["Input tokens", tokens(m.inputTokens)],
+                ["Output tokens", tokens(m.outputTokens)],
+              ].map(([k, v]) => (
+                <div key={k} className="rounded-xl bg-surface-muted px-3.5 py-2.5">
+                  <dt className="text-xs text-muted">{k}</dt>
+                  <dd className="text-lg font-semibold tabular-nums">{v}</dd>
+                </div>
+              ))}
+            </dl>
+            {m.schools.length === 0 ? (
+              <p className="text-sm text-muted">No questions in {monthName(m.month)}.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <thead className="text-xs text-muted">
+                    <tr>
+                      <th className="py-2 pr-3 font-medium">School</th>
+                      <th className="px-3 py-2 text-right font-medium">Questions</th>
+                      <th className="px-3 py-2 text-right font-medium">Failed</th>
+                      <th className="py-2 pl-3 text-right font-medium">Tokens in / out</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {m.schools.map((s) => (
+                      <tr key={s.id} className="border-t border-border">
+                        <td className="py-2 pr-3">{s.name}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{s.questions}</td>
+                        <td className={cx("px-3 py-2 text-right tabular-nums", s.failed ? "text-danger" : "text-muted")}>{s.failed}</td>
+                        <td className="py-2 pl-3 text-right tabular-nums text-muted">
+                          {tokens(s.inputTokens)} / {tokens(s.outputTokens)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </>
         )}
       </div>
     </section>

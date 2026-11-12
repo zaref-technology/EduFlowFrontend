@@ -212,6 +212,29 @@ export function StatusTabs({ value, onChange }: { value: StatusFilter; onChange:
  * Slide-over panel. `side="right"` is a full-height panel (full screen on phones);
  * `side="bottom"` is a sheet that rises from the bottom (used for mobile filters).
  */
+// Open panels and dialogs, newest last: Escape closes only the top one (e.g. a WhatsApp
+// panel opened from a chat panel). A field that handles Escape itself stops it first.
+const escapeLayers: { close: () => void }[] = [];
+function onEscapeKey(e: KeyboardEvent) {
+  if (e.key !== "Escape" || e.defaultPrevented || !escapeLayers.length) return;
+  e.preventDefault();
+  escapeLayers[escapeLayers.length - 1].close();
+}
+
+/** Closes this panel or dialog on Escape while it's the top one. */
+export function useEscapeLayer(onEscape: () => void) {
+  const close = useEffectEvent(onEscape);
+  useEffect(() => {
+    const layer = { close: () => close() };
+    escapeLayers.push(layer);
+    if (escapeLayers.length === 1) window.addEventListener("keydown", onEscapeKey);
+    return () => {
+      escapeLayers.splice(escapeLayers.indexOf(layer), 1);
+      if (!escapeLayers.length) window.removeEventListener("keydown", onEscapeKey);
+    };
+  }, []);
+}
+
 export function Drawer({
   title,
   onClose,
@@ -229,16 +252,13 @@ export function Drawer({
   /** Width of a right-side panel: "lg" for big tables (e.g. year-end promotion) */
   size?: "md" | "lg";
 }) {
-  const close = useEffectEvent(onClose);
+  useEscapeLayer(onClose);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
-    window.addEventListener("keydown", onKey);
     // Keep the page behind from scrolling while the panel is open
     const { overflow } = document.body.style;
     document.body.style.overflow = "hidden";
     return () => {
-      window.removeEventListener("keydown", onKey);
       document.body.style.overflow = overflow;
     };
   }, []);

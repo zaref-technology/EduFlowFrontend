@@ -12,6 +12,7 @@ import { useAuth } from "@/lib/auth";
 import { NAV_ICONS, type Homework } from "@/lib/classroom";
 import { classText, loadMyClasses, subjectsIn, teaches, type MyClasses } from "@/lib/teaching";
 import { ClassSelect, SubjectChip } from "@/components/academic-bits";
+import { WriteWithAi } from "@/components/write-with-ai";
 import { Syllabus } from "./_components/syllabus";
 
 /** Monday of the week containing `day`. */
@@ -361,6 +362,7 @@ function HomeworkEditor({ hw, my, onClose, onSaved }: { hw: Homework | null; my:
       </Field>
       <Field label="Details" htmlFor="hw-details" hint="Optional: instructions, pages, what to bring.">
         <textarea id="hw-details" value={details} onChange={(e) => setDetails(e.target.value)} maxLength={2000} rows={4} className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-base outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 sm:text-sm" />
+        <WriteWithAi kind="homework" current={details} onText={(text) => setDetails(text.slice(0, 2000))} />
       </Field>
       <div className="grid grid-cols-2 gap-3">
         <Field label="Given on" htmlFor="hw-date">

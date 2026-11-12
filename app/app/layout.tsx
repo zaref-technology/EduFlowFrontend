@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { AskButton, AskEduFlow } from "@/components/ai-chat";
 import { CommandPalette, openPalette, type PaletteItem } from "@/components/command-palette";
 import { Drawer } from "@/components/data";
 import { PlanBanners, useTenantStatus } from "@/components/plan-banner";
@@ -225,6 +226,7 @@ export default function AppLayout({ children }: LayoutProps<"/app">) {
             <span className="truncate border-l border-border pl-3 text-sm text-muted">{session.tenant.name}</span>
           </div>
           <div className="flex shrink-0 items-center gap-1">
+            <AskButton compact />
             <button onClick={openPalette} aria-label="Search" className="grid size-9 place-items-center rounded-full text-muted active:bg-surface-muted">
               <Icon d={NAV_ICONS.search} className="size-5" />
             </button>
@@ -358,6 +360,7 @@ export default function AppLayout({ children }: LayoutProps<"/app">) {
             <span className="flex-1 text-left">Search students, pages…</span>
             <kbd className="rounded border border-border bg-surface-muted px-1.5 py-0.5 font-sans text-[10px]">Ctrl K</kbd>
           </button>
+          <AskButton />
           <BellLink unread={unread} />
         </header>
 
@@ -382,6 +385,7 @@ export default function AppLayout({ children }: LayoutProps<"/app">) {
       </div>
 
       <CommandPalette pages={pages} actions={actions} />
+      <AskEduFlow />
 
       {/* Phones: bottom tab bar */}
       <nav

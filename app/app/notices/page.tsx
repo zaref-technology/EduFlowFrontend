@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Drawer, PageHeader, errorMessage, formatDate, useResource } from "@/components/data";
 import { Alert, Badge, Button, Field, ICONS, Icon, Input, Skeleton, cx } from "@/components/ui";
 import { WA_ICON, WhatsAppDrawer } from "@/components/whatsapp-send";
+import { WriteWithAi } from "@/components/write-with-ai";
 import { loadClassList } from "@/lib/academics";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
@@ -286,6 +287,18 @@ function NoticeEditor({ isAdmin, onClose, onSaved }: { isAdmin: boolean; onClose
       </Field>
       <Field label="Message" htmlFor="n-body">
         <textarea id="n-body" value={body} onChange={(e) => setBody(e.target.value)} maxLength={3000} rows={6} className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-base outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 sm:text-sm" />
+        <WriteWithAi
+          kind={audience === "parents" ? "notice" : "whatsapp"}
+          current={body}
+          onText={(text) => {
+            // A notice draft starts with its title line
+            const [first, ...rest] = text.split("\n");
+            if (audience === "parents" && rest.join("\n").trim() && first.length <= 150) {
+              setTitle(first.replace(/^(title|शीर्षक)\s*[:：-]\s*/i, "").trim());
+              setBody(rest.join("\n").trim().slice(0, 3000));
+            } else setBody(text.slice(0, 3000));
+          }}
+        />
       </Field>
       {audience === "parents" ? (
         <div>
