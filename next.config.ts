@@ -22,7 +22,11 @@ const nextConfig: NextConfig = {
   },
   // "/app" has no page of its own; the dashboard is home
   async redirects() {
-    return [{ source: "/app", destination: "/app/dashboard", permanent: false }];
+    return [
+      { source: "/app", destination: "/app/dashboard", permanent: false },
+      // Presentations open at /app/slides/edit?id=…; older links had the id in the path
+      { source: "/app/slides/:id([a-f0-9]{24})", destination: "/app/slides/edit?id=:id", permanent: false },
+    ];
   },
   // Same-origin API: with BACKEND_URL set (and NEXT_PUBLIC_API_URL unset), the browser
   // calls /api/* on this site and it's forwarded to the backend. The login cookie then

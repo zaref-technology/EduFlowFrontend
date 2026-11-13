@@ -48,6 +48,8 @@ const NAV: NavItem[] = [
   { href: "/app/performance", label: "Performance", icon: "M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0V4zM17 5h3v2a3 3 0 01-3 3M7 5H4v2a3 3 0 003 3", group: "Academics", roles: TEACHING, feature: "performance" },
   { href: "/app/timetable", label: "Timetable", icon: NAV_ICONS.timetable, group: "Academics", roles: TEACHING, feature: "timetable" },
   { href: "/app/notices", label: "Notices", icon: NAV_ICONS.notices, group: "Communication" },
+  // AI presentations (Pro): every role can make topic decks; data decks follow the role
+  { href: "/app/slides", label: "Presentations", icon: "M3 4h18v12H3zM12 16v4M8 20h8M7 8h6M7 12h10", group: "Communication", feature: "aiAssistant" },
   // Teachers don't handle money
   { href: "/app/fees", label: "Fees", icon: "M7 4h10M7 8h10M7 4c4 0 6 2 6 4s-2 4-6 4l7 8", group: "Finance", roles: ["owner", "admin", "accountant"] },
   // Everyone has "My account"; owners and admins also get the school's settings

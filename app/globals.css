@@ -207,3 +207,31 @@ body {
   scrollbar-width: thin;
   scrollbar-color: color-mix(in oklab, var(--muted) 35%, transparent) transparent;
 }
+
+/* Presentations: text you can click and type into on the slide (the editor only) */
+.slide-edit {
+  outline: 3px solid transparent;
+  outline-offset: 6px;
+  border-radius: 6px;
+  cursor: text;
+  transition: outline-color 0.15s;
+}
+.slide-edit:hover {
+  outline: 3px dashed color-mix(in oklab, var(--accent) 50%, transparent);
+}
+.slide-edit:focus {
+  outline: 3px solid var(--accent);
+}
+.slide-edit:empty::before {
+  content: attr(data-ph);
+  opacity: 0.38;
+  pointer-events: none;
+}
+.slide-chart {
+  outline: 3px dashed transparent;
+  outline-offset: 4px;
+  transition: outline-color 0.15s;
+}
+.slide-chart:hover {
+  outline-color: color-mix(in oklab, var(--accent) 50%, transparent);
+}

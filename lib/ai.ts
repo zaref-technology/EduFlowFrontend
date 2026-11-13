@@ -37,7 +37,7 @@ export interface AiChatThread {
   title: string;
   pinned: boolean;
   updatedAt: string;
-  messages: { role: "user" | "model"; text: string; tools: string[]; actions?: string[]; at: string }[];
+  messages: { role: "user" | "model"; text: string; tools: string[]; actions?: string[]; followups?: string[]; at: string }[];
 }
 
 /** A change the assistant prepared; nothing is written until the member confirms. */
@@ -114,6 +114,7 @@ export const TOOL_LABEL: Record<string, string> = {
   attendance_report: "Checking attendance",
   fee_dues: "Checking fee dues",
   fee_collections: "Checking collections",
+  student_receipts: "Finding receipts",
   test_results: "Reading test results",
   leaderboard: "Checking rankings",
   prepare_fee_payment: "Preparing the payment",
@@ -131,6 +132,7 @@ export const TOOL_SOURCE: Record<string, string> = {
   attendance_report: "Attendance",
   fee_dues: "Fee dues",
   fee_collections: "Collections",
+  student_receipts: "Receipts",
   test_results: "Test results",
   leaderboard: "Rankings",
   prepare_fee_payment: "Fee payment",

@@ -177,6 +177,11 @@ function OneStudentAction({ action, onClose, onChange, onNavigate }: { action: A
                 Send receipt
               </WhatsAppButton>
             )}
+            {r.paymentId && (
+              <Link href={`/app/fees?receipt=${r.paymentId}`} onClick={onNavigate} className="inline-flex h-8 items-center rounded-lg border border-border px-3 text-sm font-medium hover:bg-surface-muted">
+                Open receipt
+              </Link>
+            )}
             {done && (
               <Link href={action.kind === "fee_payment" ? `/app/fees?student=${done.id}` : `/app/students?student=${done.id}`} onClick={onNavigate} className="inline-flex h-8 items-center rounded-lg border border-border px-3 text-sm font-medium hover:bg-surface-muted">
                 {action.kind === "fee_payment" ? "Open fees" : "Open student"}

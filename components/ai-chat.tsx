@@ -22,6 +22,7 @@ const EDIT_ICON = "M4 20h4L18.5 9.5a2.1 2.1 0 00-4-4L4 16v4z";
 const TRASH_ICON = "M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3";
 const BACK_ICON = "M15 6l-6 6 6 6";
 const COPY_ICON = "M9 9h11v11H9zM5 15H4V4h11v1";
+const FOLLOW_ICON = "M5 5v6a4 4 0 004 4h10M15 11l4 4-4 4";
 const CHECK_ICON = "M5 12l5 5L20 7";
 
 interface Message {
@@ -38,6 +39,8 @@ interface Message {
   steps?: string[];
   /** Text is still arriving */
   streaming?: boolean;
+  /** Suggested next questions (shown under the latest answer) */
+  followups?: string[];
 }
 
 /** Starter questions per role, in the chosen reply language ("auto" shows English). */
@@ -164,10 +167,11 @@ export function AskEduFlow() {
   }, []);
 
   if (!visible || !open) return null;
-  return <ChatPanel key={tenantId} role={role} store={storeKey(tenantId)} startWith={start} onClose={() => setOpen(false)} />;
+  // `onStarted` clears the question once asked, so opening the chat later doesn't ask it again
+  return <ChatPanel key={tenantId} role={role} store={storeKey(tenantId)} startWith={start} onStarted={() => setStart(null)} onClose={() => setOpen(false)} />;
 }
 
-function ChatPanel({ role, store, startWith, onClose }: { role: string; store: string; startWith: { question: string; n: number } | null; onClose: () => void }) {
+function ChatPanel({ role, store, startWith, onStarted, onClose }: { role: string; store: string; startWith: { question: string; n: number } | null; onStarted: () => void; onClose: () => void }) {
   const status = useAiStatus()!;
   const [view, setView] = useState<"chat" | "history">("chat");
   const [chatId, setChatId] = useState<string | null>(() => readOpenChat(store));
@@ -219,7 +223,7 @@ function ChatPanel({ role, store, startWith, onClose }: { role: string; store: s
       const { chat } = await api<{ chat: AiChatThread }>(`/api/ai/chats/${id}`);
       setChatId(chat.id);
       setTitle(chat.title);
-      setMessages(chat.messages.map(({ role, text, tools, actions }) => ({ role, text, tools, actions })));
+      setMessages(chat.messages.map(({ role, text, tools, actions, followups }) => ({ role, text, tools, actions, followups })));
       writeOpenChat(store, chat.id);
     } catch {
       newChat();
@@ -244,15 +248,21 @@ function ChatPanel({ role, store, startWith, onClose }: { role: string; store: s
   const asked = useRef(0);
   useEffect(() => {
     if (!startWith || startWith.n === asked.current) return;
-    asked.current = startWith.n;
-    abort.current?.abort();
-    setView("chat");
-    setChatId(null);
-    setTitle("");
-    setMessages([]);
-    setLoadingChat(false);
-    writeOpenChat(store, null);
-    ask(startWith.question, { fresh: true });
+    // A tick later, and cancelled on unmount: React's development double mount (and Fast
+    // Refresh) unmounts once first, and that cleanup would stop a request sent right away
+    const timer = setTimeout(() => {
+      asked.current = startWith.n;
+      abort.current?.abort();
+      setView("chat");
+      setChatId(null);
+      setTitle("");
+      setMessages([]);
+      setLoadingChat(false);
+      writeOpenChat(store, null);
+      ask(startWith.question, { fresh: true });
+      onStarted();
+    }, 0);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startWith]);
 
@@ -296,7 +306,8 @@ function ChatPanel({ role, store, startWith, onClose }: { role: string; store: s
             setChatId(d.id as string);
             setTitle(d.title as string);
             writeOpenChat(store, d.id as string);
-          } else if (event === "done") {
+          } else if (event === "followups") update((m) => ({ ...m, followups: (d.questions as string[]).slice(0, 3) }));
+          else if (event === "done") {
             update((m) => ({ ...m, working: undefined, streaming: false }));
             const u = d.usage as { used: number; quota: number };
             setAiUsage(u.used, u.quota);
@@ -465,6 +476,7 @@ function ChatPanel({ role, store, startWith, onClose }: { role: string; store: s
                   {m.streaming && busy && <span aria-hidden className="ml-0.5 inline-block h-4 w-[3px] translate-y-0.5 rounded-full bg-accent motion-safe:animate-caret" />}
                   {m.actions?.map((id) => <ActionCard key={id} action={actionsById[id]} onReview={() => setReviewing(id)} />)}
                   {!m.working && !m.streaming && !m.error && m.text && <AnswerFooter text={m.text} tools={m.tools} />}
+                  {i === messages.length - 1 && !busy && !blocked && (m.followups?.length ?? 0) > 0 && <FollowUps questions={m.followups!} onAsk={ask} />}
                 </div>
               </div>
             )
@@ -522,6 +534,25 @@ function Working({ label, steps }: { label: string; steps: string[] }) {
           {label}…
         </span>
       </p>
+    </div>
+  );
+}
+
+/** Suggested next questions under the latest answer. */
+function FollowUps({ questions, onAsk }: { questions: string[]; onAsk: (q: string) => void }) {
+  return (
+    <div className="mt-3 flex flex-col items-start gap-1.5" aria-label="Suggested questions">
+      {questions.map((q, i) => (
+        <button
+          key={q}
+          onClick={() => onAsk(q)}
+          style={{ animationDelay: `${120 + i * 70}ms` }}
+          className="group inline-flex max-w-full items-center gap-2 rounded-full border border-accent/25 bg-accent-soft/50 py-1.5 pl-2.5 pr-3.5 text-left text-[13px] text-foreground transition-all duration-200 hover:-translate-y-px hover:border-accent/50 hover:bg-accent-soft hover:shadow-sm motion-safe:animate-rise"
+        >
+          <Icon d={FOLLOW_ICON} className="size-3.5 shrink-0 text-accent transition-transform duration-200 group-hover:translate-x-0.5" />
+          <span className="truncate">{q}</span>
+        </button>
+      ))}
     </div>
   );
 }

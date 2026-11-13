@@ -13,7 +13,7 @@ interface Settings {
   updatedAt: string | null;
   cloudinary: { cloudName: string; apiKey: string; folder: string; secretSet: boolean; secretReadable: boolean };
   otp: { enabled: boolean; keySet: boolean; keyReadable: boolean; template: string; requireOnRegister: boolean };
-  ai: { enabled: boolean; keySet: boolean; keyReadable: boolean; model: string; monthlyQuota: number };
+  ai: { enabled: boolean; keySet: boolean; keyReadable: boolean; model: string; monthlyQuota: number; thinking: "minimal" | "low" | "default" };
   encryptionAvailable: boolean;
 }
 
@@ -391,10 +391,11 @@ interface AiUsage {
 }
 interface AiUsageMonth {
   month: string;
+  avgAnswerSeconds: number | null;
   questions: number;
   inputTokens: number;
   outputTokens: number;
-  schools: { id: string; name: string; questions: number; failed: number; inputTokens: number; outputTokens: number }[];
+  schools: { id: string; name: string; questions: number; failed: number; inputTokens: number; outputTokens: number; avgAnswerSeconds: number | null }[];
 }
 
 export function AiSettingsPage() {
@@ -414,11 +415,11 @@ export function AiSettingsPage() {
 
 function AiCard({ settings, onSaved }: { settings: Settings; onSaved: (s: Settings) => void }) {
   const a = settings.ai;
-  const [form, setForm] = useState({ enabled: a.enabled, apiKey: "", model: a.model, monthlyQuota: String(a.monthlyQuota) });
+  const [form, setForm] = useState({ enabled: a.enabled, apiKey: "", model: a.model, monthlyQuota: String(a.monthlyQuota), thinking: a.thinking });
   const [busy, setBusy] = useState<"save" | "test" | null>(null);
   const [message, setMessage] = useState<{ tone: "success" | "danger"; text: string } | null>(null);
   const custom = !AI_MODELS.some((m) => m.id === form.model);
-  const dirty = form.enabled !== a.enabled || form.apiKey !== "" || form.model !== a.model || form.monthlyQuota !== String(a.monthlyQuota);
+  const dirty = form.enabled !== a.enabled || form.apiKey !== "" || form.model !== a.model || form.monthlyQuota !== String(a.monthlyQuota) || form.thinking !== a.thinking;
 
   async function save() {
     setBusy("save");
@@ -426,10 +427,10 @@ function AiCard({ settings, onSaved }: { settings: Settings; onSaved: (s: Settin
     try {
       const next = await api<Settings>("/api/admin/settings", {
         method: "PUT",
-        body: { ai: { enabled: form.enabled, apiKey: form.apiKey.trim(), model: form.model.trim(), monthlyQuota: Number(form.monthlyQuota) || 0 } },
+        body: { ai: { enabled: form.enabled, apiKey: form.apiKey.trim(), model: form.model.trim(), monthlyQuota: Number(form.monthlyQuota) || 0, thinking: form.thinking } },
       });
       onSaved(next);
-      setForm({ enabled: next.ai.enabled, apiKey: "", model: next.ai.model, monthlyQuota: String(next.ai.monthlyQuota) });
+      setForm({ enabled: next.ai.enabled, apiKey: "", model: next.ai.model, monthlyQuota: String(next.ai.monthlyQuota), thinking: next.ai.thinking });
       setMessage({ tone: "success", text: next.ai.enabled ? "Saved and checked with Gemini. Pro schools can turn on the assistant in Settings → AI assistant." : "Saved. The assistant is off for every school." });
     } catch (err) {
       setMessage({ tone: "danger", text: errorMessage(err) });
@@ -492,6 +493,29 @@ function AiCard({ settings, onSaved }: { settings: Settings; onSaved: (s: Settin
             <Input id="ai-quota" type="number" min={0} max={100000} inputMode="numeric" value={form.monthlyQuota} onChange={(e) => setForm({ ...form, monthlyQuota: e.target.value })} />
           </Field>
         </div>
+        <div>
+          <p className="mb-1.5 text-sm font-medium">Answer speed</p>
+          <div className="grid gap-2 sm:grid-cols-3">
+            {(
+              [
+                ["minimal", "Fastest", "Least thinking. Quick lookups; may miss nuance."],
+                ["low", "Fast (recommended)", "A little thinking. Good answers in a few seconds."],
+                ["default", "Thorough", "The model's full thinking. Slowest and costs more."],
+              ] as const
+            ).map(([id, label, hint]) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setForm({ ...form, thinking: id })}
+                aria-pressed={form.thinking === id}
+                className={cx("rounded-xl border px-3 py-2.5 text-left transition-colors", form.thinking === id ? "border-accent bg-accent-soft" : "border-border hover:border-accent/40")}
+              >
+                <span className="block text-sm font-medium">{label}</span>
+                <span className="block text-xs text-muted">{hint}</span>
+              </button>
+            ))}
+          </div>
+        </div>
         <label className="flex items-center gap-3 text-sm">
           <input type="checkbox" checked={form.enabled} onChange={(e) => setForm({ ...form, enabled: e.target.checked })} className="size-4 accent-[var(--accent)]" />
           <span>
@@ -542,9 +566,10 @@ function AiUsageCard() {
           <Skeleton className="h-32" />
         ) : (
           <>
-            <dl className="grid grid-cols-3 gap-3">
+            <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {[
                 ["Questions", m.questions.toLocaleString("en-IN")],
+                ["Avg answer time", m.avgAnswerSeconds === null ? "—" : `${m.avgAnswerSeconds} s`],
                 ["Input tokens", tokens(m.inputTokens)],
                 ["Output tokens", tokens(m.outputTokens)],
               ].map(([k, v]) => (
@@ -564,6 +589,7 @@ function AiUsageCard() {
                       <th className="py-2 pr-3 font-medium">School</th>
                       <th className="px-3 py-2 text-right font-medium">Questions</th>
                       <th className="px-3 py-2 text-right font-medium">Failed</th>
+                      <th className="px-3 py-2 text-right font-medium">Avg time</th>
                       <th className="py-2 pl-3 text-right font-medium">Tokens in / out</th>
                     </tr>
                   </thead>
@@ -573,6 +599,7 @@ function AiUsageCard() {
                         <td className="py-2 pr-3">{s.name}</td>
                         <td className="px-3 py-2 text-right tabular-nums">{s.questions}</td>
                         <td className={cx("px-3 py-2 text-right tabular-nums", s.failed ? "text-danger" : "text-muted")}>{s.failed}</td>
+                        <td className={cx("px-3 py-2 text-right tabular-nums", (s.avgAnswerSeconds ?? 0) > 20 ? "text-warning" : "text-muted")}>{s.avgAnswerSeconds === null ? "—" : `${s.avgAnswerSeconds} s`}</td>
                         <td className="py-2 pl-3 text-right tabular-nums text-muted">
                           {tokens(s.inputTokens)} / {tokens(s.outputTokens)}
                         </td>
