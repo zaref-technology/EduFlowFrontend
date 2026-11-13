@@ -49,6 +49,8 @@ export interface SlideEdit {
   locked: boolean;
   /** The chart was clicked (its data is edited beside the slide) */
   onChart?: () => void;
+  /** The picture (or its empty spot) was clicked */
+  onImage?: () => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -409,6 +411,37 @@ function Body({ slide, t }: { slide: Slide; t: Theme }) {
         </div>
         <Caption text={slide.caption} t={t} />
       </Fit>
+    );
+  }
+
+  if (slide.layout === "image") {
+    const items = slide.bullets?.length ? slide.bullets : ed ? [""] : [];
+    return (
+      <div style={{ ...pad, flexDirection: "row", gap: 44 }}>
+        <Fit style={{ flex: "1 1 0", minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <Title t={t} size={42} />
+          <Bullets path={["bullets"]} items={items} t={t} size={items.length > 4 ? 24 : 27} />
+          <Caption text={slide.caption} t={t} />
+        </Fit>
+        <div
+          onClick={ed?.onImage}
+          className={ed?.onImage ? "slide-chart" : undefined}
+          title={ed?.onImage ? "Change the picture" : undefined}
+          style={{ flex: "1.15 1 0", borderRadius: 28, overflow: "hidden", background: t.surface, display: "grid", placeItems: "center", cursor: ed?.onImage ? "pointer" : undefined }}
+        >
+          {slide.image?.url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={slide.image.url} alt={slide.image.alt ?? ""} crossOrigin="anonymous" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          ) : (
+            <div style={{ textAlign: "center", color: t.muted, fontSize: 24 }}>
+              <svg viewBox="0 0 24 24" width={72} height={72} fill="none" stroke="currentColor" strokeWidth={1.4} style={{ margin: "0 auto 12px", display: "block", opacity: 0.6 }}>
+                <path d="M4 5h16v14H4zM4 15l4-4 4 4 3-3 5 5M15 9h.01" />
+              </svg>
+              {ed ? "Click to add a picture" : ""}
+            </div>
+          )}
+        </div>
+      </div>
     );
   }
 

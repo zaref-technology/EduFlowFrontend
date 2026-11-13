@@ -45,6 +45,12 @@ export async function exportPptx(deck: Deck, brand: Brand) {
   const t = THEMES[deck.theme];
   const font = deck.language === "en" ? "Calibri" : "Nirmala UI";
   const logo = await logoData(brand.logoUrl);
+  // The slides' pictures, loaded once (an unreachable one is left out)
+  const pictures = new Map<string, { data: string; ratio: number }>();
+  for (const url of new Set(deck.slides.map((x) => x.image?.url).filter((u): u is string => Boolean(u)))) {
+    const d = await logoData(url);
+    if (d) pictures.set(url, d);
+  }
   const total = deck.slides.length;
 
   const addLogo = (s: PptxTypes.Slide, x: number, y: number, h: number) => {
@@ -149,6 +155,17 @@ export async function exportPptx(deck: Deck, brand: Brand) {
         }
         caption();
         break;
+      case "image": {
+        // Words on the left, the picture on the right (cropped to fill, like on screen)
+        text(s, slide.title, { x: IN(80), y: IN(150), w: IN(500), h: IN(110), fontSize: 30, bold: true, valign: "bottom", fit: "shrink" });
+        s.addShape(pptx.ShapeType.roundRect, { x: IN(80), y: IN(272), w: IN(64), h: IN(6), fill: { color: hex(t.accent) }, line: { type: "none" }, rectRadius: 0.03 });
+        bullets(slide.bullets ?? [], IN(80), IN(300), IN(500), IN(280), 20);
+        caption();
+        const pic = pictures.get(slide.image?.url ?? "");
+        if (pic) s.addImage({ data: pic.data, x: IN(624), y: IN(64), w: IN(576), h: IN(572), sizing: { type: "cover", w: IN(576), h: IN(572) }, rounding: false });
+        else s.addShape(pptx.ShapeType.roundRect, { x: IN(624), y: IN(64), w: IN(576), h: IN(572), fill: { color: hex(t.surface) }, line: { type: "none" }, rectRadius: 0.2 });
+        break;
+      }
       case "chart":
         titleBox(30);
         if (slide.chart) addChart(pptx, s, slide.chart, t, font);
@@ -179,8 +196,8 @@ function addChart(pptx: PptxTypes, s: PptxTypes.Slide, chart: NonNullable<Slide[
   }
 }
 
-/** PDF: each slide drawn off-screen at full size and captured as an image. */
-export async function exportPdf(deck: Deck, brand: Brand) {
+/** PDF: each slide drawn off-screen at full size and captured as an image. Downloads it, or with `asFile` returns it (to share). */
+export async function exportPdf(deck: Deck, brand: Brand, { asFile = false } = {}): Promise<File | null> {
   const [{ toJpeg }, { jsPDF }, { createRoot }, { SlideCanvas }] = await Promise.all([import("html-to-image"), import("jspdf"), import("react-dom/client"), import("@/components/slides/slide-view")]);
   const host = document.createElement("div");
   host.style.cssText = "position:fixed;left:-20000px;top:0;width:1280px;";
@@ -205,7 +222,9 @@ export async function exportPdf(deck: Deck, brand: Brand) {
       if (i > 0) pdf.addPage([1280, 720], "landscape");
       pdf.addImage(img, "JPEG", 0, 0, 1280, 720);
     }
+    if (asFile) return new File([pdf.output("blob")], fileName(deck.title, "pdf"), { type: "application/pdf" });
     pdf.save(fileName(deck.title, "pdf"));
+    return null;
   } finally {
     root.unmount();
     host.remove();

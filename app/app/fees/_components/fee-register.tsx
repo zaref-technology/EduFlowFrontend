@@ -5,6 +5,8 @@ import { Avatar } from "@/app/app/students/_components/bits";
 import { Pager, query, useDebounced, useResource, type Pagination } from "@/components/data";
 import { Button, ICONS, Icon, Select, Skeleton, cx } from "@/components/ui";
 import { WhatsAppButton, WhatsAppDrawer } from "@/components/whatsapp-send";
+import { ShareModal } from "@/components/ai-answer";
+import { useAiStatus } from "@/lib/ai";
 import { errorMessage } from "@/components/data";
 import { api } from "@/lib/api";
 import { className, formatDay, localToday } from "@/lib/attendance";
@@ -50,23 +52,43 @@ export function FeeRegister({
   // Bulk reminders: everyone matching the current filters who still owes money
   const [reminderIds, setReminderIds] = useState<string[] | null>(null);
   const [collecting, setCollecting] = useState(false);
+  const [aiFor, setAiFor] = useState<{ id: string; name: string }[] | null>(null);
+  const aiReady = useAiStatus()?.state === "ready";
   const [bulkError, setBulkError] = useState<string | null>(null);
   const remindStatus = status === "overdue" ? "overdue" : "due";
   const canRemind = status !== "paid" && status !== "none" && (totals?.balance ?? 0) > 0;
+
+  /** The students in this list (most overdue first), for reminders. */
+  async function collect(max: number) {
+    const found: { id: string; name: string }[] = [];
+    for (let p = 1; ; p++) {
+      const res = await api<{ students: RegisterRow[]; pagination: Pagination }>(
+        `/api/fees/register${query({ search: q, grade, section, status: remindStatus, sort: "overdue", page: p, limit: 100, today: localToday() })}`
+      );
+      found.push(...res.students.map((r) => ({ id: r.id, name: r.fullName })));
+      if (p >= res.pagination.totalPages || found.length >= max) break;
+    }
+    return found.slice(0, max);
+  }
+
+  /** Personal reminders written by AI (up to 40 at a time, the most overdue first). */
+  async function startAiReminders() {
+    setCollecting(true);
+    setBulkError(null);
+    try {
+      setAiFor(await collect(40));
+    } catch (err) {
+      setBulkError(errorMessage(err));
+    } finally {
+      setCollecting(false);
+    }
+  }
 
   async function startReminders() {
     setCollecting(true);
     setBulkError(null);
     try {
-      const ids: string[] = [];
-      for (let p = 1; ; p++) {
-        const res = await api<{ students: RegisterRow[]; pagination: Pagination }>(
-          `/api/fees/register${query({ search: q, grade, section, status: remindStatus, sort: "overdue", page: p, limit: 100, today: localToday() })}`
-        );
-        ids.push(...res.students.map((r) => r.id));
-        if (p >= res.pagination.totalPages || ids.length >= 500) break;
-      }
-      setReminderIds(ids.slice(0, 500));
+      setReminderIds((await collect(500)).map((x) => x.id));
     } catch (err) {
       setBulkError(errorMessage(err));
     } finally {
@@ -139,12 +161,32 @@ export function FeeRegister({
           <p className="text-sm text-muted">
             {status === "overdue" ? "Remind the parents of every overdue student in this list." : "Remind the parents of every student with a balance in this list."}
           </p>
-          <WhatsAppButton size="sm" onClick={startReminders} disabled={collecting}>
-            {collecting ? "Preparing…" : "Send reminders"}
-          </WhatsAppButton>
+          <div className="flex flex-wrap gap-2">
+            {aiReady && (
+              <Button variant="secondary" size="sm" onClick={startAiReminders} disabled={collecting} title="A personal message for each parent, written by AI from their child's dues (up to 40, most overdue first)">
+                <Icon d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z" />
+                Personal messages (AI)
+              </Button>
+            )}
+            <WhatsAppButton size="sm" onClick={startReminders} disabled={collecting}>
+              {collecting ? "Preparing…" : "Send reminders"}
+            </WhatsAppButton>
+          </div>
         </div>
       )}
       {bulkError && <p className="mb-3 text-sm text-danger">{bulkError}</p>}
+      {aiFor && (
+        <ShareModal
+          students={aiFor}
+          suggested="fees"
+          onClose={() => setAiFor(null)}
+          // "Fee reminder" (the standard message) uses the usual reminder sender
+          onStandard={(r) => {
+            setAiFor(null);
+            setReminderIds(r.refs.map((x) => ("studentId" in x ? x.studentId : "")).filter(Boolean));
+          }}
+        />
+      )}
       {reminderIds && (
         <WhatsAppDrawer
           type="fee_reminder"

@@ -47,6 +47,7 @@ function Wizard() {
   const [audience, setAudience] = useState("");
   const [count, setCount] = useState(10);
   const [outline, setOutline] = useState<{ title: string; slides: OutlineSlide[] } | null>(null);
+  const [pictures, setPictures] = useState(true);
   // Data decks
   const [examId, setExamId] = useState("");
   const [showNames, setShowNames] = useState(true);
@@ -57,6 +58,10 @@ function Wizard() {
   const kinds = KINDS.filter((k) => sources.data?.kinds.includes(k.kind));
   const tests = sources.data?.tests ?? [];
   const ready = status?.state === "ready";
+  const canDraw = Boolean(status?.images);
+  // 2 pictures for a short deck, 3 otherwise (the server's rule)
+  const pictureCount = outline ? (outline.slides.filter((s) => s.title.trim()).length <= 6 ? 2 : 3) : 0;
+  const withPictures = kind === "topic" && canDraw && pictures;
 
   // A link to an option this role doesn't have (or no ?kind) starts at the choice
   useEffect(() => {
@@ -82,7 +87,7 @@ function Wizard() {
     setError(null);
     const body =
       kind === "topic"
-        ? { kind, topic: topic.trim(), audience: audience.trim(), language, theme, outline: { title: outline!.title, slides: outline!.slides.filter((s) => s.title.trim()) } }
+        ? { kind, topic: topic.trim(), audience: audience.trim(), language, theme, pictures: withPictures, outline: { title: outline!.title, slides: outline!.slides.filter((s) => s.title.trim()) } }
         : kind === "class_results"
           ? { kind, examId, showNames, language, theme }
           : { kind, month, language, theme };
@@ -108,7 +113,7 @@ function Wizard() {
       return { ...o, slides: s };
     });
 
-  if (busy === "deck") return <Generating kind={kind!} />;
+  if (busy === "deck") return <Generating kind={kind!} pictures={withPictures} />;
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -186,13 +191,22 @@ function Wizard() {
             <p className="text-sm font-medium">Theme</p>
             <ThemePicker value={theme} onChange={setTheme} brand={brand} />
           </div>
+          {canDraw && (
+            <label className="flex items-center gap-3 rounded-xl border border-border px-4 py-3 text-sm">
+              <input type="checkbox" checked={pictures} onChange={(e) => setPictures(e.target.checked)} className="size-4 accent-[var(--accent)]" />
+              <span>
+                <span className="font-medium">Add AI pictures</span>
+                <span className="text-muted"> to {pictureCount} slides · {pictureCount * DECK_UNITS.image} more AI questions</span>
+              </span>
+            </label>
+          )}
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
             <button type="button" onClick={() => setOutline(null)} className="text-sm font-medium text-muted hover:text-foreground">
               ← Back
             </button>
             <Button onClick={create} disabled={outline.slides.filter((s) => s.title.trim()).length < 2}>
               <Icon d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z" />
-              Create presentation · {DECK_UNITS.deck} AI questions
+              Create presentation · {DECK_UNITS.deck + (withPictures ? pictureCount * DECK_UNITS.image : 0)} AI questions
             </Button>
           </div>
         </div>
@@ -320,12 +334,13 @@ const STEPS: Record<DeckKind, string[]> = {
 };
 
 /** While the presentation is written (usually under a minute). */
-function Generating({ kind }: { kind: DeckKind }) {
+function Generating({ kind, pictures }: { kind: DeckKind; pictures: boolean }) {
+  const steps = pictures ? [...STEPS[kind], "Drawing pictures"] : STEPS[kind];
   const [step, setStep] = useState(0);
   useEffect(() => {
-    const id = setInterval(() => setStep((s) => Math.min(s + 1, STEPS[kind].length - 1)), 2600);
+    const id = setInterval(() => setStep((s) => Math.min(s + 1, steps.length - 1)), 2600);
     return () => clearInterval(id);
-  }, [kind]);
+  }, [steps.length]);
   return (
     <div className="mx-auto flex max-w-md flex-col items-center py-16 text-center" aria-live="polite">
       <div className="relative mb-8 size-20">
@@ -336,7 +351,7 @@ function Generating({ kind }: { kind: DeckKind }) {
       </div>
       <p className="text-lg font-semibold">Making your presentation</p>
       <ul className="mt-5 w-full space-y-2 text-left">
-        {STEPS[kind].map((s, i) => (
+        {steps.map((s, i) => (
           <li key={s} className={cx("flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm transition-all", i < step ? "text-muted" : i === step ? "bg-accent-soft font-medium" : "text-muted/50")}>
             {i < step ? (
               <span className="grid size-5 place-items-center rounded-full bg-success-soft text-success">

@@ -9,6 +9,8 @@ export type AiState = "ready" | "off" | "quota" | "not_in_plan" | "unavailable";
 export interface AiStatus {
   state: AiState;
   canManage: boolean;
+  /** AI pictures on slides are available */
+  images?: boolean;
   enabledBy: { name: string; at: string | null } | null;
   usage: { used: number; quota: number; month: string };
 }

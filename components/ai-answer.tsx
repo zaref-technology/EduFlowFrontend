@@ -555,7 +555,7 @@ interface Drafted {
 
 const waLink = (to: string, text: string) => `https://wa.me/${to}?text=${encodeURIComponent(text)}`;
 
-function ShareModal({ students, suggested, onClose, onStandard }: { students: { id: string; name: string }[]; suggested: Purpose; onClose: () => void; onStandard: (r: WhatsAppRequest) => void }) {
+export function ShareModal({ students, suggested, onClose, onStandard }: { students: { id: string; name: string }[]; suggested: Purpose; onClose: () => void; onStandard: (r: WhatsAppRequest) => void }) {
   const { session } = useAuth();
   const role = session.status === "authenticated" ? (session.role ?? "") : "";
   const purposes = (Object.keys(PURPOSE_LABEL) as Purpose[]).filter((p) => !PURPOSE_ROLES[p] || PURPOSE_ROLES[p]!.includes(role));

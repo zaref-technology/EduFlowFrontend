@@ -84,7 +84,7 @@ export interface SchoolRow {
 }
 
 export interface SchoolDetail {
-  school: SchoolRow & { profile: Record<string, string | number>; studentLimitOverride: number | null; featureOverrides: Partial<Record<Feature, boolean>> };
+  school: SchoolRow & { profile: Record<string, string | number>; studentLimitOverride: number | null; aiQuotaOverride?: number | null; featureOverrides: Partial<Record<Feature, boolean>> };
   members: { userId: string; name: string; email: string; isActive: boolean; role: string; joinedAt: string }[];
   usage: { studentsActive: number; studentsTotal: number; staff: number; attendanceLast7Days: number; feesThisMonth: number; receiptsThisMonth: number; whatsappLast30Days: number; tests: number; activeDaysLast30: number };
   payments: { id: string; planName: string; amount: number; method: string; reference: string; cycle: string; periods: number; periodStart: string; periodEnd: string; note: string; recordedByName: string; createdAt: string }[];

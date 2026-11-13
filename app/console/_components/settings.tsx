@@ -13,7 +13,7 @@ interface Settings {
   updatedAt: string | null;
   cloudinary: { cloudName: string; apiKey: string; folder: string; secretSet: boolean; secretReadable: boolean };
   otp: { enabled: boolean; keySet: boolean; keyReadable: boolean; template: string; requireOnRegister: boolean };
-  ai: { enabled: boolean; keySet: boolean; keyReadable: boolean; model: string; monthlyQuota: number; thinking: "minimal" | "low" | "default" };
+  ai: { enabled: boolean; keySet: boolean; keyReadable: boolean; model: string; monthlyQuota: number; thinking: "minimal" | "low" | "default"; priceInputUsd: number; priceOutputUsd: number; usdToInr: number; imageProvider: "gemini" | "cloudflare"; imageModel: string; cfAccountId: string; cfTokenSet: boolean; imagePriceUsd: number };
   encryptionAvailable: boolean;
 }
 
@@ -386,16 +386,20 @@ const AI_MODELS = [
 ];
 
 interface AiUsage {
+  price: { input: number; output: number; rate: number; image: number };
   current: AiUsageMonth;
   previous: AiUsageMonth;
 }
 interface AiUsageMonth {
   month: string;
   avgAnswerSeconds: number | null;
+  costInr: number;
+  costPerQuestionInr: number | null;
+  images: number;
   questions: number;
   inputTokens: number;
   outputTokens: number;
-  schools: { id: string; name: string; questions: number; failed: number; inputTokens: number; outputTokens: number; avgAnswerSeconds: number | null }[];
+  schools: { id: string; name: string; questions: number; quota: number; ownQuota: boolean; failed: number; images: number; inputTokens: number; outputTokens: number; costInr: number; avgAnswerSeconds: number | null }[];
 }
 
 export function AiSettingsPage() {
@@ -413,13 +417,32 @@ export function AiSettingsPage() {
   );
 }
 
+const CF_IMAGE_MODEL = "@cf/black-forest-labs/flux-1-schnell";
+
 function AiCard({ settings, onSaved }: { settings: Settings; onSaved: (s: Settings) => void }) {
   const a = settings.ai;
-  const [form, setForm] = useState({ enabled: a.enabled, apiKey: "", model: a.model, monthlyQuota: String(a.monthlyQuota), thinking: a.thinking });
-  const [busy, setBusy] = useState<"save" | "test" | null>(null);
+  const fromSettings = (x: Settings["ai"]) => ({
+    enabled: x.enabled,
+    apiKey: "",
+    model: x.model,
+    monthlyQuota: String(x.monthlyQuota),
+    thinking: x.thinking,
+    priceInputUsd: String(x.priceInputUsd),
+    priceOutputUsd: String(x.priceOutputUsd),
+    usdToInr: String(x.usdToInr),
+    imagesOn: Boolean(x.imageModel),
+    imageProvider: x.imageProvider,
+    imageModel: x.imageModel,
+    cfAccountId: x.cfAccountId,
+    cfToken: "",
+    imagePriceUsd: String(x.imagePriceUsd),
+  });
+  const [form, setForm] = useState(() => fromSettings(a));
+  const [busy, setBusy] = useState<"save" | "test" | "image" | null>(null);
   const [message, setMessage] = useState<{ tone: "success" | "danger"; text: string } | null>(null);
+  const [testImage, setTestImage] = useState<string | null>(null);
   const custom = !AI_MODELS.some((m) => m.id === form.model);
-  const dirty = form.enabled !== a.enabled || form.apiKey !== "" || form.model !== a.model || form.monthlyQuota !== String(a.monthlyQuota) || form.thinking !== a.thinking;
+  const dirty = JSON.stringify(form) !== JSON.stringify(fromSettings(a));
 
   async function save() {
     setBusy("save");
@@ -427,10 +450,26 @@ function AiCard({ settings, onSaved }: { settings: Settings; onSaved: (s: Settin
     try {
       const next = await api<Settings>("/api/admin/settings", {
         method: "PUT",
-        body: { ai: { enabled: form.enabled, apiKey: form.apiKey.trim(), model: form.model.trim(), monthlyQuota: Number(form.monthlyQuota) || 0, thinking: form.thinking } },
+        body: {
+          ai: {
+            enabled: form.enabled,
+            apiKey: form.apiKey.trim(),
+            model: form.model.trim(),
+            monthlyQuota: Number(form.monthlyQuota) || 0,
+            thinking: form.thinking,
+            priceInputUsd: Number(form.priceInputUsd) || 0,
+            priceOutputUsd: Number(form.priceOutputUsd) || 0,
+            usdToInr: Number(form.usdToInr) || 88,
+            imageProvider: form.imageProvider,
+            imageModel: !form.imagesOn ? "" : form.imageModel.trim() || (form.imageProvider === "cloudflare" ? CF_IMAGE_MODEL : ""),
+            cfAccountId: form.cfAccountId.trim(),
+            cfToken: form.cfToken.trim(),
+            imagePriceUsd: Number(form.imagePriceUsd) || 0,
+          },
+        },
       });
       onSaved(next);
-      setForm({ enabled: next.ai.enabled, apiKey: "", model: next.ai.model, monthlyQuota: String(next.ai.monthlyQuota), thinking: next.ai.thinking });
+      setForm(fromSettings(next.ai));
       setMessage({ tone: "success", text: next.ai.enabled ? "Saved and checked with Gemini. Pro schools can turn on the assistant in Settings → AI assistant." : "Saved. The assistant is off for every school." });
     } catch (err) {
       setMessage({ tone: "danger", text: errorMessage(err) });
@@ -452,6 +491,21 @@ function AiCard({ settings, onSaved }: { settings: Settings; onSaved: (s: Settin
     }
   }
 
+  async function testPicture() {
+    setBusy("image");
+    setMessage(null);
+    setTestImage(null);
+    try {
+      const r = await api<{ image: string; ms: number }>("/api/admin/settings/ai/test-image", { method: "POST" });
+      setTestImage(r.image);
+      setMessage({ tone: "success", text: `${a.imageProvider === "cloudflare" ? "Cloudflare FLUX" : a.imageModel} made a picture in ${(r.ms / 1000).toFixed(1)} s. AI pictures on slides will work.` });
+    } catch (err) {
+      setMessage({ tone: "danger", text: errorMessage(err) });
+    } finally {
+      setBusy(null);
+    }
+  }
+
   return (
     <section className="rounded-2xl border border-border bg-surface">
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border px-5 py-4">
@@ -463,6 +517,8 @@ function AiCard({ settings, onSaved }: { settings: Settings; onSaved: (s: Settin
       </div>
       <div className="space-y-4 p-5">
         {message && <Alert tone={message.tone}>{message.text}</Alert>}
+        {/* eslint-disable-next-line @next/next/no-img-element -- a one-off data: URL */}
+        {testImage && <img src={testImage} alt="Test picture from the image model" className="size-40 rounded-xl border border-border object-cover" />}
         {!settings.encryptionAvailable && <Alert tone="warning">Set DATA_ENCRYPTION_KEY on the server first; the API key is stored encrypted.</Alert>}
         {a.keySet && !a.keyReadable && <Alert tone="warning">The saved API key can&apos;t be read (the encryption key changed). Enter it again.</Alert>}
         <Field
@@ -516,6 +572,70 @@ function AiCard({ settings, onSaved }: { settings: Settings; onSaved: (s: Settin
             ))}
           </div>
         </div>
+        <details className="rounded-xl border border-border px-4 py-3 text-sm">
+          <summary className="cursor-pointer font-medium">Pricing for cost estimates</summary>
+          <div className="mt-3 grid gap-3 sm:grid-cols-3">
+            <Field label="Input, US$ per 1M tokens" htmlFor="ai-pin">
+              <Input id="ai-pin" inputMode="decimal" value={form.priceInputUsd} onChange={(e) => setForm({ ...form, priceInputUsd: e.target.value })} />
+            </Field>
+            <Field label="Output, US$ per 1M tokens" htmlFor="ai-pout">
+              <Input id="ai-pout" inputMode="decimal" value={form.priceOutputUsd} onChange={(e) => setForm({ ...form, priceOutputUsd: e.target.value })} />
+            </Field>
+            <Field label="₹ per US$" htmlFor="ai-rate">
+              <Input id="ai-rate" inputMode="decimal" value={form.usdToInr} onChange={(e) => setForm({ ...form, usdToInr: e.target.value })} />
+            </Field>
+          </div>
+          <p className="mt-1.5 text-xs text-muted">Used for the cost estimates below. Copy them from Google&apos;s Gemini pricing page for your model.</p>
+        </details>
+        <div className="rounded-xl border border-border px-4 py-3 text-sm">
+          <label className="flex items-center gap-3">
+            <input type="checkbox" checked={form.imagesOn} onChange={(e) => setForm({ ...form, imagesOn: e.target.checked })} className="size-4 accent-[var(--accent)]" />
+            <span>
+              <span className="font-medium">AI pictures on slides</span>
+              <span className="text-muted"> (schools can always upload their own)</span>
+            </span>
+          </label>
+          {form.imagesOn && (
+            <div className="mt-3 space-y-3">
+              <div className="grid gap-2 sm:grid-cols-2">
+                {(
+                  [
+                    ["cloudflare", "Cloudflare FLUX (free)", "About 150 free pictures a day across all schools, then they stop until tomorrow."],
+                    ["gemini", "Google Gemini", "Uses the Gemini key above. About US$0.04 a picture; needs billing on."],
+                  ] as const
+                ).map(([id, label, hint]) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setForm({ ...form, imageProvider: id, imageModel: "", imagePriceUsd: id === "cloudflare" ? "0" : "0.04" })}
+                    aria-pressed={form.imageProvider === id}
+                    className={cx("rounded-xl border px-3 py-2.5 text-left transition-colors", form.imageProvider === id ? "border-accent bg-accent-soft" : "border-border hover:border-accent/40")}
+                  >
+                    <span className="block text-sm font-medium">{label}</span>
+                    <span className="block text-xs text-muted">{hint}</span>
+                  </button>
+                ))}
+              </div>
+              {form.imageProvider === "cloudflare" ? (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Field label="Cloudflare account ID" htmlFor="ai-cfacc" hint="Cloudflare dashboard → Account home → ⋯ next to the account → Copy account ID.">
+                    <Input id="ai-cfacc" value={form.cfAccountId} onChange={(e) => setForm({ ...form, cfAccountId: e.target.value })} placeholder="32 letters and digits" autoComplete="off" />
+                  </Field>
+                  <Field label="Workers AI API token" htmlFor="ai-cftok" hint={a.cfTokenSet ? "A token is saved. Leave empty to keep it." : "Profile → API Tokens → Create token → Workers AI template."}>
+                    <Input id="ai-cftok" type="password" autoComplete="off" value={form.cfToken} onChange={(e) => setForm({ ...form, cfToken: e.target.value })} placeholder={a.cfTokenSet ? "•••••••••••••••• (saved)" : "Token"} />
+                  </Field>
+                </div>
+              ) : (
+                <Field label="Gemini image model" htmlFor="ai-img" hint="Such as gemini-2.5-flash-image or gemini-3.1-flash-image.">
+                  <Input id="ai-img" value={form.imageModel} onChange={(e) => setForm({ ...form, imageModel: e.target.value })} placeholder="gemini-2.5-flash-image" />
+                </Field>
+              )}
+              <Field label="US$ per picture (for cost estimates)" htmlFor="ai-imgp">
+                <Input id="ai-imgp" inputMode="decimal" value={form.imagePriceUsd} onChange={(e) => setForm({ ...form, imagePriceUsd: e.target.value })} className="max-w-32" />
+              </Field>
+            </div>
+          )}
+        </div>
         <label className="flex items-center gap-3 text-sm">
           <input type="checkbox" checked={form.enabled} onChange={(e) => setForm({ ...form, enabled: e.target.checked })} className="size-4 accent-[var(--accent)]" />
           <span>
@@ -529,6 +649,11 @@ function AiCard({ settings, onSaved }: { settings: Settings; onSaved: (s: Settin
               Test the saved key
             </Button>
           )}
+          {a.imageModel && (a.imageProvider === "cloudflare" ? a.cfTokenSet : a.keySet) && (
+            <Button variant="secondary" onClick={testPicture} loading={busy === "image"} disabled={busy !== null}>
+              Test a picture
+            </Button>
+          )}
           <Button onClick={save} loading={busy === "save"} disabled={!dirty || busy !== null || !form.model.trim()}>
             Save and check
           </Button>
@@ -538,6 +663,7 @@ function AiCard({ settings, onSaved }: { settings: Settings; onSaved: (s: Settin
   );
 }
 
+const rupees = (n: number) => `₹${n.toLocaleString("en-IN", { maximumFractionDigits: n < 10 ? 2 : 0 })}`;
 const tokens = (n: number) => (n >= 1_000_000 ? `${(n / 1_000_000).toFixed(1)}M` : n >= 1000 ? `${Math.round(n / 1000)}k` : String(n));
 const monthName = (m: string) => new Date(`${m}-01T00:00:00`).toLocaleDateString("en-IN", { month: "long", year: "numeric" });
 
@@ -550,7 +676,7 @@ function AiUsageCard() {
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4">
         <div>
           <h2 className="font-semibold">Usage</h2>
-          <p className="text-sm text-muted">Questions and Gemini tokens per school. Check your Google Cloud billing for the exact cost.</p>
+          <p className="text-sm text-muted">Questions, estimated cost and Gemini tokens per school (● = its own limit, set in the school&apos;s page). Google&apos;s bill is the exact cost.</p>
         </div>
         <div className="flex rounded-lg border border-border p-0.5 text-xs">
           {(["current", "previous"] as const).map((w) => (
@@ -568,6 +694,8 @@ function AiUsageCard() {
           <>
             <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {[
+                ["Estimated cost", rupees(m.costInr)],
+                ["Per question", m.costPerQuestionInr === null ? "—" : rupees(m.costPerQuestionInr)],
                 ["Questions", m.questions.toLocaleString("en-IN")],
                 ["Avg answer time", m.avgAnswerSeconds === null ? "—" : `${m.avgAnswerSeconds} s`],
                 ["Input tokens", tokens(m.inputTokens)],
@@ -587,7 +715,8 @@ function AiUsageCard() {
                   <thead className="text-xs text-muted">
                     <tr>
                       <th className="py-2 pr-3 font-medium">School</th>
-                      <th className="px-3 py-2 text-right font-medium">Questions</th>
+                      <th className="px-3 py-2 text-right font-medium">Questions / limit</th>
+                      <th className="px-3 py-2 text-right font-medium">Cost</th>
                       <th className="px-3 py-2 text-right font-medium">Failed</th>
                       <th className="px-3 py-2 text-right font-medium">Avg time</th>
                       <th className="py-2 pl-3 text-right font-medium">Tokens in / out</th>
@@ -597,7 +726,11 @@ function AiUsageCard() {
                     {m.schools.map((s) => (
                       <tr key={s.id} className="border-t border-border">
                         <td className="py-2 pr-3">{s.name}</td>
-                        <td className="px-3 py-2 text-right tabular-nums">{s.questions}</td>
+                        <td className={cx("px-3 py-2 text-right tabular-nums", s.questions >= s.quota && "font-medium text-danger")} title={s.ownQuota ? "This school's own limit" : "Platform limit"}>
+                          {s.questions} / {s.quota}
+                          {s.ownQuota && <span className="ml-1 text-[10px] text-accent">●</span>}
+                        </td>
+                        <td className="px-3 py-2 text-right font-medium tabular-nums">{rupees(s.costInr)}</td>
                         <td className={cx("px-3 py-2 text-right tabular-nums", s.failed ? "text-danger" : "text-muted")}>{s.failed}</td>
                         <td className={cx("px-3 py-2 text-right tabular-nums", (s.avgAnswerSeconds ?? 0) > 20 ? "text-warning" : "text-muted")}>{s.avgAnswerSeconds === null ? "—" : `${s.avgAnswerSeconds} s`}</td>
                         <td className="py-2 pl-3 text-right tabular-nums text-muted">

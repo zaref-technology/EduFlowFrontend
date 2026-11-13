@@ -171,6 +171,57 @@ export function AskEduFlow() {
   return <ChatPanel key={tenantId} role={role} store={storeKey(tenantId)} startWith={start} onStarted={() => setStart(null)} onClose={() => setOpen(false)} />;
 }
 
+// The browser's speech recognition (Chrome, Edge, Safari; not Firefox): free, on the device/browser
+interface Recognition {
+  lang: string;
+  interimResults: boolean;
+  continuous: boolean;
+  start: () => void;
+  stop: () => void;
+  onresult: ((e: { resultIndex: number; results: ArrayLike<{ 0: { transcript: string }; isFinal: boolean }> }) => void) | null;
+  onend: (() => void) | null;
+  onerror: ((e: { error: string }) => void) | null;
+}
+const SPEECH_LANG: Record<string, string> = { auto: "en-IN", en: "en-IN", hi: "hi-IN", mr: "mr-IN" };
+const MIC_ICON = "M12 15a3 3 0 003-3V6a3 3 0 10-6 0v6a3 3 0 003 3zM5 11a7 7 0 0014 0M12 18v3";
+
+/** Speak a question: fills the box as you talk (in the chat's reply language). */
+function useVoice(language: string, onText: (text: string) => void) {
+  const rec = useRef<Recognition | null>(null);
+  const [listening, setListening] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const supported = typeof window !== "undefined" && Boolean((window as unknown as Record<string, unknown>).SpeechRecognition || (window as unknown as Record<string, unknown>).webkitSpeechRecognition);
+  useEffect(() => () => rec.current?.stop(), []);
+  function toggle() {
+    if (listening) return rec.current?.stop();
+    const W = window as unknown as Record<string, new () => Recognition>;
+    const R = W.SpeechRecognition || W.webkitSpeechRecognition;
+    if (!R) return;
+    const r = new R();
+    r.lang = SPEECH_LANG[language] ?? "en-IN";
+    r.interimResults = true;
+    r.continuous = false;
+    let text = "";
+    r.onresult = (e) => {
+      let final = "";
+      let interim = "";
+      for (let i = 0; i < e.results.length; i++) {
+        if (e.results[i].isFinal) final += e.results[i][0].transcript;
+        else interim += e.results[i][0].transcript;
+      }
+      text = (final + interim).trim();
+      onText(text);
+    };
+    r.onerror = (e) => setError(e.error === "not-allowed" ? "Allow the microphone to ask by voice." : e.error === "no-speech" ? "Didn't hear anything. Try again." : "Voice didn't work. Try again or type.");
+    r.onend = () => setListening(false);
+    setError(null);
+    rec.current = r;
+    r.start();
+    setListening(true);
+  }
+  return { supported, listening, error, toggle };
+}
+
 function ChatPanel({ role, store, startWith, onStarted, onClose }: { role: string; store: string; startWith: { question: string; n: number } | null; onStarted: () => void; onClose: () => void }) {
   const status = useAiStatus()!;
   const [view, setView] = useState<"chat" | "history">("chat");
@@ -189,6 +240,7 @@ function ChatPanel({ role, store, startWith, onStarted, onClose }: { role: strin
   const abort = useRef<AbortController | null>(null);
   const end = useRef<HTMLDivElement>(null);
   const box = useRef<HTMLTextAreaElement>(null);
+  const voice = useVoice(language, (text) => setInput(text));
   const [student, setStudent] = useState<string | null>(null);
   useStudentClicks(useCallback((id: string) => setStudent(id), []));
   const [whatsapp, setWhatsapp] = useState<WhatsAppRequest | null>(null);
@@ -394,6 +446,19 @@ function ChatPanel({ role, store, startWith, onStarted, onClose }: { role: strin
                 aria-label="Your question"
                 className="max-h-32 min-h-9 min-w-0 flex-1 resize-none bg-transparent px-2 py-1.5 text-sm outline-none field-sizing-content"
               />
+              {voice.supported && !busy && (
+                <button
+                  type="button"
+                  onClick={voice.toggle}
+                  aria-label={voice.listening ? "Stop listening" : "Ask by voice"}
+                  aria-pressed={voice.listening}
+                  title={voice.listening ? "Listening… tap to stop" : "Ask by voice"}
+                  className={cx("relative grid size-8 shrink-0 place-items-center rounded-xl transition-colors", voice.listening ? "bg-danger text-white" : "text-muted hover:bg-surface-muted hover:text-foreground")}
+                >
+                  {voice.listening && <span aria-hidden className="absolute inset-0 rounded-xl bg-danger/60 motion-safe:animate-ping" />}
+                  <Icon d={MIC_ICON} className="relative size-4" />
+                </button>
+              )}
               {busy ? (
                 <Button type="button" size="icon-sm" variant="secondary" onClick={() => abort.current?.abort()} aria-label="Stop">
                   <Icon d={STOP_ICON} className="size-3.5" />
@@ -404,6 +469,8 @@ function ChatPanel({ role, store, startWith, onStarted, onClose }: { role: strin
                 </Button>
               )}
             </div>
+            {voice.error && <p className="text-[11px] text-danger">{voice.error}</p>}
+            {voice.listening && <p className="text-[11px] text-muted" aria-live="polite">Listening… speak your question, then tap send.</p>}
             <div className="flex items-center justify-between gap-3 text-[11px] text-muted">
               <div className="flex items-center gap-1" role="group" aria-label="Reply language">
                 <span className="mr-0.5">Reply in</span>

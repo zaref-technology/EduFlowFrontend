@@ -2,11 +2,12 @@
 
 // Beside the slide in the editor: layout, chart numbers, table rows/columns. Text is edited on
 // the slide itself. Numbers from the school's records are locked unless the member unlocks them.
-import { type ReactNode } from "react";
-import { Icon, cx } from "@/components/ui";
+import { useRef, useState, type ReactNode } from "react";
+import { Button, Icon, cx } from "@/components/ui";
+import { api } from "@/lib/api";
 import { LAYOUT_LABEL, blankSlide, type Layout, type Slide } from "@/lib/slides";
 
-const LAYOUTS: Layout[] = ["title", "section", "bullets", "two_column", "stats", "table", "chart", "quote", "closing"];
+const LAYOUTS: Layout[] = ["title", "section", "bullets", "two_column", "image", "stats", "table", "chart", "quote", "closing"];
 export const area = "w-full resize-y rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/15";
 const small = "h-8 rounded-md border border-border bg-surface px-2 text-xs outline-none focus:border-accent";
 
@@ -15,18 +16,38 @@ const LAYOUT_ICON: Record<Layout, string> = {
   section: "M4 12h16M4 6h10M4 18h10",
   bullets: "M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01",
   two_column: "M4 5h7v14H4zM13 5h7v14h-7z",
-  stats: "M4 19V9M10 19V5M16 19v-7M22 19H2",
+  stats: "M9 4L7 20M17 4l-2 16M4 9h16M3 15h16",
   table: "M3 5h18v14H3zM3 10h18M3 15h18M9 5v14",
   chart: "M4 19h16M7 16V9M12 16V5M17 16v-4",
   quote: "M7 7h4v4H7zM7 11c0 3-1 5-3 6M15 7h4v4h-4zM15 11c0 3-1 5-3 6",
   closing: "M4 5h16v14H4zM9 12l2 2 4-4",
+  image: "M4 5h16v14H4zM4 15l4-4 4 4 3-3 5 5M15 9h.01",
 };
 
 /**
  * Beside the slide: only what can't be done by clicking on it. The layout (the AI chose it;
  * change it if you like), a chart's numbers, a table's rows and columns, adding numbers.
  */
-export function SlidePanel({ slide, locked, onChange, onUnlock, chartRef }: { slide: Slide; locked: boolean; onChange: (p: Partial<Slide>) => void; onUnlock: () => void; chartRef?: React.Ref<HTMLDivElement> }) {
+export function SlidePanel({
+  slide,
+  locked,
+  onChange,
+  onUnlock,
+  chartRef,
+  pictureRef,
+  onAiPicture,
+  aiBusy,
+}: {
+  slide: Slide;
+  locked: boolean;
+  onChange: (p: Partial<Slide>) => void;
+  onUnlock: () => void;
+  chartRef?: React.Ref<HTMLDivElement>;
+  pictureRef?: React.Ref<HTMLDivElement>;
+  /** Make a picture with AI (when the console has turned AI pictures on) */
+  onAiPicture?: (prompt: string) => void;
+  aiBusy?: boolean;
+}) {
   return (
     <div className="space-y-4">
       <p className="flex items-start gap-2 rounded-xl bg-accent-soft/60 px-3 py-2 text-xs text-muted">
@@ -60,6 +81,11 @@ export function SlidePanel({ slide, locked, onChange, onUnlock, chartRef }: { sl
           <ChartEditor chart={slide.chart} onChange={(chart) => onChange({ chart })} />
         </div>
       )}
+      {slide.layout === "image" && (
+        <div ref={pictureRef} className="rounded-xl">
+          <PictureTools slide={slide} onChange={onChange} onAiPicture={onAiPicture} aiBusy={aiBusy} />
+        </div>
+      )}
       {!locked && slide.layout === "table" && slide.table && <TableTools table={slide.table} onChange={(table) => onChange({ table })} />}
       {!locked && slide.layout === "stats" && slide.stats && (
         <div className="flex gap-3 text-xs font-medium text-accent">
@@ -74,6 +100,76 @@ export function SlidePanel({ slide, locked, onChange, onUnlock, chartRef }: { sl
             </button>
           )}
         </div>
+      )}
+    </div>
+  );
+}
+
+/** Uploads a picture straight to Cloudinary (with our short-lived signature); returns its URL. */
+async function uploadPicture(file: File) {
+  if (file.size > 8 * 1024 * 1024) throw new Error("That picture is over 8 MB. Choose a smaller one.");
+  const { uploadUrl, fields } = await api<{ uploadUrl: string; fields: Record<string, string | number> }>("/api/ai/decks/images/signature", { method: "POST" });
+  const form = new FormData();
+  for (const [k, v] of Object.entries(fields)) form.append(k, String(v));
+  form.append("file", file);
+  const res = await fetch(uploadUrl, { method: "POST", body: form });
+  const out = (await res.json().catch(() => null)) as { secure_url?: string; error?: { message: string } } | null;
+  if (!res.ok || !out?.secure_url) throw new Error(out?.error?.message || "Upload failed. Try again.");
+  return out.secure_url;
+}
+
+/** The slide's picture: upload one, make one with AI, or remove it. */
+function PictureTools({ slide, onChange, onAiPicture, aiBusy }: { slide: Slide; onChange: (p: Partial<Slide>) => void; onAiPicture?: (prompt: string) => void; aiBusy?: boolean }) {
+  const input = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [prompt, setPrompt] = useState("");
+  async function pick(file?: File) {
+    if (!file) return;
+    setBusy(true);
+    setError(null);
+    try {
+      onChange({ image: { url: await uploadPicture(file), alt: slide.title, source: "upload" } });
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setBusy(false);
+      if (input.current) input.current.value = "";
+    }
+  }
+  return (
+    <div className="space-y-2">
+      <p className="text-xs font-medium text-muted">Picture</p>
+      {error && <p className="rounded-lg bg-danger-soft px-2.5 py-1.5 text-xs">{error}</p>}
+      <input ref={input} type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={(e) => pick(e.target.files?.[0])} />
+      <div className="flex gap-1.5">
+        <Button type="button" size="sm" variant="secondary" loading={busy} onClick={() => input.current?.click()} className="flex-1">
+          <Icon d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3" />
+          {slide.image ? "Replace" : "Upload"}
+        </Button>
+        {slide.image && (
+          <Button type="button" size="sm" variant="ghost" onClick={() => onChange({ image: undefined })}>
+            Remove
+          </Button>
+        )}
+      </div>
+      {onAiPicture && (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            onAiPicture(prompt);
+          }}
+          className="space-y-1.5 rounded-xl border border-accent/30 bg-accent-soft/50 p-2.5"
+        >
+          <p className="flex items-center gap-1.5 text-xs font-semibold">
+            <Icon d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z" className="size-3.5 text-accent" />
+            Make a picture with AI · 2 questions
+          </p>
+          <input value={prompt} onChange={(e) => setPrompt(e.target.value)} maxLength={300} placeholder={`e.g. ${slide.title || "children planting trees"}`} aria-label="Describe the picture" className={cx(small, "w-full")} />
+          <Button type="submit" size="sm" className="w-full" loading={aiBusy} disabled={aiBusy}>
+            Make picture
+          </Button>
+        </form>
       )}
     </div>
   );
@@ -191,6 +287,7 @@ export function withLayout(s: Slide, layout: Layout): Partial<Slide> {
   }
   if (layout === "bullets") return { layout, bullets: points.length ? points : ["First point"] };
   if (layout === "quote") return { layout, quote: s.quote || points[0] || s.title };
+  if (layout === "image") return { layout, bullets: points.length ? points : ["What this shows"] };
   // Numbers typed in by the member: theirs to edit
   if (layout === "stats") return { layout, stats: s.stats ?? blankSlide("stats").stats, fromRecords: false };
   if (layout === "table") return { layout, table: s.table ?? (points.length ? { head: ["Point"], rows: points.map((p) => [p]) } : blankSlide("table").table), fromRecords: false };

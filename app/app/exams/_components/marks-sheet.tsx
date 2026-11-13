@@ -11,6 +11,8 @@ import { SCALE_BANDS, STATUS_TEXT, classLabel, formatMark, formatPct, gradeTone,
 import { downloadSpreadsheet } from "@/lib/spreadsheet";
 import { ExamEditor } from "./exam-editor";
 import { ImportMarksDrawer } from "./import-marks";
+import { AiRemarksDrawer } from "./ai-remarks";
+import { useAiStatus } from "@/lib/ai";
 import { ExamReportDrawer } from "./report-card";
 
 type Draft = { marks: Record<string, string>; remarks: string };
@@ -54,6 +56,8 @@ export function MarksSheet({ examId, onBack, onChanged, onDeleted }: { examId: s
   const [reportFor, setReportFor] = useState<ExamRow | null>(null);
   const [sharing, setSharing] = useState(false);
   const [importing, setImporting] = useState(false);
+  const [aiRemarks, setAiRemarks] = useState(false);
+  const aiReady = useAiStatus()?.state === "ready";
   const cells = useRef(new Map<string, HTMLInputElement>());
 
   const saved = useMemo(() => new Map((view?.students ?? []).map((r) => [r.student.id, toDraft(r, subjectIds)])), [view, subjectIds]);
@@ -247,6 +251,12 @@ export function MarksSheet({ examId, onBack, onChanged, onDeleted }: { examId: s
             <Icon d={ICONS.upload} />
             Import marks
           </Button>
+          {canRemark && aiReady && (
+            <Button variant="secondary" size="sm" onClick={() => setAiRemarks(true)} disabled={dirty} title={dirty ? "Save the marks first" : "Write a report-card remark for every student"}>
+              <Icon d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z" />
+              Remarks with AI
+            </Button>
+          )}
           {isAdmin && (
             <Button variant="danger" size="sm" onClick={remove}>
               Delete
@@ -493,6 +503,18 @@ export function MarksSheet({ examId, onBack, onChanged, onDeleted }: { examId: s
             setEdits((e) => ({ ...e, ...next }));
             setImporting(false);
             setMessage({ tone: "success", text: summary });
+          }}
+        />
+      )}
+      {aiRemarks && (
+        <AiRemarksDrawer
+          examId={examId}
+          rows={view.students}
+          currentRemark={(id) => draftOf(id).remarks}
+          onClose={() => setAiRemarks(false)}
+          onUse={(list) => {
+            list.forEach((r) => setRemarks(r.studentId, r.remark));
+            setMessage({ tone: "success", text: `${list.length} remark${list.length === 1 ? "" : "s"} added. Check them in the sheet, then Save.` });
           }}
         />
       )}

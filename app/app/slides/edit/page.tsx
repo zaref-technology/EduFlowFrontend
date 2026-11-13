@@ -12,7 +12,14 @@ import { Alert, Button, ICONS, Icon, Input, cx } from "@/components/ui";
 import { WRITE_LANGUAGES, refreshAiStatus, useAiStatus, type WriteLanguage } from "@/lib/ai";
 import { api } from "@/lib/api";
 import { exportPdf, exportPptx } from "@/lib/slides-export";
+import { shareOrDownload } from "@/components/share";
 import { DECK_UNITS, LAYOUT_LABEL, blankSlide, isLocked, type Deck, type Layout, type Slide } from "@/lib/slides";
+
+/** Points to a panel beside the slide (after a click on the chart or picture). */
+function flash(el: HTMLElement | null) {
+  el?.scrollIntoView({ behavior: "smooth", block: "center" });
+  el?.animate([{ boxShadow: "0 0 0 0 transparent" }, { boxShadow: "0 0 0 6px color-mix(in oklab, var(--accent) 35%, transparent)" }, { boxShadow: "0 0 0 0 transparent" }], { duration: 900 });
+}
 
 const SPARK = "M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z";
 const MAX = 20;
@@ -90,6 +97,8 @@ function DeckEditor() {
   const history = useHistory();
   const dragFrom = useRef<number | null>(null);
   const chartPanel = useRef<HTMLDivElement>(null);
+  const picturePanel = useRef<HTMLDivElement>(null);
+  const [sharing, setSharing] = useState(false);
   const [dragOver, setDragOver] = useState<number | null>(null);
 
   useEffect(() => {
@@ -256,6 +265,21 @@ function DeckEditor() {
     }
   }
 
+  /** Sends the presentation as a PDF (the phone's share sheet: WhatsApp…; elsewhere it downloads). */
+  async function share() {
+    if (!deck) return;
+    setSharing(true);
+    setError(null);
+    try {
+      const file = await exportPdf(deck, brand, { asFile: true });
+      if (file) await shareOrDownload(file, deck.title);
+    } catch (err) {
+      if ((err as Error)?.name !== "AbortError") setError(`Couldn't share the PDF: ${errorMessage(err)}`);
+    } finally {
+      setSharing(false);
+    }
+  }
+
   /** Runs an AI change on the server (after saving any pending edits). */
   async function ai(label: string, run: () => Promise<{ deck: Deck; index?: number }>) {
     setAiBusy(label);
@@ -357,6 +381,10 @@ function DeckEditor() {
           <Icon d={ICONS.download} />
           PDF
         </Button>
+        <Button variant="secondary" size="sm" onClick={share} loading={sharing} disabled={sharing || exporting !== null} title="Send as PDF on WhatsApp or anywhere">
+          <Icon d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" />
+          Share
+        </Button>
         <Button size="sm" onClick={() => setPresenting(true)} title="Present (Ctrl+Enter)">
           <Icon d="M8 5v14l11-7z" />
           Present
@@ -392,10 +420,16 @@ function DeckEditor() {
           <Alert>{error}</Alert>
         </div>
       )}
-      {aiBusy && aiBusy !== "translate" && aiBusy !== "rewrite" && (
+      {aiBusy === "insert" && (
         <p className="mb-3 flex items-center gap-2 text-sm text-muted" aria-live="polite">
           <span className="size-4 animate-spin rounded-full border-2 border-accent/20 border-t-accent" />
           Writing a new slide…
+        </p>
+      )}
+      {aiBusy === "image" && (
+        <p className="mb-3 flex items-center gap-2 text-sm text-muted" aria-live="polite">
+          <span className="size-4 animate-spin rounded-full border-2 border-accent/20 border-t-accent" />
+          Making the picture…
         </p>
       )}
       {aiBusy === "translate" && (
@@ -485,10 +519,8 @@ function DeckEditor() {
                 edit={{
                   locked,
                   onChange: (p) => setSlide(idx, p, `slide-${idx}-${Object.keys(p).join()}`),
-                  onChart: () => {
-                    chartPanel.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-                    chartPanel.current?.animate([{ boxShadow: "0 0 0 0 var(--accent)" }, { boxShadow: "0 0 0 6px color-mix(in oklab, var(--accent) 35%, transparent)" }, { boxShadow: "0 0 0 0 transparent" }], { duration: 900 });
-                  },
+                  onChart: () => flash(chartPanel.current),
+                  onImage: () => flash(picturePanel.current),
                 }}
               />
             </div>
@@ -519,7 +551,17 @@ function DeckEditor() {
           <aside className="space-y-4">
             <section className="rounded-2xl border border-border bg-surface p-4">
               <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted">This slide</p>
-              <SlidePanel key={`${idx}-${slide.layout}-${locked}`} slide={slide} locked={locked} onChange={(p) => setSlide(idx, p, `panel-${idx}-${Object.keys(p).join()}`)} onUnlock={() => setSlide(idx, { fromRecords: false })} chartRef={chartPanel} />
+              <SlidePanel
+                key={`${idx}-${slide.layout}-${locked}`}
+                slide={slide}
+                locked={locked}
+                onChange={(p) => setSlide(idx, p, `panel-${idx}-${Object.keys(p).join()}`)}
+                onUnlock={() => setSlide(idx, { fromRecords: false })}
+                chartRef={chartPanel}
+                pictureRef={picturePanel}
+                aiBusy={aiBusy === "image"}
+                onAiPicture={aiReady && status?.images ? (prompt) => ai("image", () => api<{ deck: Deck }>(`/api/ai/decks/${id}/slides/${idx}/image`, { method: "POST", body: { prompt } })) : undefined}
+              />
             </section>
             {aiReady && <Rewrite busy={aiBusy !== null} dataSlide={locked || Boolean(slide.chart)} onRun={(text) => ai("rewrite", () => api<{ deck: Deck }>(`/api/ai/decks/${id}/slides/${idx}/regenerate`, { method: "POST", body: { instruction: text } }))} running={aiBusy === "rewrite"} />}
             <section className="rounded-2xl border border-border bg-surface p-4">

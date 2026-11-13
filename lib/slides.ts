@@ -4,7 +4,7 @@ import type { WriteLanguage } from "./ai";
 
 export type DeckKind = "topic" | "class_results" | "monthly_review";
 export type ThemeId = "classic" | "midnight" | "sunrise" | "chalk";
-export type Layout = "title" | "section" | "bullets" | "two_column" | "stats" | "chart" | "table" | "quote" | "closing";
+export type Layout = "title" | "section" | "bullets" | "two_column" | "stats" | "chart" | "table" | "quote" | "image" | "closing";
 
 export interface Slide {
   layout: Layout;
@@ -20,6 +20,8 @@ export interface Slide {
   stats?: { label: string; value: string; hint?: string }[];
   table?: { head: string[]; rows: string[][] };
   chart?: { type: "bar" | "line" | "pie"; labels: string[]; series: { name: string; values: number[] }[]; unit: "%" | "₹" | "" };
+  /** A picture (uploaded, or made by the AI) on our Cloudinary account */
+  image?: { url: string; alt?: string; source?: "upload" | "ai" };
   /** Numbers from the school's records: locked in the editor unless the member unlocks them */
   fromRecords?: boolean;
 }
@@ -54,7 +56,7 @@ export interface DeckSources {
 }
 
 /** Each step's cost in the school's monthly AI questions (as the server counts them). */
-export const DECK_UNITS = { outline: 1, deck: 4, slide: 1, insert: 1, translate: 2 };
+export const DECK_UNITS = { outline: 1, deck: 4, slide: 1, insert: 1, translate: 2, image: 2 };
 
 export interface Theme {
   id: ThemeId;
@@ -92,6 +94,7 @@ export const LAYOUT_LABEL: Record<Layout, string> = {
   chart: "Chart",
   table: "Table",
   quote: "Quote",
+  image: "Picture",
   closing: "Closing",
 };
 
@@ -118,6 +121,8 @@ function sample(layout: Layout): Slide {
       return { layout, title: "Quote", quote: "Education is the most powerful weapon which you can use to change the world.", attribution: "Nelson Mandela" };
     case "section":
       return { layout, title: "New section", subtitle: "Part 2" };
+    case "image":
+      return { layout, title: "Picture", bullets: ["What this shows"] };
     case "title":
     case "closing":
       return { layout, title: layout === "closing" ? "Thank you" : "Title" };

@@ -559,6 +559,7 @@ function AccessSection({ id, d, plans, busy, run, setMessage }: Ctx) {
   const s = d.school;
   const plan = plans.find((p) => p.id === s.subscription.planId);
   const [limit, setLimit] = useState(s.studentLimitOverride === null ? "" : String(s.studentLimitOverride));
+  const [aiQuota, setAiQuota] = useState(s.aiQuotaOverride === null || s.aiQuotaOverride === undefined ? "" : String(s.aiQuotaOverride));
   const [features, setFeatures] = useState<Record<Feature, Tri>>(() => {
     const o = s.featureOverrides;
     return Object.fromEntries((Object.keys(FEATURE_LABEL) as Feature[]).map((f) => [f, o[f] === undefined || o[f] === null ? "plan" : o[f] ? "on" : "off"])) as Record<Feature, Tri>;
@@ -572,6 +573,7 @@ function AccessSection({ id, d, plans, busy, run, setMessage }: Ctx) {
           method: "PATCH",
           body: {
             studentLimit: limit.trim() === "" ? null : Math.max(0, Math.round(Number(limit) || 0)),
+            aiQuota: aiQuota.trim() === "" ? null : Math.max(0, Math.round(Number(aiQuota) || 0)),
             features: Object.fromEntries(Object.entries(features).map(([f, v]) => [f, v === "plan" ? null : v === "on"])),
           },
         }),
@@ -599,6 +601,10 @@ function AccessSection({ id, d, plans, busy, run, setMessage }: Ctx) {
             {d.usage.studentsActive} active now · effective limit {s.subscription.studentLimit || "unlimited"}
           </span>
         </div>
+      </Block>
+
+      <Block title="AI questions a month" hint="Leave empty to use the platform's limit (Console → Settings → AI assistant). A presentation counts as about 5 questions.">
+        <Input aria-label="AI questions a month" inputMode="numeric" className="w-40" value={aiQuota} onChange={(e) => setAiQuota(e.target.value.replace(/\D/g, ""))} placeholder="Platform default" />
       </Block>
 
       <Block title="Features" hint="Turn a feature on or off for this school only.">
