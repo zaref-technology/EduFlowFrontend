@@ -73,7 +73,7 @@ function StudentPicker({ onPick }: { onPick: (id: string) => void }) {
       ) : data?.students.length === 0 ? (
         <p className="py-6 text-center text-sm text-muted">No students with dues match.</p>
       ) : (
-        <ul className="divide-y divide-border rounded-xl border border-border bg-surface">
+        <ul className="divide-y divide-border rounded-2xl border border-border bg-surface">
           {data?.students.map((s) => (
             <li key={s.id}>
               <button onClick={() => onPick(s.id)} className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-surface-muted">
@@ -406,7 +406,7 @@ function CollectForm({
               {/* Where it goes */}
               {open.length > 0 && (
                 <Section title="Goes to (oldest first)">
-                <ul className="divide-y divide-border rounded-xl border border-border bg-surface">
+                <ul className="divide-y divide-border rounded-2xl border border-border bg-surface">
                   {open.map((d) => {
                     const checked = !deselected.has(d.id);
                     const applied = allocatedById.get(d.id) ?? 0;

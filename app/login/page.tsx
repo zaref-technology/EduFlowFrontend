@@ -119,7 +119,7 @@ export default function LoginPage() {
             value={code}
             onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
             placeholder="000000"
-            className="h-14 w-full rounded-xl border border-border bg-surface text-center font-mono text-3xl tracking-[0.5em] outline-none focus:border-accent focus:ring-4 focus:ring-accent/15"
+            className="h-14 w-full rounded-2xl border border-border bg-surface text-center font-mono text-3xl tracking-[0.5em] outline-none focus:border-accent focus:ring-4 focus:ring-accent/15"
           />
           <Button type="submit" className="h-11 w-full rounded-xl text-[15px]" loading={pending} disabled={code.length !== 6}>
             Verify
@@ -147,7 +147,7 @@ export default function LoginPage() {
               <button
                 onClick={() => onSelect(t.id)}
                 disabled={selecting !== null}
-                className="group flex w-full items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3.5 text-left transition-all hover:-translate-y-px hover:border-accent hover:shadow-md hover:shadow-accent/10 disabled:opacity-60"
+                className="group flex w-full items-center gap-3 rounded-2xl border border-border bg-surface px-4 py-3.5 text-left transition-all hover:-translate-y-px hover:border-accent hover:shadow-md hover:shadow-accent/10 disabled:opacity-60"
               >
                 <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-accent-soft text-sm font-semibold text-accent">{t.name.trim()[0]?.toUpperCase()}</span>
                 <span className="min-w-0 flex-1">
@@ -185,7 +185,7 @@ export default function LoginPage() {
       }
     >
       {options?.phoneLogin && (
-        <div className="mb-5 grid grid-cols-2 rounded-xl border border-border bg-surface-muted p-1 text-sm" role="tablist" aria-label="Sign in with">
+        <div className="mb-5 grid grid-cols-2 rounded-2xl border border-border bg-surface-muted p-1 text-sm" role="tablist" aria-label="Sign in with">
           {(
             [
               ["email", "Email & password"],

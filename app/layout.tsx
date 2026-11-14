@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { themeScript } from "@/lib/theme";
 import { AuthProvider } from "@/lib/auth";
 import { PwaRuntime } from "@/components/pwa";
+import { SITE, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,8 +17,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  // Absolute links for canonical URLs, link previews and the sitemap
+  metadataBase: new URL(SITE_URL),
   title: { default: "EduFlow", template: "%s · EduFlow" },
-  description: "Run your school, tuition centre or coaching institute from one place.",
+  description: SITE.description,
   applicationName: "EduFlow",
   // iPhone / iPad: full screen when added to the home screen
   appleWebApp: { capable: true, title: "EduFlow", statusBarStyle: "default" },
@@ -29,8 +32,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f8f8f6" },
-    { media: "(prefers-color-scheme: dark)", color: "#0c0c0f" },
+    { media: "(prefers-color-scheme: light)", color: "#f5f5f7" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
   ],
 };
 

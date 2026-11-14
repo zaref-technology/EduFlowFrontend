@@ -16,7 +16,7 @@ type View = { tab: "mark"; open: { grade: string; section: string } | null } | {
 export default function AttendancePage() {
   const { session } = useAuth();
   if (session.status === "authenticated" && session.role === "accountant") {
-    return <p className="rounded-xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">Attendance is for teachers and admins. Accountants don&apos;t have access.</p>;
+    return <p className="rounded-2xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">Attendance is for teachers and admins. Accountants don&apos;t have access.</p>;
   }
   return <AttendanceWorkspace />;
 }
@@ -117,14 +117,14 @@ function AttendanceWorkspace() {
               onSaved={overview.reload}
             />
           ) : overview.error ? (
-            <div className="rounded-xl border border-border bg-surface px-4 py-12 text-center">
+            <div className="rounded-2xl border border-border bg-surface px-4 py-12 text-center">
               <p className="text-sm text-danger">{overview.error}</p>
               <Button variant="secondary" size="sm" className="mt-3" onClick={overview.reload}>
                 Try again
               </Button>
             </div>
           ) : classes && classes.length === 0 ? (
-            <div className="rounded-xl border border-border bg-surface px-6 py-14 text-center">
+            <div className="rounded-2xl border border-border bg-surface px-6 py-14 text-center">
               <p className="font-medium">No classes yet</p>
               <p className="mx-auto mt-1 max-w-sm text-sm text-muted">
                 Classes come from each student&apos;s Class and Section. Add students with a class to start taking attendance.

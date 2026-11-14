@@ -133,7 +133,7 @@ export function DailySummary() {
                 <li
                   key={i}
                   style={{ animationDelay: `${80 + i * 70}ms` }}
-                  className="group flex gap-3 rounded-xl border border-border bg-surface/90 p-3 backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-md motion-safe:animate-rise"
+                  className="group flex gap-3 rounded-2xl border border-border bg-surface/90 p-3 backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-md motion-safe:animate-rise"
                 >
                   <span className={cx("grid size-8 shrink-0 place-items-center rounded-lg", tone.tile)}>
                     <Icon d={tone.icon} className="size-4" />

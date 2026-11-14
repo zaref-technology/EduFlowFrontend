@@ -63,7 +63,7 @@ function NotesCard({ studentId }: { studentId: string }) {
   const c = notes.data?.counts;
   return (
     <Section title="Notes & behaviour">
-      <div className="rounded-xl border border-border bg-surface">
+      <div className="rounded-2xl border border-border bg-surface">
         {c && (c.praise > 0 || c.concern > 0) && (
           <div className="flex gap-2 border-b border-border px-4 py-2.5 text-xs">
             <span className="rounded-full bg-success-soft px-2 py-0.5 font-medium text-success">{c.praise} praise</span>
@@ -155,7 +155,7 @@ function LeaveCard({ studentId }: { studentId: string }) {
   const list = leaves.data?.leaves ?? [];
   return (
     <Section title="Leave">
-      <div className="rounded-xl border border-border bg-surface">
+      <div className="rounded-2xl border border-border bg-surface">
         {list.length > 0 && (
           <ul className="divide-y divide-border">
             {list.map((l) => {
@@ -239,7 +239,7 @@ function CorrectionCard({ studentId, studentName }: { studentId: string; student
     <div>
       {note && <Alert tone={note.tone}>{note.text}</Alert>}
       {open ? (
-        <div className="mt-2 space-y-2 rounded-xl border border-border bg-surface p-3">
+        <div className="mt-2 space-y-2 rounded-2xl border border-border bg-surface p-3">
           <p className="text-sm font-medium">What&apos;s wrong in {studentName}&apos;s details?</p>
           <textarea value={message} onChange={(e) => setMessage(e.target.value)} rows={3} maxLength={500} placeholder="e.g. Guardian phone should be 98765 43210; roll number is 14" className={textareaClass} />
           <div className="flex justify-end gap-2">

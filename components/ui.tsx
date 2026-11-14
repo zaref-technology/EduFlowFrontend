@@ -17,27 +17,39 @@ export function Logo({ href = "/", size = "md" }: { href?: string; size?: "sm" |
   );
 }
 
+/** Just the book, for tight spaces such as the phone header. */
+export function LogoMark({ href = "/", className = "size-8" }: { href?: string; className?: string }) {
+  return (
+    <Link href={href} aria-label="EduFlow home" className="inline-flex shrink-0 items-center">
+      <Image src="/images/brand/mark-light.png" alt="EduFlow" width={110} height={110} priority className={cx("logo-light", className)} />
+      <Image src="/images/brand/mark-dark.png" alt="" aria-hidden width={110} height={110} priority className={cx("logo-dark", className)} />
+    </Link>
+  );
+}
+
 type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 
 const buttonStyles: Record<ButtonVariant, string> = {
-  primary: "bg-accent text-accent-foreground hover:bg-accent-hover",
-  secondary: "border border-border bg-surface hover:bg-surface-muted",
+  primary: "bg-accent text-accent-foreground shadow-[0_1px_2px_rgb(0_0_0/0.12),inset_0_1px_0_rgb(255_255_255/0.12)] hover:bg-accent-hover",
+  secondary: "border border-border bg-surface shadow-[0_1px_2px_rgb(0_0_0/0.05)] hover:bg-surface-muted",
   ghost: "hover:bg-surface-muted",
   danger: "border border-border bg-surface text-danger hover:bg-danger-soft",
 };
 
-export type ButtonSize = "sm" | "md" | "icon" | "icon-sm";
+export type ButtonSize = "xs" | "sm" | "md" | "icon" | "icon-sm";
 
 const buttonSizes: Record<ButtonSize, string> = {
-  sm: "h-8 px-3 text-sm",
-  md: "h-10 px-4 text-sm",
+  xs: "h-7 px-3 text-[13px]",
+  sm: "h-8 px-3.5 text-sm",
+  md: "h-10 px-[18px] text-sm",
   icon: "size-10",
   "icon-sm": "size-8",
 };
 
 export function buttonClass(variant: ButtonVariant = "primary", size: ButtonSize = "md") {
   return cx(
-    "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors",
+    // Apple-style pills that press in slightly
+    "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-[background-color,transform,box-shadow] duration-150 active:scale-[0.97]",
     "disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
     buttonSizes[size],
     buttonStyles[variant]
@@ -71,7 +83,7 @@ export function Spinner({ className }: { className?: string }) {
 }
 
 const inputClass =
-  "h-10 w-full rounded-lg border border-border bg-surface px-3 text-base outline-none sm:text-sm transition-colors placeholder:text-muted focus:border-accent focus:ring-2 focus:ring-accent/20 aria-invalid:border-danger";
+  "h-10 w-full rounded-2xl border border-border bg-surface px-3.5 text-base outline-none sm:text-sm transition-[border-color,box-shadow] placeholder:text-muted/80 focus:border-accent focus:ring-4 focus:ring-accent/15 aria-invalid:border-danger";
 
 /** Base field classes; an explicit width (w-36, w-auto…) in `className` replaces the default w-full. */
 function fieldClass(className?: string) {
@@ -122,7 +134,7 @@ export function Alert({ tone = "danger", children }: { tone?: "danger" | "succes
     warning: "bg-warning-soft text-warning",
   };
   return (
-    <div role="alert" className={cx("rounded-lg px-3 py-2.5 text-sm", tones[tone])}>
+    <div role="alert" className={cx("rounded-xl px-3.5 py-3 text-sm", tones[tone])}>
       {children}
     </div>
   );
@@ -143,7 +155,7 @@ export function Badge({ tone = "neutral", children }: { tone?: "neutral" | "acce
 }
 
 export function Skeleton({ className }: { className?: string }) {
-  return <span aria-hidden className={cx("block rounded-md bg-surface-muted motion-safe:animate-pulse-soft", className)} />;
+  return <span aria-hidden className={cx("block rounded-lg bg-surface-muted motion-safe:animate-pulse-soft", className)} />;
 }
 
 /** Stroke icon from a single SVG path (24×24 grid). */

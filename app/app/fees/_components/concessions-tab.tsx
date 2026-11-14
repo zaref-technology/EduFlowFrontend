@@ -39,12 +39,12 @@ export function ConcessionsTab({ onOpen, refreshKey }: { onOpen: (studentId: str
     <div className="space-y-6">
       {report.error && <Alert>{report.error}</Alert>}
       <div className="grid gap-4 lg:grid-cols-3">
-        <section className="rounded-xl border border-border bg-surface p-4">
+        <section className="rounded-2xl border border-border bg-surface p-4">
           <p className="text-xs font-medium text-muted">Concessions given</p>
           {data ? <p className="mt-1 text-3xl font-semibold tabular-nums tracking-tight text-success">{formatMoney(data.totals.amount)}</p> : <Skeleton className="mt-2 h-9 w-32" />}
           <p className="mt-0.5 text-xs text-muted">{data ? `${data.totals.students} student${data.totals.students === 1 ? "" : "s"} pay less` : " "}</p>
         </section>
-        <section className="rounded-xl border border-border bg-surface p-4 lg:col-span-2">
+        <section className="rounded-2xl border border-border bg-surface p-4 lg:col-span-2">
           <p className="mb-3 text-sm font-semibold">By reason</p>
           {!data ? (
             <Skeleton className="h-20" />
@@ -70,7 +70,7 @@ export function ConcessionsTab({ onOpen, refreshKey }: { onOpen: (studentId: str
         </section>
       </div>
 
-      <section className="rounded-xl border border-border bg-surface">
+      <section className="rounded-2xl border border-border bg-surface">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3">
           <h3 className="font-semibold">Students with a concession</h3>
           <div className="relative w-full sm:w-56">
@@ -146,7 +146,7 @@ function PresetEditor() {
   }
 
   return (
-    <section className="rounded-xl border border-border bg-surface">
+    <section className="rounded-2xl border border-border bg-surface">
       <div className="border-b border-border px-4 py-3">
         <h3 className="font-semibold">Ready-made concessions</h3>
         <p className="text-xs text-muted">Shown as one-tap choices when giving a concession or assigning a plan. Changing one here doesn&apos;t change concessions already given.</p>

@@ -81,7 +81,7 @@ export function Report({ classes }: { classes: ClassSummary[] | undefined }) {
   }
 
   if (classes && classes.length === 0) {
-    return <p className="rounded-xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">No classes yet. Give students a class on their profile first.</p>;
+    return <p className="rounded-2xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">No classes yet. Give students a class on their profile first.</p>;
   }
 
   return (
@@ -155,11 +155,11 @@ export function Report({ classes }: { classes: ClassSummary[] | undefined }) {
           </div>
 
           {data.summary.days === 0 ? (
-            <p className="rounded-xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">
+            <p className="rounded-2xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">
               No attendance recorded for Class {className(data.grade, data.section)} this month.
             </p>
           ) : (
-            <div className="overflow-hidden rounded-xl border border-border bg-surface">
+            <div className="overflow-hidden rounded-2xl border border-border bg-surface">
               {/* Desktop table */}
               <table className="hidden w-full text-sm md:table">
                 <thead>
@@ -232,7 +232,7 @@ export function Report({ classes }: { classes: ClassSummary[] | undefined }) {
 
 function Tile({ label, value, hint, danger }: { label: string; value: string; hint: string; danger?: boolean }) {
   return (
-    <div className="rounded-xl border border-border bg-surface p-4">
+    <div className="rounded-2xl border border-border bg-surface p-4">
       <p className="text-xs font-medium text-muted">{label}</p>
       <p className={cx("mt-1 text-2xl font-semibold tabular-nums tracking-tight", danger && "text-danger")}>{value}</p>
       <p className="mt-0.5 truncate text-xs text-muted">{hint}</p>

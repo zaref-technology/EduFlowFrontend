@@ -184,14 +184,14 @@ export function Register({ date, grade, section, onBack, onDirtyChange, onSaved 
       </div>
 
       {error ? (
-        <div className="rounded-xl border border-border bg-surface px-4 py-12 text-center">
+        <div className="rounded-2xl border border-border bg-surface px-4 py-12 text-center">
           <p className="text-sm text-danger">{error}</p>
           <Button variant="secondary" size="sm" className="mt-3" onClick={reload}>
             Try again
           </Button>
         </div>
       ) : !data ? (
-        <div className="space-y-2 rounded-xl border border-border bg-surface p-4">
+        <div className="space-y-2 rounded-2xl border border-border bg-surface p-4">
           {Array.from({ length: 8 }, (_, i) => (
             <div key={i} className="flex items-center gap-3 py-1.5">
               <Skeleton className="size-10 rounded-full" />
@@ -202,7 +202,7 @@ export function Register({ date, grade, section, onBack, onDirtyChange, onSaved 
       ) : (
         <>
           {/* Summary */}
-          <div className="mb-4 rounded-xl border border-border bg-surface p-4">
+          <div className="mb-4 rounded-2xl border border-border bg-surface p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-sm">
                 {ATTENDANCE_STATUSES.map((s) => (
@@ -250,7 +250,7 @@ export function Register({ date, grade, section, onBack, onDirtyChange, onSaved 
           )}
 
           {canMessage && alertable.length > 0 && !dirty && (
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-surface px-4 py-3">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-surface px-4 py-3">
               <p className="text-sm">
                 <span className="font-medium">
                   {alertable.filter((a) => a.attendance?.status === "absent").length} absent
@@ -274,7 +274,7 @@ export function Register({ date, grade, section, onBack, onDirtyChange, onSaved 
           )}
 
           {total === 0 ? (
-            <div className="rounded-xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">
+            <div className="rounded-2xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">
               No active students in this class.
             </div>
           ) : (
@@ -284,7 +284,7 @@ export function Register({ date, grade, section, onBack, onDirtyChange, onSaved 
                   Tip: click a row, then press <Kbd>P</Kbd> <Kbd>A</Kbd> <Kbd>L</Kbd> or <Kbd>V</Kbd> (leave). It moves to the next student.
                 </p>
               )}
-              <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-surface">
+              <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-surface">
                 {data.students.map((s, index) => {
                   const mark = current(s.id);
                   const isChanged = changed.some(([id]) => id === s.id);

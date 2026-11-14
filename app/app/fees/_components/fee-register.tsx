@@ -111,7 +111,7 @@ export function FeeRegister({
           { label: "Balance", value: totals?.balance ?? null },
           { label: "Overdue", value: totals?.overdue ?? null, tone: totals?.overdue ? "text-danger" : "" },
         ].map((t) => (
-          <div key={t.label} className="rounded-xl border border-border bg-surface p-4">
+          <div key={t.label} className="rounded-2xl border border-border bg-surface p-4">
             <p className="text-xs font-medium text-muted">{t.label}</p>
             {t.value === null ? <Skeleton className="mt-2 h-7 w-24" /> : <p className={cx("mt-1 text-xl font-semibold tabular-nums tracking-tight", t.tone)}>{formatMoney(t.value)}</p>}
             {t.hint && <p className="truncate text-[11px] text-muted">{t.hint}</p>}
@@ -157,7 +157,7 @@ export function FeeRegister({
       </div>
 
       {canRemind && (
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-surface px-4 py-3">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-surface px-4 py-3">
           <p className="text-sm text-muted">
             {status === "overdue" ? "Remind the parents of every overdue student in this list." : "Remind the parents of every student with a balance in this list."}
           </p>
@@ -213,7 +213,7 @@ export function FeeRegister({
         ))}
       </div>
 
-      <div className={cx("overflow-hidden rounded-xl border border-border bg-surface transition-opacity", list.loading && list.data && "opacity-60")}>
+      <div className={cx("overflow-hidden rounded-2xl border border-border bg-surface transition-opacity", list.loading && list.data && "opacity-60")}>
         {list.error ? (
           <p className="px-4 py-12 text-center text-sm text-danger">{list.error}</p>
         ) : !list.data ? (

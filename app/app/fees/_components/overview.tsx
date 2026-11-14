@@ -50,7 +50,7 @@ function CollectionChart({ data, from, to }: { data: FeeSummary["byDay"]; from: 
   const tickEvery = Math.ceil(bars.length / 8);
 
   return (
-    <div className="rounded-xl border border-border bg-surface p-4">
+    <div className="rounded-2xl border border-border bg-surface p-4">
       <div className="mb-4 flex items-center justify-between gap-3">
         <div>
           <h3 className="font-semibold">Collections</h3>
@@ -129,7 +129,7 @@ function CollectionChart({ data, from, to }: { data: FeeSummary["byDay"]; from: 
 
 function Kpi({ label, value, hint, tone, action }: { label: string; value: string | null; hint?: string; tone?: string; action?: React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-border bg-surface p-4">
+    <div className="rounded-2xl border border-border bg-surface p-4">
       <p className="text-xs font-medium text-muted">{label}</p>
       {value === null ? <Skeleton className="mt-2 h-8 w-28" /> : <p className={cx("mt-1 text-2xl font-semibold tabular-nums tracking-tight", tone)}>{value}</p>}
       {hint && <p className="mt-0.5 truncate text-xs text-muted">{hint}</p>}
@@ -190,7 +190,7 @@ export function Overview({ refreshKey, onViewOverdue, onOpenReceipt }: { refresh
       {data ? <CollectionChart data={data.byDay} from={from} to={to} /> : <Skeleton className="h-64 rounded-xl" />}
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-xl border border-border bg-surface p-4">
+        <div className="rounded-2xl border border-border bg-surface p-4">
           <h3 className="mb-3 font-semibold">By payment mode</h3>
           {!data ? (
             <Skeleton className="h-24" />
@@ -218,7 +218,7 @@ export function Overview({ refreshKey, onViewOverdue, onOpenReceipt }: { refresh
           )}
         </div>
 
-        <div className="rounded-xl border border-border bg-surface p-4">
+        <div className="rounded-2xl border border-border bg-surface p-4">
           <h3 className="mb-3 font-semibold">Dues by class</h3>
           {!data ? (
             <Skeleton className="h-24" />
@@ -259,7 +259,7 @@ export function Overview({ refreshKey, onViewOverdue, onOpenReceipt }: { refresh
         </div>
       </div>
 
-      <div className="rounded-xl border border-border bg-surface">
+      <div className="rounded-2xl border border-border bg-surface">
         <h3 className="border-b border-border px-4 py-3 font-semibold">Recent payments</h3>
         {!data ? (
           <Skeleton className="m-4 h-20" />

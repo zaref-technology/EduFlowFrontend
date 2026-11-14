@@ -273,7 +273,7 @@ export function MarksSheet({ examId, onBack, onChanged, onDeleted }: { examId: s
           { label: "Marks entered", value: `${stats.completed}/${stats.students}`, hint: stats.pending ? `${stats.pending} pending` : "All done" },
           { label: "Absent", value: String(stats.absent), hint: "for the whole test" },
         ].map((t) => (
-          <div key={t.label} className="rounded-xl border border-border bg-surface p-4">
+          <div key={t.label} className="rounded-2xl border border-border bg-surface p-4">
             <p className="text-xs font-medium text-muted">{t.label}</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums tracking-tight">{t.value}</p>
             <p className="truncate text-xs text-muted">{t.hint}</p>
@@ -282,7 +282,7 @@ export function MarksSheet({ examId, onBack, onChanged, onDeleted }: { examId: s
       </div>
 
       {stats.completed > 0 && (
-        <div className="mb-4 rounded-xl border border-border bg-surface p-4">
+        <div className="mb-4 rounded-2xl border border-border bg-surface p-4">
           <p className="mb-3 text-xs font-medium text-muted">Grade distribution</p>
           <div className="flex h-20 items-end gap-2">
             {bands.map((b) => {
@@ -338,9 +338,9 @@ export function MarksSheet({ examId, onBack, onChanged, onDeleted }: { examId: s
 
       {/* Marks grid */}
       {rows.length === 0 ? (
-        <p className="rounded-xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">No active students in Class {classLabel(exam.grade, exam.section)}.</p>
+        <p className="rounded-2xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">No active students in Class {classLabel(exam.grade, exam.section)}.</p>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-border bg-surface">
+        <div className="overflow-x-auto rounded-2xl border border-border bg-surface">
           <table className="w-full border-separate border-spacing-0 text-sm">
             <thead>
               <tr className="text-left text-xs text-muted">

@@ -277,7 +277,7 @@ export function PlanEditor({ plan, onClose, onSaved }: { plan: FeePlan | null; o
         {installments.length === 0 ? (
           <p className="rounded-xl border border-dashed border-border px-4 py-8 text-center text-sm text-muted">Add fee items and build the schedule.</p>
         ) : (
-          <ul className="divide-y divide-border rounded-xl border border-border bg-surface">
+          <ul className="divide-y divide-border rounded-2xl border border-border bg-surface">
             {installments.map((r, i) => (
               <li key={r._id ?? i} className="px-3 py-2.5">
                 {/* Phones: label on its own line, then date + amount */}

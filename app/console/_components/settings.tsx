@@ -355,7 +355,7 @@ function OtpCard({ settings, onSaved }: { settings: Settings; onSaved: (s: Setti
           </Button>
         </div>
         {testing && (
-          <div className="rounded-xl border border-border bg-surface-muted/50 p-4">
+          <div className="rounded-2xl border border-border bg-surface-muted/50 p-4">
             <p className="mb-3 text-sm text-muted">Sends a real SMS with the saved key (works while OTP is off).</p>
             <PhoneOtp
               sendLabel="Send test"

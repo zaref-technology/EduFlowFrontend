@@ -33,7 +33,7 @@ export function SectionPage({ id }: { id: string }) {
       ) : allowed ? (
         section.render()
       ) : (
-        <p className="rounded-xl border border-border bg-surface px-4 py-10 text-center text-sm text-muted">Only the school&apos;s owners and admins can change this.</p>
+        <p className="rounded-2xl border border-border bg-surface px-4 py-10 text-center text-sm text-muted">Only the school&apos;s owners and admins can change this.</p>
       )}
     </div>
   );

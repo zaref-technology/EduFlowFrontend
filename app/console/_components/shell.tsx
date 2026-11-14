@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Drawer } from "@/components/data";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Badge, Button, ICONS, Icon, Logo, Spinner, buttonClass, cx } from "@/components/ui";
+import { Badge, Button, ICONS, Icon, Logo, LogoMark, Spinner, buttonClass, cx } from "@/components/ui";
 import { api } from "@/lib/api";
 import { isEnteringSchool, useAuth } from "@/lib/auth";
 import { SchoolDrawer } from "./school-drawer";
@@ -149,8 +149,8 @@ export function ConsoleShell({ children }: { children: React.ReactNode }) {
       {/* Phones: slim top bar */}
       <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur md:hidden">
         <div className="flex h-14 items-center justify-between gap-3 px-4">
-          <div className="flex items-center gap-2">
-            <Logo href="/console" />
+          <div className="flex items-center gap-2.5">
+            <LogoMark href="/console" />
             <Badge tone="accent">Console</Badge>
           </div>
           <button onClick={() => setSearchOpen(true)} aria-label="Search" className="grid size-9 place-items-center rounded-full text-muted active:bg-surface-muted">

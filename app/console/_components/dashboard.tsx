@@ -129,7 +129,7 @@ export function Dashboard({ onOpenSchool, onGo }: { onOpenSchool: (id: string) =
 
 function Kpi({ label, value, sub, tone, subTone }: { label: string; value: string | null; sub: string; tone?: "success"; subTone?: string }) {
   return (
-    <section className="rounded-xl border border-border bg-surface p-4">
+    <section className="rounded-2xl border border-border bg-surface p-4">
       <p className="text-xs font-medium text-muted">{label}</p>
       {value === null ? <Skeleton className="mt-2 h-8 w-24" /> : <p className={cx("mt-1 text-2xl font-semibold tabular-nums tracking-tight sm:text-3xl", tone === "success" && "text-success")}>{value}</p>}
       <p className={cx("mt-0.5 truncate text-xs", subTone ?? "text-muted")}>{sub || " "}</p>
@@ -139,7 +139,7 @@ function Kpi({ label, value, sub, tone, subTone }: { label: string; value: strin
 
 function Panel({ title, hint, className, children }: { title: string; hint?: string; className?: string; children: React.ReactNode }) {
   return (
-    <section className={cx("rounded-xl border border-border bg-surface p-4", className)}>
+    <section className={cx("rounded-2xl border border-border bg-surface p-4", className)}>
       <div className="mb-4 flex items-baseline justify-between gap-2">
         <h3 className="text-sm font-semibold">{title}</h3>
         {hint && <span className="text-xs text-muted">{hint}</span>}
@@ -178,7 +178,7 @@ function Bars({ data, tone }: { data: { label: string; value: number; text: stri
 
 function ActionList({ title, empty, rows, onOpen, meta }: { title: string; empty: string; rows?: SchoolRow[]; onOpen: (id: string) => void; meta: (s: SchoolRow) => string }) {
   return (
-    <section className="rounded-xl border border-border bg-surface">
+    <section className="rounded-2xl border border-border bg-surface">
       <h3 className="flex items-center justify-between border-b border-border px-4 py-3 text-sm font-semibold">
         {title}
         {rows && rows.length > 0 && <span className="rounded-full bg-surface-muted px-2 text-xs font-medium tabular-nums">{rows.length}</span>}

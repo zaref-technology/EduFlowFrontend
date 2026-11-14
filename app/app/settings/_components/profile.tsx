@@ -276,7 +276,7 @@ function LogoUploader({ school, onChange, onError }: { school: School; onChange:
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-4 rounded-xl border border-border bg-surface-muted/50 p-4">
+    <div className="flex flex-wrap items-center gap-4 rounded-2xl border border-border bg-surface-muted/50 p-4">
       <div className="grid size-20 shrink-0 place-items-center overflow-hidden rounded-xl border border-border bg-white">
         {school.logoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element

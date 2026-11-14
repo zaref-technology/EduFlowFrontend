@@ -371,7 +371,7 @@ function FeesPaidSection({ value: f, onChange, error }: { value: FeesPaidDraft; 
   const set = (patch: Partial<FeesPaidDraft>) => onChange({ ...f, ...patch });
   return (
     <Section title="Fees">
-      <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-surface px-4 py-3">
+      <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border bg-surface px-4 py-3">
         <input type="checkbox" className="mt-0.5 size-4 accent-accent" checked={f.on} onChange={(e) => set({ on: e.target.checked })} />
         <span>
           <span className="block text-sm font-medium">Already paid some fees</span>
@@ -466,7 +466,7 @@ function ProfileView({ student: s }: { student: Student }) {
             <a
               key={a.label}
               href={a.href}
-              className="flex flex-col items-center gap-1 rounded-xl border border-border bg-surface py-3 text-xs font-medium text-accent transition-colors hover:bg-accent-soft"
+              className="flex flex-col items-center gap-1 rounded-2xl border border-border bg-surface py-3 text-xs font-medium text-accent transition-colors hover:bg-accent-soft"
             >
               <Icon d={a.icon} className="size-5" />
               {a.label}
@@ -482,7 +482,7 @@ function ProfileView({ student: s }: { student: Student }) {
             <span className="text-base leading-none">₹</span>
             Collect fee
           </Link>
-          <Link href={`/app/fees?student=${s.id}`} className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-border bg-surface px-4 text-sm font-medium hover:bg-surface-muted">
+          <Link href={`/app/fees?student=${s.id}`} className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl border border-border bg-surface px-4 text-sm font-medium hover:bg-surface-muted">
             Fee account
           </Link>
         </div>
@@ -517,7 +517,7 @@ function ProfileView({ student: s }: { student: Student }) {
       />
       {s.classHistory && s.classHistory.length > 0 && (
         <Section title="Class history">
-          <ol className="divide-y divide-border rounded-xl border border-border bg-surface text-sm">
+          <ol className="divide-y divide-border rounded-2xl border border-border bg-surface text-sm">
             {[...s.classHistory].reverse().map((h) => (
               <li key={h.year} className="flex items-center justify-between gap-3 px-4 py-2.5">
                 <span className="w-20 shrink-0 text-muted">{h.year}</span>
@@ -541,7 +541,7 @@ function ProfileView({ student: s }: { student: Student }) {
       />
       {s.notes && (
         <Section title="Notes">
-          <p className="whitespace-pre-wrap rounded-xl border border-border bg-surface p-4 text-sm">{s.notes}</p>
+          <p className="whitespace-pre-wrap rounded-2xl border border-border bg-surface p-4 text-sm">{s.notes}</p>
         </Section>
       )}
 
@@ -555,7 +555,7 @@ function ProfileView({ student: s }: { student: Student }) {
 function DetailCard({ title, rows }: { title: string; rows: [string, React.ReactNode][] }) {
   return (
     <Section title={title}>
-      <dl className="divide-y divide-border rounded-xl border border-border bg-surface text-sm">
+      <dl className="divide-y divide-border rounded-2xl border border-border bg-surface text-sm">
         {rows.map(([label, value]) => (
           <div key={label} className="flex gap-4 px-4 py-2.5">
             <dt className="w-28 shrink-0 text-muted">{label}</dt>
@@ -587,7 +587,7 @@ function AttendanceHistory({ studentId }: { studentId: string }) {
 
   return (
     <Section title="Attendance · last 30 days">
-      <div className="rounded-xl border border-border bg-surface p-4">
+      <div className="rounded-2xl border border-border bg-surface p-4">
         {error ? (
           <p className="text-sm text-danger">{error}</p>
         ) : !data ? (

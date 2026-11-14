@@ -45,7 +45,7 @@ function useNow(ms: number) {
 export default function PerformancePage() {
   const { session } = useAuth();
   if (session.status === "authenticated" && session.role === "accountant") {
-    return <p className="rounded-xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">Performance is for teachers and admins.</p>;
+    return <p className="rounded-2xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">Performance is for teachers and admins.</p>;
   }
   return <Leaderboards />;
 }
@@ -157,7 +157,7 @@ function Leaderboards() {
       {!data ? (
         !error && <PageSkeleton />
       ) : data.summary.students === 0 ? (
-        <p className="rounded-xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">No active students here yet.</p>
+        <p className="rounded-2xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">No active students here yet.</p>
       ) : (
         <>
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -171,7 +171,7 @@ function Leaderboards() {
             <div className="min-w-0 space-y-4">
               {/* Board switch */}
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <div role="tablist" className="inline-flex rounded-xl border border-border bg-surface p-1">
+                <div role="tablist" className="inline-flex rounded-2xl border border-border bg-surface p-1">
                   {BOARDS.map((b) => (
                     <button
                       key={b.id}
@@ -188,7 +188,7 @@ function Leaderboards() {
               </div>
 
               {ranked.length === 0 ? (
-                <div className="rounded-xl border border-border bg-surface px-6 py-12 text-center">
+                <div className="rounded-2xl border border-border bg-surface px-6 py-12 text-center">
                   <p className="font-medium">Nothing to rank yet</p>
                   <p className="mt-1 text-sm text-muted">{active === "attendance" ? "No attendance marked in this period." : "No test marks in this period. Enter marks in Tests, or switch to Attendance."}</p>
                 </div>
@@ -196,7 +196,7 @@ function Leaderboards() {
                 <>
                   <Podium rows={ranked.slice(0, 3)} board={active} onOpen={setOpenId} />
 
-                  <section className="rounded-xl border border-border bg-surface">
+                  <section className="rounded-2xl border border-border bg-surface">
                     <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3">
                       <h2 className="font-semibold">Leaderboard</h2>
                       <div className="relative w-full sm:w-56">
@@ -276,7 +276,7 @@ function LiveBadge({ at, refreshing }: { at?: string; refreshing: boolean }) {
 
 function Stat({ label, value, hint, tone }: { label: string; value: string; hint: string; tone?: string }) {
   return (
-    <div className="rounded-xl border border-border bg-surface p-4">
+    <div className="rounded-2xl border border-border bg-surface p-4">
       <p className="text-xs font-medium text-muted">{label}</p>
       <p className={cx("mt-1 text-2xl font-semibold tabular-nums tracking-tight", tone)}>{value}</p>
       <p className="mt-0.5 text-xs text-muted">{hint}</p>
@@ -395,7 +395,7 @@ const diff = (now: number | null, before: number | null) => (now !== null && bef
 
 function SideCard({ title, icon, count, children }: { title: string; icon: string; count?: number; children: ReactNode }) {
   return (
-    <section className="rounded-xl border border-border bg-surface">
+    <section className="rounded-2xl border border-border bg-surface">
       <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-3">
         <h3 className="flex items-center gap-2 text-sm font-semibold">
           <Icon d={icon} className="text-accent" />

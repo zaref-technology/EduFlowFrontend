@@ -61,7 +61,7 @@ export function ShareLeaderboard({ scope, ranked, onClose, onSendParents }: { sc
   return (
     <Drawer title="Share performance" onClose={onClose}>
       <Section title="Send to each parent">
-        <button onClick={onSendParents} className="flex w-full items-center gap-3 rounded-xl border border-border bg-surface p-4 text-left transition-colors hover:border-[#128c4a] hover:bg-[#128c4a]/5">
+        <button onClick={onSendParents} className="flex w-full items-center gap-3 rounded-2xl border border-border bg-surface p-4 text-left transition-colors hover:border-[#128c4a] hover:bg-[#128c4a]/5">
           <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#128c4a] text-white">
             <Icon d={WA_ICON} className="size-5" />
           </span>
@@ -86,7 +86,7 @@ export function ShareLeaderboard({ scope, ranked, onClose, onSendParents }: { sc
         </div>
 
         {/* The image: fixed light colours so it looks the same everywhere it's shared */}
-        <div className="overflow-x-auto rounded-xl border border-border bg-surface-muted p-3">
+        <div className="overflow-x-auto rounded-2xl border border-border bg-surface-muted p-3">
           <div ref={cardRef} className="mx-auto w-[400px] overflow-hidden rounded-2xl bg-white text-zinc-900 shadow-sm">
             <div className="relative bg-[#1b2563] px-6 pb-5 pt-6 text-white">
               <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_100%_0%,rgba(61,220,151,0.25),transparent_60%)]" />

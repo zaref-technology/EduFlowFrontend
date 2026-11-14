@@ -45,7 +45,7 @@ export function CorrectionsDrawer({ onClose, onOpenStudent }: { onClose: () => v
       ) : (
         <ul className="space-y-3">
           {list.data.requests.map((r) => (
-            <li key={r.id} className="rounded-xl border border-border bg-surface p-4">
+            <li key={r.id} className="rounded-2xl border border-border bg-surface p-4">
               <div className="flex items-start justify-between gap-3">
                 <button onClick={() => onOpenStudent(r.studentId)} className="min-w-0 text-left">
                   <span className="block truncate font-medium text-accent hover:underline">{r.studentName}</span>

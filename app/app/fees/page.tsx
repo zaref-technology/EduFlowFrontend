@@ -76,7 +76,7 @@ function FeesView() {
 
   if (!allowed) {
     return (
-      <div className="rounded-xl border border-border bg-surface px-6 py-14 text-center">
+      <div className="rounded-2xl border border-border bg-surface px-6 py-14 text-center">
         <p className="font-medium">Fees are managed by owners, admins and accountants</p>
         <p className="mt-1 text-sm text-muted">Ask an admin if you need access.</p>
       </div>

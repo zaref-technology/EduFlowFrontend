@@ -41,7 +41,7 @@ export default function TimetablePage() {
   const data = useResource(() => (path ? api<{ slots: Slot[] }>(path) : Promise.resolve({ slots: [] as Slot[] })), path ?? "none");
   const slots = data.data?.slots ?? [];
 
-  if (role === "accountant") return <p className="rounded-xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">The timetable is for teachers and admins.</p>;
+  if (role === "accountant") return <p className="rounded-2xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">The timetable is for teachers and admins.</p>;
 
   return (
     <div>

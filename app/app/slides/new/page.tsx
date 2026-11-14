@@ -224,7 +224,7 @@ function Wizard() {
                   maxLength={300}
                   rows={3}
                   placeholder="e.g. Photosynthesis · Annual Day welcome · Road safety for children · New session orientation for parents"
-                  className="w-full resize-none rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm outline-none focus:border-accent focus:ring-4 focus:ring-accent/15"
+                  className="w-full resize-none rounded-2xl border border-border bg-surface px-3.5 py-2.5 text-sm outline-none focus:border-accent focus:ring-4 focus:ring-accent/15"
                 />
               </label>
               <div>
@@ -269,7 +269,7 @@ function Wizard() {
                     ))}
                   </div>
                 </div>
-                <label className="flex items-start gap-3 rounded-xl border border-border bg-surface px-3.5 py-3 text-sm">
+                <label className="flex items-start gap-3 rounded-2xl border border-border bg-surface px-3.5 py-3 text-sm">
                   <input type="checkbox" checked={showNames} onChange={(e) => setShowNames(e.target.checked)} className="mt-0.5 size-4 accent-[var(--accent)]" />
                   <span>
                     <span className="font-medium">Show the toppers&apos; names</span>

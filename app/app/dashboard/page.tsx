@@ -27,7 +27,7 @@ const plural = (n: number, word: string, many = `${word}s`) => `${n} ${n === 1 ?
 
 function Panel({ title, action, children, className: extra }: { title: string; action?: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <section className={cx("flex flex-col rounded-xl border border-border bg-surface", extra)}>
+    <section className={cx("flex flex-col rounded-2xl border border-border bg-surface", extra)}>
       <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
         <h2 className="font-semibold">{title}</h2>
         {action}
@@ -47,7 +47,7 @@ function PanelLink({ href, children }: { href: string; children: ReactNode }) {
 
 function Kpi({ href, icon, label, value, hint, tone }: { href: string; icon: string; label: string; value: string; hint: ReactNode; tone?: string }) {
   return (
-    <Link href={href} className="group rounded-xl border border-border bg-surface p-4 transition-colors hover:border-accent/50">
+    <Link href={href} className="group rounded-2xl border border-border bg-surface p-4 transition-colors hover:border-accent/50">
       <div className="flex items-start justify-between gap-2">
         <p className="text-xs font-medium text-muted">{label}</p>
         <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-accent-soft text-accent">
@@ -472,7 +472,7 @@ function TodayStrip({ data }: { data: Dashboard }) {
   const hasPeriods = periods.length > 0 && weekdayOf(data.date) <= 7;
   return (
     <div className="grid gap-4 lg:grid-cols-3">
-      <section className="rounded-xl border border-border bg-surface lg:col-span-2">
+      <section className="rounded-2xl border border-border bg-surface lg:col-span-2">
         <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
           <h2 className="flex items-center gap-2 font-semibold">
             <Icon d={NAV_ICONS.timetable} className="text-accent" />
@@ -506,7 +506,7 @@ function TodayStrip({ data }: { data: Dashboard }) {
         )}
       </section>
 
-      <section className="rounded-xl border border-border bg-surface">
+      <section className="rounded-2xl border border-border bg-surface">
         <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
           <h2 className="flex items-center gap-2 font-semibold">
             <Icon d={NAV_ICONS.notices} className="text-accent" />
@@ -537,7 +537,7 @@ function TodayStrip({ data }: { data: Dashboard }) {
 
       {(birthdays.length > 0 || leaves.length > 0) && (
         <section className="grid gap-4 sm:grid-cols-2 lg:col-span-3">
-          <div className="rounded-xl border border-border bg-surface">
+          <div className="rounded-2xl border border-border bg-surface">
             <h2 className="flex items-center gap-2 border-b border-border px-4 py-3 font-semibold">
               <Icon d={CAKE} className="text-[#e0558b]" />
               Birthdays
@@ -561,7 +561,7 @@ function TodayStrip({ data }: { data: Dashboard }) {
               </ul>
             )}
           </div>
-          <div className="rounded-xl border border-border bg-surface">
+          <div className="rounded-2xl border border-border bg-surface">
             <h2 className="flex items-center gap-2 border-b border-border px-4 py-3 font-semibold">
               <Icon d={ICONS.calendar} className="text-accent" />
               On leave today

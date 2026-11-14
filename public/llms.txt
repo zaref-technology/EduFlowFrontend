@@ -1,0 +1,25 @@
+# EduFlow
+
+> EduFlow is school management software for schools, tuition centres and coaching institutes in India. It runs in the browser on any phone, tablet or computer, and can be installed as an app. Made by Zaref (https://zaref.in).
+
+Website: https://eduflow.zaref.in
+Free trial: 7 days, no credit card (https://eduflow.zaref.in/register)
+
+## What it does
+
+- Fees: fee plans with instalments, concessions, part payments and advance, receipts with the school's logo (PDF, image or print), overdue lists and reminders.
+- Attendance: a whole class marked in under a minute, also without internet; monthly reports in Excel; students under 75% flagged.
+- Tests and results: marks entry or Excel import, grades (CBSE or simple), class ranks, report cards and progress reports.
+- WhatsApp: receipts, fee reminders, absence alerts and report cards sent to parents, by click-to-send or automatically through the WhatsApp Business API.
+- Also: student profiles and Excel import, homework and syllabus, timetable, notices, Excel reports, roles (owner, admin, teacher, accountant) and several branches under one login.
+- EduFlow AI (Pro plan): answers questions from the school's records in English, Hindi or Marathi; records fees or attendance after the user confirms; writes report-card remarks and personal parent messages; makes presentations with charts and pictures; takes voice questions.
+
+## Who it's for
+
+Schools, tuition centres, coaching institutes and academies, from one branch to several.
+
+## Pages
+
+- [Home and features](https://eduflow.zaref.in/)
+- [Start a free trial](https://eduflow.zaref.in/register)
+- [Log in](https://eduflow.zaref.in/login)

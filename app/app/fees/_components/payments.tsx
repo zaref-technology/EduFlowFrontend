@@ -142,7 +142,7 @@ export function Payments({ refreshKey, onOpen }: { refreshKey: number; onOpen: (
         </div>
       )}
 
-      <div className="mb-3 flex items-baseline justify-between gap-3 rounded-xl border border-border bg-surface px-4 py-3">
+      <div className="mb-3 flex items-baseline justify-between gap-3 rounded-2xl border border-border bg-surface px-4 py-3">
         <span className="text-sm text-muted">
           {formatDay(from, "short")}
           {from !== to && ` – ${formatDay(to, "short")}`}
@@ -151,7 +151,7 @@ export function Payments({ refreshKey, onOpen }: { refreshKey: number; onOpen: (
         <span className="text-xl font-semibold tabular-nums">{list.data ? formatMoney(list.data.totals.amount) : "…"}</span>
       </div>
 
-      <div className={cx("overflow-hidden rounded-xl border border-border bg-surface transition-opacity", list.loading && list.data && "opacity-60")}>
+      <div className={cx("overflow-hidden rounded-2xl border border-border bg-surface transition-opacity", list.loading && list.data && "opacity-60")}>
         {list.error ? (
           <p className="px-4 py-12 text-center text-sm text-danger">{list.error}</p>
         ) : !list.data ? (

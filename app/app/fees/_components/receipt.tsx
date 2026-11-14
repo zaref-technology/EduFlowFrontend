@@ -385,7 +385,7 @@ export function ReceiptShare({ receipt, docRef }: { receipt: Receipt; docRef: Re
             key={o.key}
             onClick={() => handle(o.key)}
             disabled={busy !== null}
-            className="flex flex-col items-center gap-1 rounded-xl border border-border bg-surface px-2 py-2.5 text-xs font-medium transition-colors hover:bg-surface-muted disabled:opacity-60"
+            className="flex flex-col items-center gap-1 rounded-2xl border border-border bg-surface px-2 py-2.5 text-xs font-medium transition-colors hover:bg-surface-muted disabled:opacity-60"
           >
             {busy === o.key ? <Spinner className="size-5" /> : <Icon d={o.icon} className="size-5 text-accent" />}
             {o.key === "image" && !shareable ? "Save image" : o.label}

@@ -159,7 +159,7 @@ interface Ctx {
 
 function Block({ title, hint, action, children }: { title: string; hint?: string; action?: React.ReactNode; children: React.ReactNode }) {
   return (
-    <section className="rounded-xl border border-border bg-surface">
+    <section className="rounded-2xl border border-border bg-surface">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3">
         <div>
           <h3 className="text-sm font-semibold">{title}</h3>

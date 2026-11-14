@@ -74,7 +74,7 @@ export function Plans({ onChanged }: { onChanged: () => void }) {
           ))}
         </div>
       ) : plans.length === 0 ? (
-        <div className="rounded-xl border border-border bg-surface px-6 py-14 text-center">
+        <div className="rounded-2xl border border-border bg-surface px-6 py-14 text-center">
           <span className="mx-auto grid size-12 place-items-center rounded-full bg-accent-soft text-accent">
             <Icon d="M4 7h16v12H4zM4 11h16M8 15h3" className="size-6" />
           </span>
@@ -92,7 +92,7 @@ export function Plans({ onChanged }: { onChanged: () => void }) {
           {plans.map((p) => {
             const collected = p.stats && p.stats.billed ? Math.round((p.stats.paid / p.stats.billed) * 100) : null;
             return (
-              <div key={p.id} className={cx("flex flex-col rounded-xl border border-border bg-surface p-4", p.archived && "opacity-60")}>
+              <div key={p.id} className={cx("flex flex-col rounded-2xl border border-border bg-surface p-4", p.archived && "opacity-60")}>
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="truncate font-semibold">{p.name}</p>
@@ -364,7 +364,7 @@ function AssignDrawer({ plan, onClose, onAssigned }: { plan: FeePlan; onClose: (
           ) : students.length === 0 ? (
             <p className="rounded-xl border border-dashed border-border px-4 py-8 text-center text-sm text-muted">No active students in this class.</p>
           ) : (
-            <ul className="divide-y divide-border rounded-xl border border-border bg-surface">
+            <ul className="divide-y divide-border rounded-2xl border border-border bg-surface">
               {/* New students first; those who already have the plan fold away */}
               {[...fresh, ...(showAssigned ? students.filter((x) => x.assigned) : [])].map((st) => {
                 const c = concessionFor(st);

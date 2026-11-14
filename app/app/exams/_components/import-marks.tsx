@@ -241,7 +241,7 @@ export function ImportMarksDrawer({
                 ["Marks", parsed.marks + parsed.absent],
                 ["Problems", parsed.problems.length],
               ].map(([label, v]) => (
-                <div key={label} className="rounded-xl border border-border bg-surface px-2 py-2">
+                <div key={label} className="rounded-2xl border border-border bg-surface px-2 py-2">
                   <p className="text-xs text-muted">{label}</p>
                   <p className={cx("text-xl font-semibold tabular-nums", label === "Problems" && Number(v) > 0 && "text-danger")}>{v}</p>
                 </div>

@@ -28,7 +28,7 @@ export function ClassGrid({
     return (
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: 6 }, (_, i) => (
-          <div key={i} className="space-y-3 rounded-xl border border-border bg-surface p-4">
+          <div key={i} className="space-y-3 rounded-2xl border border-border bg-surface p-4">
             <Skeleton className="h-5 w-24" />
             <Skeleton className="h-3 w-40" />
             <Skeleton className="h-1.5 w-full" />
@@ -47,7 +47,7 @@ export function ClassGrid({
           <button
             key={`${c.grade}|${c.section}`}
             onClick={() => onOpen(c)}
-            className="group rounded-xl border border-border bg-surface p-4 text-left transition-colors hover:border-accent/60 hover:bg-surface-muted/50 focus-visible:outline-2 focus-visible:outline-accent"
+            className="group rounded-2xl border border-border bg-surface p-4 text-left transition-colors hover:border-accent/60 hover:bg-surface-muted/50 focus-visible:outline-2 focus-visible:outline-accent"
           >
             <div className="flex items-start justify-between gap-2">
               <div>

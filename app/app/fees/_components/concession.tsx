@@ -223,7 +223,7 @@ export function ConcessionDrawer({
         {open.length === 0 ? (
           <p className="rounded-lg bg-surface-muted px-3 py-3 text-sm text-muted">No unpaid dues right now. The concession will apply to fee plans assigned later.</p>
         ) : (
-          <ul className="divide-y divide-border rounded-xl border border-border bg-surface text-sm">
+          <ul className="divide-y divide-border rounded-2xl border border-border bg-surface text-sm">
             {preview.map(({ d, before, after }) => (
               <li key={d.id} className="flex items-center justify-between gap-3 px-3 py-2">
                 <span className="min-w-0">

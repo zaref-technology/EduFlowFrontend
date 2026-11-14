@@ -59,7 +59,7 @@ export function Admins() {
       {!res.data ? (
         <Skeleton className="h-40" />
       ) : (
-        <ul className="divide-y divide-border rounded-xl border border-border bg-surface">
+        <ul className="divide-y divide-border rounded-2xl border border-border bg-surface">
           {admins.map((a) => (
             <li key={a.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
               <span className="grid size-10 shrink-0 place-items-center rounded-full bg-accent-soft text-sm font-semibold text-accent">{a.name.trim()[0]?.toUpperCase()}</span>

@@ -20,6 +20,16 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  // The signed-in app and the console stay out of search results (robots.txt also asks crawlers not to visit)
+  async headers() {
+    const noindex = [{ key: "X-Robots-Tag", value: "noindex, nofollow" }];
+    return [
+      { source: "/app/:path*", headers: noindex },
+      { source: "/console/:path*", headers: noindex },
+      { source: "/app", headers: noindex },
+      { source: "/console", headers: noindex },
+    ];
+  },
   // "/app" has no page of its own; the dashboard is home
   async redirects() {
     return [

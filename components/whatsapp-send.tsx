@@ -187,7 +187,7 @@ export function WhatsAppDrawer({
                 { label: "Messaged today", value: recent.length, tone: "" },
                 { label: "Can't send", value: skipped.length, tone: skipped.length ? "text-danger" : "" },
               ].map((t) => (
-                <div key={t.label} className="rounded-xl border border-border bg-surface p-3">
+                <div key={t.label} className="rounded-2xl border border-border bg-surface p-3">
                   <p className={cx("text-xl font-semibold tabular-nums", t.tone)}>{t.value}</p>
                   <p className="text-xs text-muted">{t.label}</p>
                 </div>
@@ -212,7 +212,7 @@ export function WhatsAppDrawer({
               {skipped[0].skip === "No guardian phone number" && " Add it on the student's profile."}
             </Alert>
           ) : (
-            <ul className="divide-y divide-border rounded-xl border border-border bg-surface">
+            <ul className="divide-y divide-border rounded-2xl border border-border bg-surface">
               {[...ready, ...skipped].map((r) => {
                 const inQueue = queue.includes(r);
                 const res = result?.results.find((x) => x.refKey === r.refKey);

@@ -38,7 +38,7 @@ export default function ExamsPage() {
   const list = useResource(() => api<{ exams: ExamListItem[]; pagination: Pagination }>(path), `${path}#${refreshKey}`);
 
   if (!allowed) {
-    return <p className="rounded-xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">Tests are managed by owners, admins and teachers.</p>;
+    return <p className="rounded-2xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">Tests are managed by owners, admins and teachers.</p>;
   }
 
   if (openExam) {
@@ -144,7 +144,7 @@ export default function ExamsPage() {
               ))}
             </div>
           ) : exams.length === 0 ? (
-            <div className="rounded-xl border border-border bg-surface px-6 py-14 text-center">
+            <div className="rounded-2xl border border-border bg-surface px-6 py-14 text-center">
               <span className="mx-auto grid size-12 place-items-center rounded-full bg-accent-soft text-accent">
                 <Icon d="M9 4h6M8 4H6v16h12V4h-2M9 10h6M9 14h6M9 18h3" className="size-6" />
               </span>
@@ -164,7 +164,7 @@ export default function ExamsPage() {
                     <button
                       key={e.id}
                       onClick={() => setOpenExam(e.id)}
-                      className="group flex flex-col rounded-xl border border-border bg-surface p-4 text-left transition-colors hover:border-accent/60 focus-visible:outline-2 focus-visible:outline-accent"
+                      className="group flex flex-col rounded-2xl border border-border bg-surface p-4 text-left transition-colors hover:border-accent/60 focus-visible:outline-2 focus-visible:outline-accent"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">

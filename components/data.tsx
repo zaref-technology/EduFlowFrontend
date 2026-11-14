@@ -85,7 +85,7 @@ export function useDebounced<T>(value: T, ms = 300) {
 /** The gradient icon tile used next to page titles. */
 export function PageIcon({ d }: { d: string }) {
   return (
-    <span className="hidden size-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-accent to-[color-mix(in_oklab,var(--accent)_70%,var(--brand-green))] text-accent-foreground shadow-lg shadow-accent/20 sm:grid">
+    <span className="hidden size-12 shrink-0 place-items-center rounded-[14px] bg-gradient-to-br from-accent to-[color-mix(in_oklab,var(--accent)_70%,var(--brand-green))] text-accent-foreground shadow-[0_6px_16px_-6px_color-mix(in_oklab,var(--accent)_60%,transparent)] sm:grid">
       <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d={d} />
       </svg>
@@ -96,10 +96,10 @@ export function PageIcon({ d }: { d: string }) {
 /** Page title with an optional icon tile, description and actions on the right. */
 export function PageHeader({ title, description, actions, icon, badge }: { title: string; description?: ReactNode; actions?: ReactNode; icon?: string; badge?: ReactNode }) {
   return (
-    <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <div className="mb-7 flex flex-wrap items-center justify-between gap-4">
       <div className="flex min-w-0 items-center gap-4">
         {icon && (
-          <span className="hidden size-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-accent to-[color-mix(in_oklab,var(--accent)_70%,var(--brand-green))] text-accent-foreground shadow-lg shadow-accent/20 sm:grid">
+          <span className="hidden size-12 shrink-0 place-items-center rounded-[14px] bg-gradient-to-br from-accent to-[color-mix(in_oklab,var(--accent)_70%,var(--brand-green))] text-accent-foreground shadow-[0_6px_16px_-6px_color-mix(in_oklab,var(--accent)_60%,transparent)] sm:grid">
             <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
               <path d={icon} />
             </svg>
@@ -107,7 +107,7 @@ export function PageHeader({ title, description, actions, icon, badge }: { title
         )}
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2.5">
-            <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+            <h1 className="text-[28px] font-semibold leading-tight tracking-[-0.03em]">{title}</h1>
             {badge}
           </div>
           {description && <p className="mt-1 text-sm text-muted">{description}</p>}
@@ -119,7 +119,7 @@ export function PageHeader({ title, description, actions, icon, badge }: { title
 }
 
 export function Card({ className, children }: { className?: string; children: ReactNode }) {
-  return <div className={cx("rounded-xl border border-border bg-surface", className)}>{children}</div>;
+  return <div className={cx("rounded-2xl border border-border bg-surface", className)}>{children}</div>;
 }
 
 export function Table({ head, children }: { head: ReactNode[]; children: ReactNode }) {
@@ -191,14 +191,14 @@ export function Pager({ pagination, onPage }: { pagination?: Pagination; onPage:
 
 export function StatusTabs({ value, onChange }: { value: StatusFilter; onChange: (v: StatusFilter) => void }) {
   return (
-    <div className="inline-flex rounded-lg border border-border bg-surface p-0.5 text-sm">
+    <div className="inline-flex rounded-[10px] bg-surface-muted p-0.5 text-sm">
       {(["all", "active", "inactive"] as const).map((s) => (
         <button
           key={s}
           onClick={() => onChange(s)}
           className={cx(
-            "rounded-md px-3 py-1.5 capitalize transition-colors",
-            value === s ? "bg-surface-muted font-medium" : "text-muted hover:text-foreground"
+            "rounded-lg px-3.5 py-1.5 capitalize transition-all",
+            value === s ? "bg-surface font-medium shadow-[0_1px_3px_rgb(0_0_0/0.1)]" : "text-muted hover:text-foreground"
           )}
         >
           {s}
@@ -267,13 +267,14 @@ export function Drawer({
 
   return (
     <div className={cx("fixed inset-0 z-50 flex", bottom ? "items-end" : "justify-end")} role="dialog" aria-modal="true">
-      <button aria-label="Close" className="absolute inset-0 bg-black/40 motion-safe:animate-fade-in" onClick={onClose} />
+      <button aria-label="Close" className="absolute inset-0 bg-black/30 backdrop-blur-[2px] motion-safe:animate-fade-in" onClick={onClose} />
       <aside
         className={cx(
-          "relative flex w-full flex-col bg-background shadow-xl",
+          "relative flex w-full flex-col overflow-hidden bg-background shadow-2xl",
           bottom
-            ? "max-h-[88dvh] rounded-t-2xl border-t border-border motion-safe:animate-slide-in-up"
-            : cx("h-dvh border-l border-border motion-safe:animate-slide-in-right", size === "lg" ? "max-w-3xl" : "max-w-lg")
+            ? "max-h-[88dvh] rounded-t-[22px] border-t border-border motion-safe:animate-slide-in-up"
+            : // A floating sheet on larger screens, full screen on phones
+              cx("h-dvh border-l border-border motion-safe:animate-slide-in-right sm:m-2 sm:h-[calc(100dvh-1rem)] sm:rounded-[22px] sm:border", size === "lg" ? "max-w-3xl" : "max-w-lg")
         )}
       >
         {bottom && <div aria-hidden className="mx-auto mt-2.5 h-1 w-10 shrink-0 rounded-full bg-border" />}

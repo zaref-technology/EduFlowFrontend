@@ -1,10 +1,38 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { SiteNav } from "@/components/site-nav";
-import { ICONS, Icon, buttonClass, cx } from "@/components/ui";
+import { AiShowcase } from "./_components/ai-showcase";
+import { ICONS, Icon, cx } from "@/components/ui";
+import { SITE, SITE_URL } from "@/lib/site";
 
 const TRIAL_DAYS = 7;
+
+export const metadata: Metadata = {
+  title: { absolute: SITE.title },
+  description: SITE.description,
+  keywords: [
+    "school management software",
+    "school ERP India",
+    "fee management software",
+    "student attendance app",
+    "report card software",
+    "tuition centre software",
+    "coaching institute management",
+    "school WhatsApp messages",
+    "AI for schools",
+  ],
+  alternates: { canonical: "/" },
+  openGraph: { type: "website", url: "/", siteName: SITE.name, title: SITE.title, description: SITE.description, locale: "en_IN" },
+  twitter: { card: "summary_large_image", title: SITE.title, description: SITE.description },
+};
+
+// The glow used across the page (the same colours as the EduFlow AI section)
+const GLOW = "conic-gradient(from 180deg at 50% 50%, #8f9be8, #3ddc97, #fbbf24, #f472b6, #8f9be8)";
+const GRADIENT_TEXT = "text-glow";
+const CTA = "inline-flex h-12 items-center justify-center gap-2 rounded-full bg-foreground px-7 text-base font-semibold text-background transition-[background-color,transform] hover:bg-foreground/85 active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+const CTA_GHOST = "inline-flex h-12 items-center justify-center gap-2 rounded-full border border-foreground/15 px-7 text-base font-medium text-foreground transition-[background-color,transform] hover:bg-foreground/[0.06] active:scale-[0.97]";
 
 // ---------------------------------------------------------------------------
 // Content (every feature listed here exists in the product)
@@ -73,6 +101,10 @@ const FAQ = [
     a: "Yes. They can sign in with a one-time code sent by SMS to the number on their account, or with their email and password.",
   },
   {
+    q: "What is EduFlow AI, and who can use it?",
+    a: "An assistant inside EduFlow that answers questions from your records (in English, Hindi or Marathi), records fees or attendance after you confirm, writes report-card remarks and parent messages, and makes presentations. It's part of the Pro plan; an owner or admin turns it on. To answer, the records needed are sent to Google's Gemini AI, and each member only gets answers from what their role can see.",
+  },
+  {
     q: "Is our data safe?",
     a: "Every school's data is kept separate, passwords are hashed, sessions expire automatically, and sensitive keys are stored encrypted. Only the roles you choose can see fees.",
   },
@@ -81,6 +113,46 @@ const FAQ = [
     a: "Yes. One login can belong to several institutes with a different role in each, and switching between them takes a click.",
   },
 ];
+
+/** Structured data for search engines and AI assistants: who makes EduFlow, what it is, and the FAQ. */
+const JSON_LD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
+      name: SITE.name,
+      url: `${SITE_URL}/`,
+      logo: `${SITE_URL}/icons/icon-512.png`,
+      parentOrganization: { "@type": "Organization", name: SITE.maker.name, url: SITE.maker.url },
+    },
+    { "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: SITE.name, url: `${SITE_URL}/`, inLanguage: "en-IN", publisher: { "@id": `${SITE_URL}/#organization` } },
+    {
+      "@type": "SoftwareApplication",
+      name: SITE.name,
+      url: `${SITE_URL}/`,
+      description: SITE.description,
+      applicationCategory: "BusinessApplication",
+      applicationSubCategory: "School management software",
+      operatingSystem: "Web, Android, iOS, Windows, macOS",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "INR", description: `${TRIAL_DAYS}-day free trial, no credit card needed` },
+      featureList: [
+        "Fee plans, concessions, receipts and reminders",
+        "Daily attendance, also offline",
+        "Tests, grades, ranks and report cards",
+        "WhatsApp messages to parents",
+        "Excel import and export",
+        "AI assistant in English, Hindi and Marathi",
+        "AI presentations and report-card remarks",
+      ],
+      publisher: { "@id": `${SITE_URL}/#organization` },
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: FAQ.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+    },
+  ],
+};
 
 // ---------------------------------------------------------------------------
 // Small building blocks
@@ -100,10 +172,10 @@ function Eyebrow({ children }: { children: ReactNode }) {
 
 function SectionTitle({ eyebrow, title, body, center }: { eyebrow: string; title: string; body?: string; center?: boolean }) {
   return (
-    <div className={cx("max-w-2xl", center && "mx-auto text-center")}>
+    <div className={cx("ai-reveal max-w-3xl", center && "mx-auto text-center")}>
       <Eyebrow>{eyebrow}</Eyebrow>
-      <h2 className="mt-3 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{title}</h2>
-      {body && <p className="mt-4 text-lg text-pretty text-muted">{body}</p>}
+      <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-balance sm:text-[3.25rem] sm:leading-[1.05]">{title}</h2>
+      {body && <p className="mt-5 text-lg leading-8 text-pretty text-muted sm:text-xl">{body}</p>}
     </div>
   );
 }
@@ -111,8 +183,8 @@ function SectionTitle({ eyebrow, title, body, center }: { eyebrow: string; title
 /** A framed piece of product UI, used as illustration. */
 function Frame({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cx("overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_24px_60px_-24px_rgba(20,27,58,0.35)]", className)}>
-      <div className="flex items-center gap-1.5 border-b border-border bg-surface-muted/60 px-4 py-2.5">
+    <div className={cx("overflow-hidden rounded-[24px] border border-foreground/[0.09] bg-surface shadow-[0_40px_100px_-40px_rgba(143,155,232,0.45)]", className)}>
+      <div className="flex items-center gap-1.5 border-b border-foreground/[0.06] bg-foreground/[0.02] px-4 py-2.5">
         <span className="size-2.5 rounded-full bg-border" />
         <span className="size-2.5 rounded-full bg-border" />
         <span className="size-2.5 rounded-full bg-border" />
@@ -334,7 +406,7 @@ function Tile({ title, body, icon, className, children, tone = "accent" }: { tit
   return (
     <div
       className={cx(
-        "group relative flex flex-col overflow-hidden rounded-3xl border border-border bg-surface p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_20px_50px_-24px_rgba(20,27,58,0.35)]",
+        "ai-reveal group relative flex flex-col overflow-hidden rounded-[28px] border border-foreground/[0.08] bg-foreground/[0.035] p-7 transition-colors duration-500 hover:border-foreground/[0.16] hover:bg-foreground/[0.05]",
         className
       )}
     >
@@ -349,8 +421,8 @@ function Tile({ title, body, icon, className, children, tone = "accent" }: { tit
       <span className={cx("relative grid size-11 place-items-center rounded-xl", tone === "green" ? "bg-success-soft text-success" : "bg-accent-soft text-accent")}>
         <Icon d={icon} className="size-5" />
       </span>
-      <h3 className="relative mt-5 text-lg font-semibold tracking-tight">{title}</h3>
-      <p className="relative mt-1.5 text-sm leading-6 text-pretty text-muted">{body}</p>
+      <h3 className="relative mt-5 text-xl font-semibold tracking-[-0.02em]">{title}</h3>
+      <p className="relative mt-2 text-[15px] leading-6 text-pretty text-muted">{body}</p>
       {children && (
         <div aria-hidden className="relative mt-5 flex-1">
           {children}
@@ -406,7 +478,7 @@ function FeatureBento() {
               <span className="truncate">{name}</span>
               <span
                 className={cx(
-                  "grid size-6 place-items-center rounded-md text-[11px] font-bold text-white",
+                  "grid size-6 place-items-center rounded-md text-[11px] font-bold text-foreground",
                   st === "P" ? "bg-success" : st === "A" ? "bg-danger" : "bg-warning"
                 )}
               >
@@ -512,12 +584,12 @@ function FeatureBento() {
       </Tile>
 
       {/* Everything else */}
-      <div className="rounded-3xl border border-border bg-surface-muted/50 p-6 sm:col-span-2">
+      <div className="ai-reveal rounded-[28px] border border-foreground/[0.08] bg-foreground/[0.02] p-7 sm:col-span-2">
         <p className="text-sm font-semibold">Also included</p>
         <ul className="mt-4 grid gap-x-6 gap-y-4 sm:grid-cols-2">
           {ALSO_INCLUDED.map((f) => (
             <li key={f.title} className="flex gap-3">
-              <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-surface text-accent shadow-sm">
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-foreground/[0.06] text-accent">
                 <Icon d={f.icon} className="size-4" />
               </span>
               <span className="min-w-0">
@@ -534,7 +606,7 @@ function FeatureBento() {
 
 function Spotlight({ eyebrow, title, body, points, visual, flip }: { eyebrow: string; title: string; body: string; points: string[]; visual: ReactNode; flip?: boolean }) {
   return (
-    <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+    <div className="ai-reveal grid items-center gap-10 lg:grid-cols-2 lg:gap-20">
       <div className={cx(flip && "lg:order-2")}>
         <SectionTitle eyebrow={eyebrow} title={title} body={body} />
         <ul className="mt-6 space-y-3">
@@ -559,55 +631,57 @@ function Spotlight({ eyebrow, title, body, points, visual, flip }: { eyebrow: st
 
 export default function Home() {
   return (
-    <>
+    <div className="landing flex min-h-dvh flex-1 flex-col bg-background text-foreground">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD).replace(/</g, "\\u003c") }} />
       <SiteNav />
       <main className="flex-1 overflow-x-clip">
         {/* Hero */}
-        <section className="relative">
-          <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_60%_at_70%_0%,color-mix(in_oklab,var(--accent)_16%,transparent),transparent),radial-gradient(ellipse_50%_40%_at_10%_20%,color-mix(in_oklab,var(--brand-green)_10%,transparent),transparent)]" />
+        <section className="relative overflow-hidden">
+          <div aria-hidden className="pointer-events-none absolute left-1/2 top-0 h-[560px] w-[1000px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-30 blur-[120px]" style={{ background: GLOW }} />
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 -z-10 opacity-[0.35] [background-image:linear-gradient(var(--border)_1px,transparent_1px),linear-gradient(90deg,var(--border)_1px,transparent_1px)] [background-size:48px_48px] [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]"
+            className="pointer-events-none absolute inset-0 opacity-[0.25] [background-image:linear-gradient(var(--border)_1px,transparent_1px),linear-gradient(90deg,var(--border)_1px,transparent_1px)] [background-size:56px_56px] [mask-image:radial-gradient(ellipse_at_top,black,transparent_65%)]"
           />
-          <div className="mx-auto grid max-w-6xl items-center gap-16 px-4 pb-24 pt-14 sm:px-6 sm:pt-20 lg:grid-cols-[1.05fr_1fr] lg:gap-12">
-            <div>
-              <p className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/80 px-3 py-1 text-xs font-medium text-muted backdrop-blur">
-                <span className="rounded-full bg-[#128c4a] px-1.5 py-px text-[10px] font-semibold text-white">NEW</span>
-                Install EduFlow as an app · sign in with your mobile
-              </p>
-              <h1 className="mt-6 text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-[3.6rem] lg:leading-[1.05]">
-                Fees, attendance and parents. <span className="text-brand-green">All in one place.</span>
-              </h1>
-              <p className="mt-5 max-w-xl text-lg text-pretty text-muted">
-                EduFlow helps schools, tuition centres and coaching institutes collect fees on time, take attendance in a minute, publish results and keep
-                every parent in the loop, from any phone or computer.
-              </p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link href="/register" className={cx(buttonClass("primary"), "h-12 px-6 text-base")}>
-                  Start your {TRIAL_DAYS}-day free trial
-                  <Icon d="M5 12h14M13 6l6 6-6 6" />
-                </Link>
-                <a href="#features" className={cx(buttonClass("secondary"), "h-12 px-6 text-base")}>
-                  See what&apos;s inside
-                </a>
-              </div>
-              <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted">
-                {[`${TRIAL_DAYS} days free`, "No credit card", "Set up in minutes"].map((t) => (
-                  <li key={t} className="flex items-center gap-1.5">
-                    <Check className="text-brand-green" />
-                    {t}
-                  </li>
-                ))}
-              </ul>
+          <div className="relative mx-auto max-w-6xl px-4 pb-28 pt-20 text-center sm:px-6 sm:pt-28">
+            <a href="#ai" className="inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-foreground/[0.04] px-3.5 py-1.5 text-xs font-medium text-foreground/70 backdrop-blur transition-colors hover:border-foreground/20 hover:text-foreground">
+              <span className="rounded-full bg-[#128c4a] px-1.5 py-px text-[10px] font-semibold text-white">NEW</span>
+              EduFlow AI: ask, write and present →
+            </a>
+            <h1 className="mx-auto mt-8 max-w-4xl text-5xl font-semibold tracking-[-0.05em] text-balance sm:text-7xl sm:leading-[1.02] lg:text-[5.5rem]">
+              Fees, attendance and parents. <span className={GRADIENT_TEXT}>All in one place.</span>
+            </h1>
+            <p className="mx-auto mt-7 max-w-2xl text-lg leading-8 text-pretty text-muted sm:text-xl">
+              EduFlow helps schools, tuition centres and coaching institutes collect fees on time, take attendance in a minute, publish results and keep every
+              parent in the loop, from any phone or computer.
+            </p>
+            <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
+              <Link href="/register" className={CTA}>
+                Start your {TRIAL_DAYS}-day free trial
+                <Icon d="M5 12h14M13 6l6 6-6 6" />
+              </Link>
+              <a href="#features" className={CTA_GHOST}>
+                See what&apos;s inside
+              </a>
             </div>
-            <div className="px-2 sm:px-6 lg:px-0">
-              <HeroMockup />
+            <ul className="mt-7 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted">
+              {[`${TRIAL_DAYS} days free`, "No credit card", "Set up in minutes"].map((t) => (
+                <li key={t} className="flex items-center gap-1.5">
+                  <Check className="text-brand-green" />
+                  {t}
+                </li>
+              ))}
+            </ul>
+            <div className="ai-reveal relative mx-auto mt-20 max-w-2xl px-2 text-left sm:px-6">
+              <div aria-hidden className="absolute -inset-8 opacity-40 blur-3xl motion-safe:animate-spin-slow" style={{ background: GLOW, borderRadius: "40%" }} />
+              <div className="relative">
+                <HeroMockup />
+              </div>
             </div>
           </div>
         </section>
 
         {/* Built for */}
-        <section className="border-y border-border bg-surface/60">
+        <section className="border-y border-foreground/[0.06]">
           <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 py-6 sm:flex-row sm:justify-between sm:px-6">
             <p className="text-sm font-medium text-muted">Made for</p>
             <ul className="flex flex-wrap justify-center gap-x-8 gap-y-2">
@@ -622,7 +696,7 @@ export default function Home() {
         </section>
 
         {/* Features */}
-        <section id="features" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-24 sm:px-6">
+        <section id="features" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-28 sm:px-6 sm:py-36">
           <SectionTitle
             center
             eyebrow="Everything you need"
@@ -632,9 +706,12 @@ export default function Home() {
           <FeatureBento />
         </section>
 
+        {/* EduFlow AI */}
+        <AiShowcase />
+
         {/* Spotlights */}
-        <section className="border-t border-border bg-surface/40">
-          <div className="mx-auto max-w-6xl space-y-28 px-4 py-24 sm:px-6">
+        <section className="border-t border-foreground/[0.06]">
+          <div className="mx-auto max-w-6xl space-y-36 px-4 py-28 sm:px-6 sm:py-36">
             <Spotlight
               eyebrow="Fees"
               title="Collect fees on time, without the paperwork"
@@ -690,38 +767,37 @@ export default function Home() {
         </section>
 
         {/* How it works */}
-        <section id="how-it-works" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-24 sm:px-6">
+        <section id="how-it-works" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-28 sm:px-6 sm:py-36">
           <SectionTitle center eyebrow="How it works" title="Up and running today" />
           <ol className="mt-14 grid gap-6 md:grid-cols-3">
             {STEPS.map((s, i) => (
-              <li key={s.title} className="relative rounded-2xl border border-border bg-surface p-6">
-                <span className="grid size-10 place-items-center rounded-full bg-accent text-base font-semibold text-accent-foreground">{i + 1}</span>
-                <h3 className="mt-5 text-lg font-semibold">{s.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted">{s.body}</p>
+              <li key={s.title} className="ai-reveal relative rounded-[28px] border border-foreground/[0.08] bg-foreground/[0.035] p-7">
+                <span className="grid size-11 place-items-center rounded-full text-base font-semibold text-[#050609]" style={{ background: GLOW }}>
+                  {i + 1}
+                </span>
+                <h3 className="mt-6 text-xl font-semibold tracking-[-0.02em]">{s.title}</h3>
+                <p className="mt-2 text-[15px] leading-6 text-muted">{s.body}</p>
               </li>
             ))}
           </ol>
         </section>
 
         {/* Free trial */}
-        <section id="pricing" className="scroll-mt-20 px-4 pb-24 sm:px-6">
-          <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl bg-[#141b3a] px-6 py-14 text-white sm:px-14">
-            <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 size-80 rounded-full bg-[#3ddc97]/20 blur-3xl" />
-            <div aria-hidden className="pointer-events-none absolute -bottom-32 -left-20 size-80 rounded-full bg-[#6671ac]/30 blur-3xl" />
+        <section id="pricing" className="scroll-mt-20 px-4 pb-28 sm:px-6 sm:pb-36">
+          <div className="ai-reveal relative mx-auto max-w-5xl overflow-hidden rounded-[36px] border border-foreground/10 bg-foreground/[0.035] px-6 py-16 text-foreground sm:px-14">
+            <div aria-hidden className="pointer-events-none absolute -right-32 -top-32 size-96 rounded-full opacity-30 blur-3xl" style={{ background: GLOW }} />
+            <div aria-hidden className="pointer-events-none absolute -bottom-40 -left-24 size-96 rounded-full bg-[#2b3a8c]/40 blur-3xl" />
             <div className="relative grid items-center gap-10 lg:grid-cols-[1.2fr_1fr]">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#3ddc97]">Free trial</p>
-                <h2 className="mt-3 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">Try EduFlow free for {TRIAL_DAYS} days</h2>
-                <p className="mt-4 max-w-md text-white/70">Set up your institute, import your students and collect your first fee before the week is out. No credit card needed.</p>
-                <Link
-                  href="/register"
-                  className="mt-8 inline-flex h-12 items-center gap-2 rounded-lg bg-white px-6 text-base font-semibold text-[#141b3a] transition-colors hover:bg-white/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                >
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-brand-green">Free trial</p>
+                <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-balance sm:text-5xl">Try EduFlow free for {TRIAL_DAYS} days</h2>
+                <p className="mt-4 max-w-md text-foreground/70">Set up your institute, import your students and collect your first fee before the week is out. No credit card needed.</p>
+                <Link href="/register" className={cx(CTA, "mt-9")}>
                   Start your free trial
                   <Icon d="M5 12h14M13 6l6 6-6 6" />
                 </Link>
               </div>
-              <ul className="space-y-3 rounded-2xl border border-white/10 bg-white/5 p-6">
+              <ul className="space-y-3 rounded-[24px] border border-foreground/10 bg-background/40 p-6 backdrop-blur">
                 {INCLUDED.map((item) => (
                   <li key={item} className="flex items-center gap-3 text-sm">
                     <span className="grid size-5 shrink-0 place-items-center rounded-full bg-[#3ddc97] text-[#141b3a]">
@@ -736,11 +812,11 @@ export default function Home() {
         </section>
 
         {/* FAQ */}
-        <section id="faq" className="mx-auto max-w-3xl scroll-mt-20 px-4 pb-24 sm:px-6">
+        <section id="faq" className="mx-auto max-w-3xl scroll-mt-20 px-4 pb-28 sm:px-6 sm:pb-36">
           <SectionTitle center eyebrow="FAQ" title="Questions, answered" />
-          <div className="mt-10 divide-y divide-border rounded-2xl border border-border bg-surface">
+          <div className="ai-reveal mt-12 divide-y divide-foreground/[0.07] rounded-[28px] border border-foreground/[0.08] bg-foreground/[0.035]">
             {FAQ.map((f) => (
-              <details key={f.q} className="group px-5 py-4 sm:px-6">
+              <details key={f.q} className="group px-6 py-5 sm:px-7">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium [&::-webkit-details-marker]:hidden">
                   {f.q}
                   <span className="grid size-7 shrink-0 place-items-center rounded-full border border-border text-muted transition-transform group-open:rotate-45">
@@ -754,14 +830,17 @@ export default function Home() {
         </section>
 
         {/* Closing CTA */}
-        <section className="border-t border-border bg-surface/60">
-          <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-16 text-center sm:px-6">
-            <h2 className="max-w-2xl text-3xl font-semibold tracking-tight text-balance">Spend less time on admin and more on teaching</h2>
+        <section className="relative overflow-hidden border-t border-foreground/[0.06]">
+          <div aria-hidden className="pointer-events-none absolute bottom-0 left-1/2 h-[420px] w-[900px] -translate-x-1/2 translate-y-1/2 rounded-full opacity-25 blur-[120px]" style={{ background: GLOW }} />
+          <div className="ai-reveal relative mx-auto flex max-w-6xl flex-col items-center gap-8 px-4 py-28 text-center sm:px-6 sm:py-36">
+            <h2 className="max-w-3xl text-4xl font-semibold tracking-[-0.045em] text-balance sm:text-6xl sm:leading-[1.04]">
+              Spend less time on admin. <span className={GRADIENT_TEXT}>More on teaching.</span>
+            </h2>
             <div className="flex flex-col gap-3 sm:flex-row">
-              <Link href="/register" className={cx(buttonClass("primary"), "h-12 px-6 text-base")}>
+              <Link href="/register" className={CTA}>
                 Start your {TRIAL_DAYS}-day free trial
               </Link>
-              <Link href="/login" className={cx(buttonClass("secondary"), "h-12 px-6 text-base")}>
+              <Link href="/login" className={CTA_GHOST}>
                 Log in
               </Link>
             </div>
@@ -769,7 +848,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="border-t border-border">
+      <footer className="border-t border-foreground/[0.06]">
         <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <Image src="/images/brand/logo-light.png" alt="EduFlow: Manage · Track · Grow" width={983} height={200} className="logo-light h-12 w-auto" />
@@ -805,6 +884,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-    </>
+    </div>
   );
 }

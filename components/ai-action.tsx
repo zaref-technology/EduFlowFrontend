@@ -45,7 +45,7 @@ const expired = (a: AiAction) => a.status === "pending" && new Date(a.expiresAt)
 
 /** The card under an answer. */
 export function ActionCard({ action, onReview }: { action: AiAction | undefined; onReview: () => void }) {
-  if (!action) return <div className="mt-3 h-[68px] animate-pulse rounded-xl border border-border bg-surface" />;
+  if (!action) return <div className="mt-3 h-[68px] animate-pulse rounded-2xl border border-border bg-surface" />;
   const k = KIND[action.kind];
   const chosen = action.candidates.find((c) => c.id === action.studentId);
   const who = action.kind === "class_attendance" ? `Class ${action.query}` : chosen ? chosen.name : action.candidates.length === 1 ? action.candidates[0].name : `“${action.query}” · ${action.candidates.length} students match`;

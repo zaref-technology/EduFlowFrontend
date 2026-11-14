@@ -55,7 +55,7 @@ export function MonthlyReports() {
   }
 
   if (classes.data && options.length === 0) {
-    return <p className="rounded-xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">No classes yet. Give students a class on their profile first.</p>;
+    return <p className="rounded-2xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">No classes yet. Give students a class on their profile first.</p>;
   }
 
   return (
@@ -95,13 +95,13 @@ export function MonthlyReports() {
       ) : !data || report.loading ? (
         <Skeleton className="h-72 rounded-xl" />
       ) : data.students.length === 0 ? (
-        <p className="rounded-xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">No active students in this class.</p>
+        <p className="rounded-2xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">No active students in this class.</p>
       ) : (
         <>
           <p className="mb-3 text-sm text-muted">
             {data.exams.length ? `${data.exams.length} test${data.exams.length === 1 ? "" : "s"} in ${monthName(month)}: ${data.exams.map((e) => `${e.name} (${formatDay(e.date, "short").replace(/^\w+,?\s*/, "")})`).join(", ")}` : `No tests in ${monthName(month)}; reports will show attendance only.`}
           </p>
-          <div className="overflow-hidden rounded-xl border border-border bg-surface">
+          <div className="overflow-hidden rounded-2xl border border-border bg-surface">
             <table className="hidden w-full text-sm md:table">
               <thead>
                 <tr className="border-b border-border bg-surface-muted/50 text-left text-xs uppercase tracking-wide text-muted">

@@ -97,7 +97,7 @@ export function AuthShell({ title, subtitle, children, footer }: { title: string
 }
 
 const fieldBase =
-  "h-11 w-full rounded-xl border border-border bg-surface pl-10 text-base outline-none transition-[border-color,box-shadow] placeholder:text-muted/70 focus:border-accent focus:ring-4 focus:ring-accent/15 aria-invalid:border-danger aria-invalid:focus:ring-danger/15 sm:text-sm";
+  "h-11 w-full rounded-2xl border border-border bg-surface pl-10 text-base outline-none transition-[border-color,box-shadow] placeholder:text-muted/70 focus:border-accent focus:ring-4 focus:ring-accent/15 aria-invalid:border-danger aria-invalid:focus:ring-danger/15 sm:text-sm";
 
 function FieldIcon({ d }: { d: string }) {
   return (

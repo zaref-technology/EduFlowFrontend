@@ -22,7 +22,7 @@ export default function HomeworkPage() {
   const { session } = useAuth();
   const role = session.status === "authenticated" ? session.role : undefined;
   const [tab, setTab] = useState<"diary" | "syllabus">("diary");
-  if (role === "accountant") return <p className="rounded-xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">Homework is for teachers and admins.</p>;
+  if (role === "accountant") return <p className="rounded-2xl border border-border bg-surface px-6 py-14 text-center text-sm text-muted">Homework is for teachers and admins.</p>;
 
   return (
     <div>

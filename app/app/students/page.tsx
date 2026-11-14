@@ -268,7 +268,7 @@ function StudentsView() {
       )}
 
       {/* List */}
-      <div className={cx("overflow-hidden rounded-xl border border-border bg-surface transition-opacity", list.loading && list.data && "opacity-60")}>
+      <div className={cx("overflow-hidden rounded-2xl border border-border bg-surface transition-opacity", list.loading && list.data && "opacity-60")}>
         {list.error ? (
           <div className="px-4 py-14 text-center">
             <p className="text-sm text-danger">{list.error}</p>

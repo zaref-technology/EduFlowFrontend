@@ -118,7 +118,7 @@ export function LedgerDrawer({
               { label: "Paid", value: data.totals.paid, tone: "text-success" },
               { label: "Balance", value: data.totals.balance, sub: data.totals.overdue ? `${formatMoney(data.totals.overdue)} overdue` : "", tone: data.totals.overdue ? "text-danger" : "" },
             ].map((t) => (
-              <div key={t.label} className="rounded-xl border border-border bg-surface p-3">
+              <div key={t.label} className="rounded-2xl border border-border bg-surface p-3">
                 <p className="text-xs text-muted">{t.label}</p>
                 <p className={cx("mt-0.5 font-semibold tabular-nums", t.tone)}>{formatMoney(t.value)}</p>
                 {t.sub && <p className={cx("truncate text-[11px]", t.tone || "text-muted")}>{t.sub}</p>}
@@ -223,7 +223,7 @@ export function LedgerDrawer({
                 const fee = mine.reduce((t, d) => t + d.amount - d.discount, 0);
                 const paid = mine.reduce((t, d) => t + d.paid, 0);
                 return (
-                  <div key={planId} className="flex flex-wrap items-center gap-2 rounded-xl border border-border bg-surface px-4 py-3">
+                  <div key={planId} className="flex flex-wrap items-center gap-2 rounded-2xl border border-border bg-surface px-4 py-3">
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-medium">{name}</span>
                       <span className="text-xs text-muted">
@@ -264,11 +264,11 @@ export function LedgerDrawer({
 
           <Section title={`Dues (${data.dues.length})`}>
             {data.dues.length === 0 ? (
-              <p className="rounded-xl border border-border bg-surface px-4 py-8 text-center text-sm text-muted">
+              <p className="rounded-2xl border border-border bg-surface px-4 py-8 text-center text-sm text-muted">
                 No fees yet. Use “Add fee plan” above.
               </p>
             ) : (
-              <ul className="divide-y divide-border rounded-xl border border-border bg-surface">
+              <ul className="divide-y divide-border rounded-2xl border border-border bg-surface">
                 {data.dues.map((d) => (
                   <li key={d.id} className="px-4 py-3">
                     <div className="flex items-start justify-between gap-3">
@@ -351,7 +351,7 @@ export function LedgerDrawer({
             {data.payments.length === 0 ? (
               <p className="text-sm text-muted">No payments yet.</p>
             ) : (
-              <ul className="divide-y divide-border rounded-xl border border-border bg-surface">
+              <ul className="divide-y divide-border rounded-2xl border border-border bg-surface">
                 {data.payments.map((p) => (
                   <li key={p.id}>
                     <button onClick={() => onOpenReceipt(p.id)} className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left hover:bg-surface-muted">

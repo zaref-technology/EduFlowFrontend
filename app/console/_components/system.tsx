@@ -70,7 +70,7 @@ export function SystemHealth() {
 
 function Tile({ title, ok, warnOnly, lines }: { title: string; ok: boolean; warnOnly?: boolean; lines: string[] }) {
   return (
-    <section className="rounded-xl border border-border bg-surface p-4">
+    <section className="rounded-2xl border border-border bg-surface p-4">
       <div className="mb-2 flex items-center justify-between">
         <h3 className="text-sm font-semibold">{title}</h3>
         {ok ? <Badge tone="success">OK</Badge> : <Badge tone={warnOnly ? "accent" : "danger"}>{warnOnly ? "Check" : "Problem"}</Badge>}

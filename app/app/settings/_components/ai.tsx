@@ -100,7 +100,7 @@ export function AiSettings() {
               <li>• Get answers with links straight to the student or fee record.</li>
               <li>• Draft notices, homework, WhatsApp messages and fee reminders in a few words.</li>
             </ul>
-            <label className="flex items-start gap-3 rounded-xl border border-border bg-surface-muted px-4 py-3 text-sm">
+            <label className="flex items-start gap-3 rounded-2xl border border-border bg-surface-muted px-4 py-3 text-sm">
               <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5 size-4 accent-[var(--accent)]" />
               <span>
                 I understand that to answer, EduFlow sends the question and the records it needs (such as student names, attendance, marks and fee amounts) to Google&apos;s Gemini AI.

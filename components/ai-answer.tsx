@@ -210,7 +210,7 @@ function ChatTable({ head, rows, onLink }: { head: string[]; rows: string[][]; o
   );
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-surface">
+    <div className="overflow-hidden rounded-2xl border border-border bg-surface">
       <div className="flex items-center justify-between gap-2 border-b border-border bg-surface-muted/60 px-3 py-1.5">
         <span className="text-xs text-muted">
           {rows.length} row{rows.length === 1 ? "" : "s"}
@@ -623,7 +623,7 @@ export function ShareModal({ students, suggested, onClose, onStandard }: { stude
                   key={o.type}
                   type="button"
                   onClick={() => onStandard({ type: o.type, title: o.label, refs: list.map((x) => o.ref(x.id)) })}
-                  className="flex w-full items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3 text-left transition-colors hover:border-accent/40 hover:bg-accent-soft"
+                  className="flex w-full items-center gap-3 rounded-2xl border border-border bg-surface px-4 py-3 text-left transition-colors hover:border-accent/40 hover:bg-accent-soft"
                 >
                   <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-success-soft text-[#128c4a] dark:text-[#3fcf80]">
                     <Icon d={WA_ICON} />

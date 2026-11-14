@@ -10,7 +10,7 @@ import { Drawer } from "@/components/data";
 import { PlanBanners, useTenantStatus } from "@/components/plan-banner";
 import { InstallAppButton, InstallCard } from "@/components/pwa";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Badge, Button, ICONS, Icon, Logo, Spinner, cx } from "@/components/ui";
+import { Badge, Button, ICONS, Icon, Logo, LogoMark, Spinner, cx } from "@/components/ui";
 import { api } from "@/lib/api";
 import { schoolOpened, useAuth } from "@/lib/auth";
 import { NAV_ICONS, NOTICES_CHANGED_EVENT } from "@/lib/classroom";
@@ -221,10 +221,10 @@ export default function AppLayout({ children }: LayoutProps<"/app">) {
       )}
     >
       {/* Phones: slim top bar */}
-      <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur md:hidden">
+      <header className="sticky top-0 z-40 border-b border-border/70 bg-background/75 backdrop-blur-xl backdrop-saturate-150 md:hidden">
         <div className="flex h-14 items-center justify-between gap-3 px-4">
           <div className="flex min-w-0 items-center gap-3">
-            <Logo href="/app/dashboard" />
+            <LogoMark href="/app/dashboard" />
             <span className="truncate border-l border-border pl-3 text-sm text-muted">{session.tenant.name}</span>
           </div>
           <div className="flex shrink-0 items-center gap-1">
@@ -247,7 +247,8 @@ export default function AppLayout({ children }: LayoutProps<"/app">) {
       {/* Desktop: collapsible sidebar */}
       <aside
         className={cx(
-          "hidden border-r border-border bg-surface transition-[width] duration-200 ease-out md:sticky md:top-0 md:flex md:h-dvh md:shrink-0 md:flex-col",
+          // Frosted, like a macOS sidebar
+          "hidden border-r border-border/70 bg-surface/70 backdrop-blur-2xl backdrop-saturate-150 transition-[width] duration-200 ease-out md:sticky md:top-0 md:flex md:h-dvh md:shrink-0 md:flex-col",
           "md:w-[var(--sidebar-w)]"
         )}
       >
@@ -281,7 +282,7 @@ export default function AppLayout({ children }: LayoutProps<"/app">) {
             <span className="grid size-10 place-items-center rounded-lg bg-surface-muted text-sm font-semibold">{session.tenant.name.trim()[0]?.toUpperCase()}</span>
           </Tip>
         ) : (
-          <div className="mx-3 mb-3 rounded-lg bg-surface-muted px-3 py-2.5">
+          <div className="mx-3 mb-3 rounded-xl bg-surface-muted/80 px-3 py-2.5">
             <p className="truncate text-sm font-medium">{session.tenant.name}</p>
             <div className="mt-1">
               <Badge tone="accent">{session.role}</Badge>
@@ -296,7 +297,7 @@ export default function AppLayout({ children }: LayoutProps<"/app">) {
             const heading = collapsed ? (
               gi > 0 ? <span key={`h:${group}`} aria-hidden className="my-2 h-px w-6 bg-border" /> : null
             ) : (
-              <p key={`h:${group}`} className={cx("px-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted/80", gi > 0 && "pt-4")}>
+              <p key={`h:${group}`} className={cx("px-3 pb-1 text-[11px] font-semibold capitalize text-muted/80", gi > 0 && "pt-4")}>
                 {group}
               </p>
             );
@@ -310,12 +311,11 @@ export default function AppLayout({ children }: LayoutProps<"/app">) {
                   aria-current={active ? "page" : undefined}
                   aria-label={collapsed ? item.label : undefined}
                   className={cx(
-                    "relative flex items-center rounded-lg text-sm transition-colors",
-                    collapsed ? "size-10 justify-center" : "gap-2.5 px-3 py-2",
-                    active ? "bg-accent-soft font-medium text-accent" : "text-muted hover:bg-surface-muted hover:text-foreground"
+                    "relative flex items-center rounded-[10px] text-sm transition-colors",
+                    collapsed ? "size-10 justify-center" : "gap-2.5 px-3 py-[7px]",
+                    active ? "bg-accent-soft font-medium text-accent" : "text-foreground/75 hover:bg-surface-muted hover:text-foreground"
                   )}
                 >
-                  {active && !collapsed && <span aria-hidden className="absolute inset-y-1.5 -left-3 w-1 rounded-r-full bg-accent" />}
                   <Icon d={item.icon} className={collapsed ? "size-[18px]" : undefined} />
                   {!collapsed && <span className="flex-1 truncate">{item.label}</span>}
                   {badge > 0 &&
@@ -344,7 +344,7 @@ export default function AppLayout({ children }: LayoutProps<"/app">) {
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Desktop: top bar with where you are, search and notices */}
-        <header className="sticky top-0 z-30 hidden h-14 items-center gap-4 border-b border-border bg-background/80 px-8 backdrop-blur-lg md:flex">
+        <header className="sticky top-0 z-30 hidden h-14 items-center gap-4 border-b border-border/70 bg-background/70 px-8 backdrop-blur-xl backdrop-saturate-150 md:flex">
           <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-2 text-sm">
             <span className="truncate text-muted">{session.tenant.name}</span>
             {current && (
@@ -356,11 +356,11 @@ export default function AppLayout({ children }: LayoutProps<"/app">) {
           </nav>
           <button
             onClick={openPalette}
-            className="ml-auto flex h-9 w-72 items-center gap-2.5 rounded-lg border border-border bg-surface px-3 text-sm text-muted shadow-sm transition-colors hover:border-accent/40 hover:text-foreground lg:w-80"
+            className="ml-auto flex h-9 w-72 items-center gap-2.5 rounded-full bg-surface-muted px-3.5 text-sm text-muted transition-colors hover:bg-border/60 hover:text-foreground lg:w-80"
           >
             <Icon d={NAV_ICONS.search} />
             <span className="flex-1 text-left">Search students, pages…</span>
-            <kbd className="rounded border border-border bg-surface-muted px-1.5 py-0.5 font-sans text-[10px]">Ctrl K</kbd>
+            <kbd className="rounded-md bg-surface px-1.5 py-0.5 font-sans text-[10px] shadow-[0_1px_1px_rgb(0_0_0/0.08)]">Ctrl K</kbd>
           </button>
           <AskButton />
           <BellLink unread={unread} />
@@ -392,7 +392,7 @@ export default function AppLayout({ children }: LayoutProps<"/app">) {
       {/* Phones: bottom tab bar */}
       <nav
         aria-label="Main"
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-lg md:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-border/70 bg-background/75 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl backdrop-saturate-150 md:hidden"
       >
         <ul className="mx-auto grid h-16 max-w-lg" style={{ gridTemplateColumns: `repeat(${tabs.length + (more.length ? 1 : 0)}, minmax(0, 1fr))` }}>
           {tabs.map((item) => {
@@ -463,14 +463,14 @@ export default function AppLayout({ children }: LayoutProps<"/app">) {
               <p className="truncate text-sm text-muted">{session.user.email}</p>
             </div>
           </div>
-          <div className="flex items-center justify-between rounded-xl border border-border bg-surface px-4 py-3">
+          <div className="flex items-center justify-between rounded-2xl border border-border bg-surface px-4 py-3">
             <div className="min-w-0">
               <p className="truncate text-sm font-medium">{session.tenant.name}</p>
               <p className="text-xs text-muted">Your role</p>
             </div>
             <Badge tone="accent">{session.role}</Badge>
           </div>
-          <nav className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-surface">
+          <nav className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-surface">
             {!settingsInTabs && (
               <Link href="/app/settings" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-surface-muted">
                 <Icon d={SETTINGS_ICON} className="text-muted" />
@@ -484,7 +484,7 @@ export default function AppLayout({ children }: LayoutProps<"/app">) {
               <Icon d={ICONS.chevronRight} className="text-muted" />
             </Link>
           </nav>
-          <InstallAppButton className="rounded-xl border border-border bg-surface p-1.5" onDone={() => setMenuOpen(false)} />
+          <InstallAppButton className="rounded-2xl border border-border bg-surface p-1.5" onDone={() => setMenuOpen(false)} />
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted">Theme</span>
             <ThemeToggle />

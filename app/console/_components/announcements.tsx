@@ -49,7 +49,7 @@ export function Announcements() {
       ) : (
         <ul className="space-y-3">
           {list.map((a) => (
-            <li key={a.id} className="rounded-xl border border-border bg-surface p-4">
+            <li key={a.id} className="rounded-2xl border border-border bg-surface p-4">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">

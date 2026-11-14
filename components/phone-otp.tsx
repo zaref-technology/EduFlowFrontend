@@ -67,7 +67,7 @@ export function PhoneOtp({
   const validPhone = /^[6-9]\d{9}$/.test(digits);
   const big = variant === "auth";
   const inputClass = cx(
-    "w-full rounded-xl border border-border bg-surface outline-none transition-colors focus:border-accent focus:ring-4 focus:ring-accent/15",
+    "w-full rounded-2xl border border-border bg-surface outline-none transition-colors focus:border-accent focus:ring-4 focus:ring-accent/15",
     big ? "h-11 text-[15px]" : "h-10 text-sm"
   );
 

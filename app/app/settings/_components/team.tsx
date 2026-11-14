@@ -403,7 +403,7 @@ function AssignDrawer({ member, current, onClose, onSaved }: { member: Member; c
         {rows.map((r, i) => {
           const cls = classes.find((c) => c.name === r.grade);
           return (
-            <li key={i} className="grid grid-cols-[1fr_1fr_1.4fr_auto] items-center gap-2 rounded-xl border border-border bg-surface p-2">
+            <li key={i} className="grid grid-cols-[1fr_1fr_1.4fr_auto] items-center gap-2 rounded-2xl border border-border bg-surface p-2">
               <Select aria-label="Class" value={r.grade} onChange={(e) => update(i, { grade: e.target.value, section: "", subject: r.subject })} className="h-9 text-sm">
                 <option value="">Class…</option>
                 {classes.map((c) => (
