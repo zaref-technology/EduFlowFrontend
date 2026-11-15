@@ -316,7 +316,7 @@ export function ConsoleShell({ children }: { children: React.ReactNode }) {
 
 interface SearchResult {
   schools: { id: string; name: string; slug: string }[];
-  users: { id: string; name: string; email: string; schools: { id: string; name: string; role: string }[] }[];
+  users: { id: string; name: string; email: string; phone?: string; schools: { id: string; name: string; role: string }[] }[];
 }
 
 /** Ctrl+K: find a school by name, ID, phone, email or city, or a person by name or email. */
@@ -392,7 +392,10 @@ function GlobalSearch({ onClose, onOpenSchool, onGo }: { onClose: () => void; on
               {shown.users.map((u) => (
                 <div key={u.id} className="rounded-lg px-3 py-2">
                   <p className="text-sm font-medium">{u.name}</p>
-                  <p className="text-xs text-muted">{u.email}</p>
+                  <p className="text-xs text-muted">
+                    {u.email}
+                    {u.phone && ` · ${u.phone}`}
+                  </p>
                   {u.schools.length > 0 && (
                     <div className="mt-1.5 flex flex-wrap gap-1.5">
                       {u.schools.map((s) => (

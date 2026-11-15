@@ -65,7 +65,7 @@ export function SettingsHome() {
     if (href.endsWith("support")) return s.supportWhatsapp || s.supportEmail ? { ok: true, text: [s.supportWhatsapp && `+${s.supportWhatsapp}`, s.supportEmail].filter(Boolean).join(" · ") } : { ok: false, text: "Not set" };
     if (href.endsWith("/ai")) return s.ai.enabled ? { ok: true, text: `On · ${s.ai.model}` } : { ok: false, text: s.ai.keySet ? "Key saved, off" : "Off" };
     if (href.endsWith("payments")) return s.razorpay.enabled ? { ok: true, text: `On · ${s.razorpay.keyId.startsWith("rzp_test_") ? "test mode" : "live"}` } : { ok: false, text: s.razorpay.secretSet ? "Keys saved, off" : "Off" };
-    if (href.endsWith("sms-otp")) return s.otp.enabled ? { ok: true, text: "On" } : { ok: false, text: s.otp.keySet ? "Key saved, off" : "Off" };
+    if (href.endsWith("sms-otp")) return s.otp.enabled ? { ok: true, text: s.otp.requireOnRegister ? "On · required at sign-up" : "On · optional at sign-up" } : { ok: false, text: s.otp.keySet ? "Key saved, off" : "Off" };
     return s.cloudinary.cloudName && s.cloudinary.secretSet ? { ok: true, text: `On · ${s.cloudinary.cloudName}` } : { ok: false, text: "Off" };
   };
   return (

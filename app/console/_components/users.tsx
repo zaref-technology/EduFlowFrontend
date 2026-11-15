@@ -19,6 +19,7 @@ import {
   formatDate,
   generatePassword,
   loginShareLink,
+  PhoneText,
   query,
   useDebounced,
   useResource,
@@ -45,7 +46,7 @@ export function Users({ onOpenSchool }: { onOpenSchool: (id: string) => void }) 
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <Input
           className="max-w-xs"
-          placeholder="Search by name or email"
+          placeholder="Search by name, email or mobile"
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
@@ -71,6 +72,7 @@ export function Users({ onOpenSchool }: { onOpenSchool: (id: string) => void }) 
                   {u.isSuperAdmin && <Badge tone="accent">super admin</Badge>}
                 </div>
                 <div className="text-xs text-muted">{u.email}</div>
+                <PhoneText phone={u.phone} verified={u.phoneVerified} className="text-xs text-muted" />
               </td>
               <td className="px-4 py-3 tabular-nums">{u.tenantCount ?? 0}</td>
               <td className="px-4 py-3">
@@ -179,6 +181,10 @@ function UserDrawer({ id, onClose, onChanged, onOpenSchool }: { id: string; onCl
                 <div className="min-w-0">
                   <dt className="text-muted">Email</dt>
                   <dd className="truncate">{user.email}</dd>
+                </div>
+                <div className="min-w-0">
+                  <dt className="text-muted">Mobile</dt>
+                  <dd>{user.phone ? <PhoneText phone={user.phone} verified={user.phoneVerified} /> : <span className="text-muted">Not added</span>}</dd>
                 </div>
                 <div>
                   <dt className="text-muted">Joined</dt>

@@ -15,6 +15,8 @@ export interface User {
   email: string;
   /** "+91XXXXXXXXXX", or "" when not added */
   phone?: string;
+  /** The phone was checked with a one-time code */
+  phoneVerified?: boolean;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;

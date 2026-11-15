@@ -11,7 +11,7 @@ import { useAuth } from "@/lib/auth";
 import { formatMoney, moneyInput, parseMoney } from "@/lib/fees";
 import { resetAiStatus } from "@/lib/ai";
 import { FEATURE_LABEL, HEALTH_META, STATUS_META, endsText, type Feature, type PlatformPlan, type SchoolDetail } from "@/lib/platform";
-import { Drawer, errorMessage, formatDate, generatePassword, loginShareLink, useResource, type Member } from "./shared";
+import { Drawer, PhoneText, errorMessage, formatDate, generatePassword, loginShareLink, useResource, type Member } from "./shared";
 
 const SECTIONS = [
   { id: "overview", label: "Overview" },
@@ -707,6 +707,7 @@ function TeamSection({ id, d, busy, run }: Ctx) {
                     {m.name} {!m.isActive && <Badge tone="danger">disabled</Badge>}
                   </p>
                   <p className="truncate text-xs text-muted">{m.email}</p>
+                  <PhoneText phone={m.phone} verified={m.phoneVerified} className="text-xs text-muted" />
                 </div>
                 <Select
                   aria-label={`Role for ${m.name}`}

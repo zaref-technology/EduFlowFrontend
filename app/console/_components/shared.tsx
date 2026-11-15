@@ -1,5 +1,6 @@
 "use client";
 
+import { cx } from "@/components/ui";
 import type { Role, Tenant, User } from "@/lib/api";
 
 export * from "@/components/data";
@@ -24,6 +25,8 @@ export interface Member {
   userId: string;
   name: string;
   email: string;
+  phone?: string;
+  phoneVerified?: boolean;
   isActive: boolean;
   role: Role;
   joinedAt: string;
@@ -67,4 +70,22 @@ export function loginShareLink({ name, email, password, phone }: { name: string;
   const digits = (phone ?? "").replace(/\D/g, "");
   const to = digits.length === 10 ? `91${digits}` : digits;
   return `https://wa.me/${to}?text=${encodeURIComponent(text)}`;
+}
+
+/** A member's mobile number, with a tick when it was verified by OTP. */
+export function PhoneText({ phone, verified, className }: { phone?: string; verified?: boolean; className?: string }) {
+  if (!phone) return null;
+  return (
+    <span className={cx("inline-flex items-center gap-1 tabular-nums", className)}>
+      {phone}
+      {verified && (
+        <span title="Verified with OTP" className="inline-flex items-center gap-0.5 rounded-full bg-success-soft px-1.5 py-px text-[10px] font-medium text-success">
+          <svg viewBox="0 0 24 24" className="size-2.5" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M5 12l5 5L20 7" />
+          </svg>
+          Verified
+        </span>
+      )}
+    </span>
+  );
 }
