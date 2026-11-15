@@ -1,37 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EduFlow
+
+EduFlow is a modern school management and education operations platform built for schools, tuition centres, coaching institutes, and academies. It helps education teams manage fees, attendance, student records, results, parent communication, and reporting from a single interface.
+
+This repository is proprietary software owned by Zaref Technology. All rights are reserved by Zaref Technology unless otherwise explicitly agreed in writing.
+
+## Overview
+
+EduFlow is designed to simplify daily academic and administrative work, including:
+
+- Student admissions, profiles, and class records
+- Excel import/export for bulk student and fee data
+- Fee collection, reminders, concessions, and receipts
+- Daily attendance tracking and class analytics
+- Exam marks, grades, report cards, and rankings
+- WhatsApp-ready parent communication
+- Branch-aware multi-institute access
+- AI-assisted education workflows
+
+## Tech Stack
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- HTML-to-image, jsPDF, xlsx, pptxgenjs
 
 ## Getting Started
 
-First, run the development server:
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Open the app in your browser:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Available Scripts
 
-## Learn More
+```bash
+npm run dev
+npm run build
+npm run start
+npm run lint
+npm run preview
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```text
+app/                 # Next.js app pages and routes
+components/         # Reusable UI components
+lib/                # Shared libraries and helper logic
+public/             # Static assets
+package.json        # Project scripts and dependencies
+next.config.ts      # Next.js configuration
+tsconfig.json       # TypeScript configuration
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Contributing
 
-## Deploy on Vercel
+Please read [CONTRIBUTING.md](./CONTRIBUTING.md) before making changes or submitting pull requests.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+As this project is proprietary to Zaref Technology, all contributions must be reviewed and approved before being merged. By contributing, you agree that your work may be used, modified, and distributed by Zaref Technology under its proprietary policies and licensing terms.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# EduFlowFrontend
+## License
+
+This repository is licensed under a proprietary license owned by Zaref Technology. Please review [LICENSE](./LICENSE) for the full terms.
+
+## Contact
+
+For business, licensing, or collaboration inquiries, please contact Zaref Technology through the appropriate official channels associated with the project.
