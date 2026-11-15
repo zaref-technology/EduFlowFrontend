@@ -36,6 +36,7 @@ const SETTINGS_ICON =
 const PANEL_ICON = "M4 5h16v14H4zM9 5v14";
 const LOGOUT_ICON = "M15 4h3a2 2 0 012 2v12a2 2 0 01-2 2h-3M10 17l5-5-5-5M15 12H4";
 const USER_ICON = "M12 12a4 4 0 100-8 4 4 0 000 8zM4 21a8 8 0 0116 0";
+const PLAN_ICON = "M3 7h18v10H3zM3 11h18M7 15h3";
 
 const NAV: NavItem[] = [
   { href: "/app/dashboard", label: "Dashboard", icon: "M4 13h6V4H4zM14 20h6v-9h-6zM14 4v3h6V4zM4 20h6v-3H4z", group: "Overview" },
@@ -192,6 +193,10 @@ export default function AppLayout({ children }: LayoutProps<"/app">) {
   }
 
   const signOut = () => logout().then(() => router.replace("/login"));
+  const canManage = session.role === "owner" || session.role === "admin";
+  // The plan's name for the menu ("Pro", "Trial"…); owners and admins only
+  const sub = tenantStatus?.subscription;
+  const planLabel = !sub ? "" : sub.status === "trial" ? "Trial" : sub.status === "expired" || sub.status === "overdue" ? "Renew" : (sub.planName ?? "");
   const initials = session.user.name
     .split(/\s+/)
     .slice(0, 2)
@@ -337,6 +342,7 @@ export default function AppLayout({ children }: LayoutProps<"/app">) {
             initials={initials}
             name={session.user.name}
             email={session.user.email}
+            plan={canManage ? planLabel : null}
             onSignOut={signOut}
           />
         </div>
@@ -483,6 +489,14 @@ export default function AppLayout({ children }: LayoutProps<"/app">) {
               <span className="flex-1">My account</span>
               <Icon d={ICONS.chevronRight} className="text-muted" />
             </Link>
+            {canManage && (
+              <Link href="/app/settings/billing" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-surface-muted">
+                <Icon d={PLAN_ICON} className="text-muted" />
+                <span className="flex-1">Plan &amp; billing</span>
+                {planLabel && <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-medium text-accent">{planLabel}</span>}
+                <Icon d={ICONS.chevronRight} className="text-muted" />
+              </Link>
+            )}
           </nav>
           <InstallAppButton className="rounded-2xl border border-border bg-surface p-1.5" onDone={() => setMenuOpen(false)} />
           <div className="flex items-center justify-between">
@@ -517,7 +531,7 @@ function Tip({ label, hint, show, className, children }: { label: string; hint?:
 }
 
 /** The signed-in user at the bottom of the sidebar; opens a small menu upwards (or sideways when collapsed). */
-function UserMenu({ collapsed, initials, name, email, onSignOut }: { collapsed: boolean; initials: string; name: string; email: string; onSignOut: () => void }) {
+function UserMenu({ collapsed, initials, name, email, plan, onSignOut }: { collapsed: boolean; initials: string; name: string; email: string; plan: string | null; onSignOut: () => void }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -584,6 +598,14 @@ function UserMenu({ collapsed, initials, name, email, onSignOut }: { collapsed: 
             <Icon d={USER_ICON} className="text-muted" />
             My account
           </Link>
+          {/* Owners and admins: the school's plan, one tap away */}
+          {plan !== null && (
+            <Link role="menuitem" href="/app/settings/billing" onClick={() => setOpen(false)} className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm hover:bg-surface-muted">
+              <Icon d={PLAN_ICON} className="text-muted" />
+              <span className="flex-1">Plan &amp; billing</span>
+              {plan && <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-medium text-accent">{plan}</span>}
+            </Link>
+          )}
           <InstallAppButton onDone={() => setOpen(false)} />
           <div className="flex items-center justify-between gap-2 px-2.5 py-1.5">
             <span className="text-sm">Theme</span>

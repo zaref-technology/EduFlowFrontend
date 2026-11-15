@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { AFTER_SIGNUP_KEY } from "@/lib/billing";
 import { useEffect, useState } from "react";
 import { AUTH_ICONS, AuthField, AuthInput, AuthShell, PasswordInput, PasswordStrength, fieldErrors } from "@/components/auth-shell";
 import { isStrongPassword } from "@/components/password-rules";
@@ -24,7 +25,14 @@ export default function RegisterPage() {
   const phoneRequired = Boolean(options?.phoneRequiredOnRegister);
 
   useEffect(() => {
-    if (session.status === "authenticated") router.replace(session.isSuperAdmin ? "/console" : "/app/dashboard");
+    if (session.status !== "authenticated") return;
+    // Came from a plan's "Get …" button: go straight to paying for it
+    let next: string | null = null;
+    try {
+      next = sessionStorage.getItem(AFTER_SIGNUP_KEY);
+      sessionStorage.removeItem(AFTER_SIGNUP_KEY);
+    } catch {}
+    router.replace(session.isSuperAdmin ? "/console" : next?.startsWith("/app/") ? next : "/app/dashboard");
   }, [session, router]);
 
   const set = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>

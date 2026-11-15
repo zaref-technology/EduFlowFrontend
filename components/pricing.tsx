@@ -11,13 +11,13 @@ const CHECK = "M5 12l5 5L20 7";
 const CROSS = "M6 6l12 12M18 6L6 18";
 const SPARK = "M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z";
 
-/** The best yearly saving among the plans, in months ("2 months free"). */
-export function bestSavingMonths(plans: OfferedPlan[]) {
-  return plans.reduce((m, p) => Math.max(m, yearlySaving(p)?.months ?? 0), 0);
+/** The best yearly saving among the plans, as a percentage ("Save 17%"). */
+export function bestSavingPercent(plans: OfferedPlan[]) {
+  return plans.reduce((m, p) => Math.max(m, yearlySaving(p)?.percent ?? 0), 0);
 }
 
 export function CycleSwitch({ cycle, onChange, plans }: { cycle: Cycle; onChange: (c: Cycle) => void; plans: OfferedPlan[] }) {
-  const months = bestSavingMonths(plans);
+  const percent = bestSavingPercent(plans);
   return (
     <div role="radiogroup" aria-label="Billing period" className="inline-flex rounded-full bg-surface-muted p-1 text-sm">
       {(["monthly", "yearly"] as const).map((c) => (
@@ -30,7 +30,7 @@ export function CycleSwitch({ cycle, onChange, plans }: { cycle: Cycle; onChange
           className={cx("flex items-center gap-2 rounded-full px-4 py-1.5 font-medium transition-all", cycle === c ? "bg-surface text-foreground shadow-[0_1px_3px_rgb(0_0_0/0.12)]" : "text-muted hover:text-foreground")}
         >
           {c === "monthly" ? "Monthly" : "Yearly"}
-          {c === "yearly" && months > 0 && <span className="rounded-full bg-success-soft px-2 py-0.5 text-[11px] font-semibold text-success">{months} months free</span>}
+          {c === "yearly" && percent > 0 && <span className="rounded-full bg-success-soft px-2 py-0.5 text-[11px] font-semibold text-success">Save {percent}%</span>}
         </button>
       ))}
     </div>
@@ -69,7 +69,12 @@ export function PlanCards({ plans, cycle, currentPlanId, action }: { plans: Offe
               {yearly ? (
                 <>
                   {formatMoney(p.priceYearly)} billed yearly
-                  {saving && <span className="font-medium text-success"> · save {formatMoney(saving.amount)}</span>}
+                  {saving && (
+                    <span className="font-medium text-success">
+                      {" "}
+                      · save {formatMoney(saving.amount)} ({saving.percent}% off)
+                    </span>
+                  )}
                 </>
               ) : (
                 "Billed monthly"
@@ -95,7 +100,8 @@ export function PlanCards({ plans, cycle, currentPlanId, action }: { plans: Offe
                 <Icon d={CHECK} className="mt-0.5 size-4 shrink-0 text-success" />
                 Fees, attendance, tests, report cards and WhatsApp messages
               </li>
-              {(Object.keys(FEATURE_LABEL) as Feature[]).map((f) => (
+              {/* What the plan includes first; what it doesn't, at the end */}
+              {(Object.keys(FEATURE_LABEL) as Feature[]).sort((a, b) => Number(p.features[b]) - Number(p.features[a])).map((f) => (
                 <li key={f} className={cx("flex gap-2.5", !p.features[f] && "text-muted")}>
                   <Icon d={p.features[f] ? CHECK : CROSS} className={cx("mt-0.5 size-4 shrink-0", p.features[f] ? "text-success" : "text-muted/60")} />
                   <span className={cx(!p.features[f] && "line-through decoration-muted/40")}>{FEATURE_LABEL[f]}</span>
@@ -105,6 +111,51 @@ export function PlanCards({ plans, cycle, currentPlanId, action }: { plans: Offe
           </div>
         );
       })}
+    </div>
+  );
+}
+
+/** Every plan side by side, row by row (the pricing page). */
+export function PlanComparison({ plans }: { plans: OfferedPlan[] }) {
+  const yes = <Icon d={CHECK} className="mx-auto size-5 text-success" />;
+  const no = <span className="mx-auto block h-px w-4 bg-muted/50" aria-label="Not included" />;
+  const rows: { label: string; cell: (p: OfferedPlan) => ReactNode }[] = [
+    { label: "Price, paid monthly", cell: (p) => (p.priceMonthly ? `${formatMoney(p.priceMonthly)} / month` : "—") },
+    { label: "Price, paid yearly", cell: (p) => (p.priceYearly ? `${formatMoney(p.priceYearly)} / year` : "—") },
+    { label: "Students", cell: (p) => (p.studentLimit ? `Up to ${p.studentLimit.toLocaleString("en-IN")}` : "Unlimited") },
+    { label: "Fees, receipts & reminders", cell: () => yes },
+    { label: "Attendance, also offline", cell: () => yes },
+    { label: "Tests, report cards & ranks", cell: () => yes },
+    { label: "WhatsApp messages (click to send)", cell: () => yes },
+    ...(Object.keys(FEATURE_LABEL) as Feature[]).map((f) => ({ label: FEATURE_LABEL[f], cell: (p: OfferedPlan) => (p.features[f] ? yes : no) })),
+  ];
+  return (
+    <div className="overflow-x-auto rounded-[28px] border border-border bg-surface">
+      <table className="w-full min-w-[520px] text-sm">
+        <thead>
+          <tr className="border-b border-border">
+            <th className="w-2/5 px-6 py-5 text-left font-medium text-muted">Plan</th>
+            {plans.map((p) => (
+              <th key={p.id} className="px-4 py-5 text-center">
+                <span className="block text-base font-semibold tracking-tight">{p.name}</span>
+                {p.popular && <span className="mt-1 inline-block rounded-full bg-accent px-2 py-0.5 text-[11px] font-semibold text-accent-foreground">Most popular</span>}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          {rows.map((r) => (
+            <tr key={r.label}>
+              <td className="px-6 py-3.5">{r.label}</td>
+              {plans.map((p) => (
+                <td key={p.id} className={cx("px-4 py-3.5 text-center tabular-nums", p.popular && "bg-accent-soft/40")}>
+                  {r.cell(p)}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

@@ -3,7 +3,11 @@ import { api } from "@/lib/api";
 import type { Access, PlatformPlan } from "@/lib/platform";
 
 export type Cycle = "monthly" | "yearly";
-export type OfferedPlan = Omit<PlatformPlan, "schools" | "isDefault" | "archived">;
+/** A plan on offer; `trial` marks the plan new schools try for free. */
+export type OfferedPlan = Omit<PlatformPlan, "schools" | "isDefault" | "archived"> & { trial?: boolean };
+
+/** After signing up from a plan's "Get …" button, open Plan & billing (kept in this tab only). */
+export const AFTER_SIGNUP_KEY = "eduflow.after-signup";
 
 export interface BillingPayment {
   id: string;
@@ -36,11 +40,11 @@ interface CheckoutOrder {
   prefill: { name: string; email: string; contact: string };
 }
 
-/** What a year costs against 12 monthly payments: the saving and how many months that is. */
+/** What a year costs against 12 monthly payments: the saving, in rupees and as a percentage. */
 export function yearlySaving(p: Pick<PlatformPlan, "priceMonthly" | "priceYearly">) {
   const full = p.priceMonthly * 12;
   if (!p.priceMonthly || !p.priceYearly || p.priceYearly >= full) return null;
-  return { amount: full - p.priceYearly, months: Math.round((full - p.priceYearly) / p.priceMonthly) };
+  return { amount: full - p.priceYearly, percent: Math.round(((full - p.priceYearly) / full) * 100) };
 }
 
 interface RazorpayResponse {

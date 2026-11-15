@@ -6,11 +6,11 @@ import { ThemeToggle } from "./theme-toggle";
 import { Button, Logo, buttonClass } from "./ui";
 
 const LINKS = [
-  ["#features", "Features"],
-  ["#ai", "AI"],
-  ["#how-it-works", "How it works"],
-  ["#pricing", "Pricing"],
-  ["#faq", "FAQ"],
+  ["/#features", "Features"],
+  ["/#ai", "AI"],
+  ["/#how-it-works", "How it works"],
+  ["/pricing", "Pricing"],
+  ["/#faq", "FAQ"],
 ] as const;
 
 export function SiteNav() {
@@ -22,9 +22,9 @@ export function SiteNav() {
         <Logo size="sm" />
         <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
           {LINKS.map(([href, label]) => (
-            <a key={href} href={href} className="rounded-md px-3 py-1.5 text-[13px] text-foreground/70 transition-colors hover:text-foreground">
+            <Link key={href} href={href} className="rounded-md px-3 py-1.5 text-[13px] text-foreground/70 transition-colors hover:text-foreground">
               {label}
-            </a>
+            </Link>
           ))}
         </nav>
         <div className="flex items-center gap-2">

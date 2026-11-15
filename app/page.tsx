@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { SiteFooter } from "@/components/site-footer";
 import { SiteNav } from "@/components/site-nav";
 import { AiShowcase } from "./_components/ai-showcase";
 import { PricingSection } from "./_components/pricing-section";
@@ -785,10 +785,15 @@ export default function Home() {
 
         {/* Pricing */}
         <section id="pricing" className="mx-auto max-w-6xl scroll-mt-20 px-4 pb-28 sm:px-6 sm:pb-36">
-          <SectionTitle center eyebrow="Pricing" title="Simple plans. Pay yearly, get months free." body="Start free, then choose the plan that fits your school. Pay online with UPI, card or netbanking." />
+          <SectionTitle center eyebrow="Pricing" title="Simple plans. Pay yearly and save." body="Start free, then choose the plan that fits your school. Pay online with UPI, card or netbanking." />
           <div className="mt-12">
             <PricingSection trialDays={TRIAL_DAYS} />
           </div>
+          <p className="mt-4 text-center">
+            <Link href="/pricing" className="text-sm font-medium text-accent hover:underline">
+              Compare plans in detail →
+            </Link>
+          </p>
         </section>
 
         {/* Free trial */}
@@ -857,42 +862,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="border-t border-foreground/[0.06]">
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr]">
-          <div>
-            <Image src="/images/brand/logo-light.png" alt="EduFlow: Manage · Track · Grow" width={983} height={200} className="logo-light h-12 w-auto" />
-            <Image src="/images/brand/logo-dark.png" alt="" aria-hidden width={965} height={200} className="logo-dark h-12 w-auto" />
-            <p className="mt-4 max-w-xs text-sm text-muted">The simple way to run a school, tuition centre or coaching institute.</p>
-          </div>
-          <nav aria-label="Product" className="text-sm">
-            <p className="font-semibold">Product</p>
-            <ul className="mt-3 space-y-2 text-muted">
-              <li><a href="#features" className="hover:text-foreground">Features</a></li>
-              <li><a href="#how-it-works" className="hover:text-foreground">How it works</a></li>
-              <li><a href="#pricing" className="hover:text-foreground">Pricing</a></li>
-              <li><a href="#faq" className="hover:text-foreground">FAQ</a></li>
-            </ul>
-          </nav>
-          <nav aria-label="Account" className="text-sm">
-            <p className="font-semibold">Account</p>
-            <ul className="mt-3 space-y-2 text-muted">
-              <li><Link href="/register" className="hover:text-foreground">Start free trial</Link></li>
-              <li><Link href="/login" className="hover:text-foreground">Log in</Link></li>
-            </ul>
-          </nav>
-        </div>
-        <div className="border-t border-border">
-          <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-5 text-sm text-muted sm:flex-row sm:px-6">
-            <span>© EduFlow · Manage · Track · Grow</span>
-            <span>
-              Built by{" "}
-              <a href="https://zaref.in" target="_blank" rel="noopener noreferrer" className="font-semibold text-foreground underline-offset-4 hover:text-accent hover:underline">
-                Zaref
-              </a>
-            </span>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
