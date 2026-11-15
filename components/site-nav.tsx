@@ -9,7 +9,7 @@ const LINKS = [
   ["#features", "Features"],
   ["#ai", "AI"],
   ["#how-it-works", "How it works"],
-  ["#pricing", "Free trial"],
+  ["#pricing", "Pricing"],
   ["#faq", "FAQ"],
 ] as const;
 

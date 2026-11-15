@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { SiteNav } from "@/components/site-nav";
 import { AiShowcase } from "./_components/ai-showcase";
+import { PricingSection } from "./_components/pricing-section";
 import { ICONS, Icon, cx } from "@/components/ui";
 import { SITE, SITE_URL } from "@/lib/site";
 
@@ -782,8 +783,16 @@ export default function Home() {
           </ol>
         </section>
 
+        {/* Pricing */}
+        <section id="pricing" className="mx-auto max-w-6xl scroll-mt-20 px-4 pb-28 sm:px-6 sm:pb-36">
+          <SectionTitle center eyebrow="Pricing" title="Simple plans. Pay yearly, get months free." body="Start free, then choose the plan that fits your school. Pay online with UPI, card or netbanking." />
+          <div className="mt-12">
+            <PricingSection trialDays={TRIAL_DAYS} />
+          </div>
+        </section>
+
         {/* Free trial */}
-        <section id="pricing" className="scroll-mt-20 px-4 pb-28 sm:px-6 sm:pb-36">
+        <section id="trial" className="scroll-mt-20 px-4 pb-28 sm:px-6 sm:pb-36">
           <div className="ai-reveal relative mx-auto max-w-5xl overflow-hidden rounded-[36px] border border-foreground/10 bg-foreground/[0.035] px-6 py-16 text-foreground sm:px-14">
             <div aria-hidden className="pointer-events-none absolute -right-32 -top-32 size-96 rounded-full opacity-30 blur-3xl" style={{ background: GLOW }} />
             <div aria-hidden className="pointer-events-none absolute -bottom-40 -left-24 size-96 rounded-full bg-[#2b3a8c]/40 blur-3xl" />
@@ -860,7 +869,7 @@ export default function Home() {
             <ul className="mt-3 space-y-2 text-muted">
               <li><a href="#features" className="hover:text-foreground">Features</a></li>
               <li><a href="#how-it-works" className="hover:text-foreground">How it works</a></li>
-              <li><a href="#pricing" className="hover:text-foreground">Free trial</a></li>
+              <li><a href="#pricing" className="hover:text-foreground">Pricing</a></li>
               <li><a href="#faq" className="hover:text-foreground">FAQ</a></li>
             </ul>
           </nav>

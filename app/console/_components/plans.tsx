@@ -15,6 +15,9 @@ interface Draft {
   priceYearly: string;
   studentLimit: string;
   features: Record<Feature, boolean>;
+  popular: boolean;
+  /** One selling point per line */
+  highlights: string;
   isDefault: boolean;
   archived: boolean;
   order: number;
@@ -24,8 +27,8 @@ const ALL_ON = Object.fromEntries((Object.keys(FEATURE_LABEL) as Feature[]).map(
 
 const toDraft = (p: PlatformPlan | null, order = 0): Draft =>
   p
-    ? { id: p.id, name: p.name, description: p.description, priceMonthly: moneyInput(p.priceMonthly), priceYearly: moneyInput(p.priceYearly), studentLimit: p.studentLimit ? String(p.studentLimit) : "", features: { ...ALL_ON, ...p.features }, isDefault: p.isDefault, archived: p.archived, order: p.order }
-    : { id: null, name: "", description: "", priceMonthly: "", priceYearly: "", studentLimit: "", features: { ...ALL_ON }, isDefault: false, archived: false, order };
+    ? { id: p.id, name: p.name, description: p.description, priceMonthly: moneyInput(p.priceMonthly), priceYearly: moneyInput(p.priceYearly), studentLimit: p.studentLimit ? String(p.studentLimit) : "", features: { ...ALL_ON, ...p.features }, popular: p.popular, highlights: p.highlights.join("\n"), isDefault: p.isDefault, archived: p.archived, order: p.order }
+    : { id: null, name: "", description: "", priceMonthly: "", priceYearly: "", studentLimit: "", features: { ...ALL_ON }, popular: false, highlights: "", isDefault: false, archived: false, order };
 
 /** What schools can buy: price, student limit and features. */
 export function Plans() {
@@ -58,6 +61,7 @@ export function Plans() {
                   <h3 className="text-lg font-semibold">{p.name}</h3>
                   <div className="mt-1 flex flex-wrap gap-1.5">
                     {p.isDefault && <Badge tone="accent">Default for new schools</Badge>}
+                    {p.popular && <Badge tone="success">Most popular</Badge>}
                     {p.archived && <Badge>Archived</Badge>}
                   </div>
                 </div>
@@ -115,7 +119,7 @@ function PlanEditor({ draft: initial, onClose, onSaved }: { draft: Draft; onClos
     setError(null);
     try {
       // Always the whole plan, so nothing falls back to a default
-      const body = { name: d.name.trim(), description: d.description.trim(), priceMonthly: monthly ?? 0, priceYearly: yearly ?? 0, studentLimit: Number(d.studentLimit) || 0, features: d.features, isDefault: d.isDefault, archived: d.archived, order: d.order };
+      const body = { name: d.name.trim(), description: d.description.trim(), priceMonthly: monthly ?? 0, priceYearly: yearly ?? 0, studentLimit: Number(d.studentLimit) || 0, features: d.features, popular: d.popular, highlights: d.highlights.split("\n").map((h) => h.trim()).filter(Boolean).slice(0, 6), isDefault: d.isDefault, archived: d.archived, order: d.order };
       const res = await api<{ plans: PlatformPlan[] }>(d.id ? `/api/admin/plans/${d.id}` : "/api/admin/plans", { method: d.id ? "PATCH" : "POST", body });
       onSaved(res.plans);
     } catch (err) {
@@ -159,6 +163,16 @@ function PlanEditor({ draft: initial, onClose, onSaved }: { draft: Draft; onClos
       <Field label="Student limit" htmlFor="plan-limit" hint="Empty = unlimited">
         <Input id="plan-limit" inputMode="numeric" value={d.studentLimit} onChange={(e) => setD({ ...d, studentLimit: e.target.value.replace(/\D/g, "") })} placeholder="Unlimited" />
       </Field>
+      <Field label="Why choose this plan" htmlFor="plan-why" hint="One point per line, up to 6. Shown on the pricing pages above the feature list.">
+        <textarea
+          id="plan-why"
+          rows={4}
+          value={d.highlights}
+          onChange={(e) => setD({ ...d, highlights: e.target.value })}
+          placeholder={"Ask EduFlow AI anything\nFee reminders sent automatically"}
+          className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm outline-none focus:border-accent focus:ring-4 focus:ring-accent/15"
+        />
+      </Field>
       <div>
         <p className="mb-2 text-sm font-medium">Features</p>
         <div className="space-y-2">
@@ -171,6 +185,10 @@ function PlanEditor({ draft: initial, onClose, onSaved }: { draft: Draft; onClos
         </div>
       </div>
       <div className="space-y-2">
+        <label className="flex items-center gap-3 text-sm">
+          <input type="checkbox" className="size-4 accent-[var(--accent)]" checked={d.popular} onChange={(e) => setD({ ...d, popular: e.target.checked })} />
+          Show as &ldquo;Most popular&rdquo; on the pricing pages
+        </label>
         <label className="flex items-center gap-3 text-sm">
           <input type="checkbox" className="size-4 accent-[var(--accent)]" checked={d.isDefault} onChange={(e) => setD({ ...d, isDefault: e.target.checked, archived: e.target.checked ? false : d.archived })} />
           Default plan for new schools&apos; trial

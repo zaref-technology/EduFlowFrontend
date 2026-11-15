@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Alert, Button, Field, ICONS, Icon, Input, Skeleton, cx } from "@/components/ui";
 import { PhoneOtp, type OtpChallenge } from "@/components/phone-otp";
-import { api } from "@/lib/api";
+import { API_URL, api } from "@/lib/api";
 import { PageHeader, errorMessage, formatDate, useResource } from "./shared";
 
 interface Settings {
@@ -12,6 +12,7 @@ interface Settings {
   supportEmail: string;
   updatedAt: string | null;
   cloudinary: { cloudName: string; apiKey: string; folder: string; secretSet: boolean; secretReadable: boolean };
+  razorpay: { enabled: boolean; keyId: string; secretSet: boolean; secretReadable: boolean; webhookSecretSet: boolean };
   otp: { enabled: boolean; keySet: boolean; keyReadable: boolean; template: string; requireOnRegister: boolean };
   ai: { enabled: boolean; keySet: boolean; keyReadable: boolean; model: string; monthlyQuota: number; thinking: "minimal" | "low" | "default"; priceInputUsd: number; priceOutputUsd: number; usdToInr: number; imageProvider: "gemini" | "cloudflare"; imageModel: string; cfAccountId: string; cfTokenSet: boolean; imagePriceUsd: number };
   encryptionAvailable: boolean;
@@ -23,6 +24,12 @@ function useAdminSettings() {
 }
 
 const SETTINGS_PAGES = [
+  {
+    href: "/console/settings/payments",
+    label: "Online payments (Razorpay)",
+    description: "Schools pay for their plan by UPI, card or netbanking, and it renews automatically.",
+    icon: "M3 7h18v12H3zM3 11h18M7 15h3",
+  },
   {
     href: "/console/settings/support",
     label: "Support contact",
@@ -57,6 +64,7 @@ export function SettingsHome() {
     if (!s) return null;
     if (href.endsWith("support")) return s.supportWhatsapp || s.supportEmail ? { ok: true, text: [s.supportWhatsapp && `+${s.supportWhatsapp}`, s.supportEmail].filter(Boolean).join(" · ") } : { ok: false, text: "Not set" };
     if (href.endsWith("/ai")) return s.ai.enabled ? { ok: true, text: `On · ${s.ai.model}` } : { ok: false, text: s.ai.keySet ? "Key saved, off" : "Off" };
+    if (href.endsWith("payments")) return s.razorpay.enabled ? { ok: true, text: `On · ${s.razorpay.keyId.startsWith("rzp_test_") ? "test mode" : "live"}` } : { ok: false, text: s.razorpay.secretSet ? "Keys saved, off" : "Off" };
     if (href.endsWith("sms-otp")) return s.otp.enabled ? { ok: true, text: "On" } : { ok: false, text: s.otp.keySet ? "Key saved, off" : "Off" };
     return s.cloudinary.cloudName && s.cloudinary.secretSet ? { ok: true, text: `On · ${s.cloudinary.cloudName}` } : { ok: false, text: "Off" };
   };
@@ -108,7 +116,7 @@ export function SmsOtpSettings() {
   return (
     <>
       <SettingsBack />
-      <PageHeader title="SMS OTP (2Factor)" description="Sign in with a mobile number, and verify numbers at sign-up." icon={SETTINGS_PAGES[1].icon} />
+      <PageHeader title="SMS OTP (2Factor)" description="Sign in with a mobile number, and verify numbers at sign-up." icon={SETTINGS_PAGES[2].icon} />
       {res.error && <Alert>{res.error}</Alert>}
       {res.data ? <OtpCard settings={res.data} onSaved={res.setData} /> : <Skeleton className="h-72 max-w-2xl" />}
     </>
@@ -120,7 +128,7 @@ export function UploadsSettings() {
   return (
     <>
       <SettingsBack />
-      <PageHeader title="Image uploads (Cloudinary)" description="Where schools' logos are stored." icon={SETTINGS_PAGES[2].icon} />
+      <PageHeader title="Image uploads (Cloudinary)" description="Where schools' logos are stored." icon={SETTINGS_PAGES[3].icon} />
       {res.error && <Alert>{res.error}</Alert>}
       {res.data ? <CloudinaryCard settings={res.data} onSaved={res.setData} /> : <Skeleton className="h-72 max-w-2xl" />}
     </>
@@ -156,7 +164,7 @@ export function SupportSettings() {
   return (
     <>
       <SettingsBack />
-      <PageHeader title="Support contact" description="Where schools reach you from Renew, Choose a plan and Get Pro." icon={SETTINGS_PAGES[0].icon} />
+      <PageHeader title="Support contact" description="Where schools reach you from Renew, Choose a plan and Get Pro." icon={SETTINGS_PAGES[1].icon} />
       {res.error && <Alert>{res.error}</Alert>}
       {!s ? (
         <Skeleton className="h-56 max-w-2xl" />
@@ -274,6 +282,98 @@ function CloudinaryCard({ settings, onSaved }: { settings: Settings; onSaved: (s
             )}
           </div>
           <Button onClick={() => run("save")} loading={busy === "save"} disabled={!dirty || busy !== null || !form.cloudName.trim() || !form.apiKey.trim() || (!c.secretSet && !form.apiSecret.trim())}>
+            Save and check
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function PaymentsSettings() {
+  const res = useAdminSettings();
+  return (
+    <>
+      <SettingsBack />
+      <PageHeader title="Online payments (Razorpay)" description="How schools pay for their EduFlow plan." icon={SETTINGS_PAGES[0].icon} />
+      {res.error && <Alert>{res.error}</Alert>}
+      {res.data ? <RazorpayCard settings={res.data} onSaved={res.setData} /> : <Skeleton className="h-72 max-w-2xl" />}
+    </>
+  );
+}
+
+function RazorpayCard({ settings, onSaved }: { settings: Settings; onSaved: (s: Settings) => void }) {
+  const r = settings.razorpay;
+  const fromSettings = (x: Settings["razorpay"]) => ({ enabled: x.enabled, keyId: x.keyId, keySecret: "", webhookSecret: "" });
+  const [form, setForm] = useState(() => fromSettings(r));
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<{ tone: "success" | "danger"; text: string } | null>(null);
+  const dirty = JSON.stringify(form) !== JSON.stringify(fromSettings(r));
+  const testMode = form.keyId.startsWith("rzp_test_");
+  // Razorpay calls the API directly (or this site, which forwards /api to it)
+  const webhookUrl = `${API_URL || (typeof window === "undefined" ? "" : window.location.origin)}/api/billing/webhook`;
+
+  async function save() {
+    setBusy(true);
+    setMessage(null);
+    try {
+      const next = await api<Settings>("/api/admin/settings", { method: "PUT", body: { razorpay: { enabled: form.enabled, keyId: form.keyId.trim(), keySecret: form.keySecret.trim(), webhookSecret: form.webhookSecret.trim() } } });
+      onSaved(next);
+      setForm(fromSettings(next.razorpay));
+      setMessage({ tone: "success", text: next.razorpay.enabled ? "Saved and checked with Razorpay. Owners and admins can now pay in Settings → Plan & billing." : "Saved. Online payments are off; schools see the support contact instead." });
+    } catch (err) {
+      setMessage({ tone: "danger", text: errorMessage(err) });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <section className="max-w-2xl rounded-2xl border border-border bg-surface">
+      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border px-5 py-4">
+        <div>
+          <h2 className="font-semibold">Razorpay</h2>
+          <p className="text-sm text-muted">Schools pay by UPI, card or netbanking; the plan is extended as soon as the payment goes through.</p>
+        </div>
+        <span className={r.enabled ? "rounded-full bg-success-soft px-2.5 py-0.5 text-xs font-medium text-success" : "rounded-full bg-surface-muted px-2.5 py-0.5 text-xs font-medium text-muted"}>{r.enabled ? (r.keyId.startsWith("rzp_test_") ? "Test mode" : "Live") : "Off"}</span>
+      </div>
+      <div className="space-y-4 p-5">
+        {message && <Alert tone={message.tone}>{message.text}</Alert>}
+        {!settings.encryptionAvailable && <Alert tone="warning">Set DATA_ENCRYPTION_KEY on the server first; the secrets are stored encrypted.</Alert>}
+        {r.secretSet && !r.secretReadable && <Alert tone="warning">The saved key secret can&apos;t be read (the encryption key changed). Enter it again.</Alert>}
+        <p className="text-xs text-muted">Razorpay Dashboard → Account &amp; Settings → API Keys. Use test keys (rzp_test_…) to try it; switch to live keys after Razorpay activates your account.</p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Key id" htmlFor="rp-key">
+            <Input id="rp-key" value={form.keyId} onChange={(e) => setForm({ ...form, keyId: e.target.value })} placeholder="rzp_live_…" autoComplete="off" spellCheck={false} />
+          </Field>
+          <Field label="Key secret" htmlFor="rp-secret" hint={r.secretSet ? "Saved. Leave empty to keep it." : "Stored encrypted; never shown again."}>
+            <Input id="rp-secret" type="password" value={form.keySecret} onChange={(e) => setForm({ ...form, keySecret: e.target.value })} placeholder={r.secretSet ? "••••••••••••" : ""} autoComplete="new-password" spellCheck={false} />
+          </Field>
+        </div>
+        <div className="space-y-3 rounded-xl border border-border px-4 py-3 text-sm">
+          <p className="font-medium">Webhook (recommended)</p>
+          <p className="text-xs text-muted">
+            Razorpay Dashboard → Webhooks → Add new webhook. URL below, choose a secret, and tick <b>payment.captured</b>. It makes sure a payment is applied even if the school closes the window before it finishes.
+          </p>
+          <div className="flex items-center gap-2">
+            <code className="min-w-0 flex-1 truncate rounded-lg bg-surface-muted px-3 py-2 text-xs">{webhookUrl}</code>
+            <Button variant="secondary" size="sm" onClick={() => navigator.clipboard?.writeText(webhookUrl)}>
+              Copy
+            </Button>
+          </div>
+          <Field label="Webhook secret" htmlFor="rp-hook" hint={r.webhookSecretSet ? "Saved. Leave empty to keep it." : "The secret you chose in Razorpay."}>
+            <Input id="rp-hook" type="password" value={form.webhookSecret} onChange={(e) => setForm({ ...form, webhookSecret: e.target.value })} placeholder={r.webhookSecretSet ? "••••••••••••" : ""} autoComplete="new-password" spellCheck={false} />
+          </Field>
+        </div>
+        <label className="flex items-center gap-3 text-sm">
+          <input type="checkbox" checked={form.enabled} onChange={(e) => setForm({ ...form, enabled: e.target.checked })} className="size-4 accent-[var(--accent)]" />
+          <span>
+            <span className="font-medium">Turn on online payments</span>
+            <span className="text-muted"> {testMode ? "(test mode: no real money is taken)" : "for every school"}</span>
+          </span>
+        </label>
+        <div className="flex justify-end">
+          <Button onClick={save} loading={busy} disabled={!dirty || busy || (form.enabled && (!form.keyId.trim() || (!r.secretSet && !form.keySecret.trim())))}>
             Save and check
           </Button>
         </div>
@@ -407,7 +507,7 @@ export function AiSettingsPage() {
   return (
     <>
       <SettingsBack />
-      <PageHeader title="AI assistant (Gemini)" description="Ask EduFlow and Write with AI, for schools whose plan includes the AI assistant." icon={SETTINGS_PAGES[3].icon} />
+      <PageHeader title="AI assistant (Gemini)" description="Ask EduFlow and Write with AI, for schools whose plan includes the AI assistant." icon={SETTINGS_PAGES[4].icon} />
       {res.error && <Alert>{res.error}</Alert>}
       <div className="max-w-3xl space-y-6">
         {res.data ? <AiCard settings={res.data} onSaved={res.setData} /> : <Skeleton className="h-96" />}

@@ -63,6 +63,10 @@ export interface PlatformPlan {
   priceYearly: number;
   studentLimit: number;
   features: Record<Feature, boolean>;
+  /** "Most popular" badge on the pricing pages */
+  popular: boolean;
+  /** Why to choose this plan: short selling points */
+  highlights: string[];
   isDefault: boolean;
   archived: boolean;
   order: number;

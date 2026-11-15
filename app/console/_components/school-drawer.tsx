@@ -433,7 +433,7 @@ function BillingSection({ id, d, plans, busy, run }: Ctx) {
                     {formatMoney(p.amount)} · {p.planName} · {p.periods} {p.cycle === "yearly" ? "yr" : "mo"}
                   </span>
                   <span className="block truncate text-xs text-muted">
-                    {formatDate(p.createdAt)} · {METHODS.find((m) => m.id === p.method)?.label ?? p.method}
+                    {formatDate(p.createdAt)} · {p.method === "razorpay" ? "Razorpay (online)" : (METHODS.find((m) => m.id === p.method)?.label ?? p.method)}
                     {p.reference && ` · ${p.reference}`} · covers to {formatDate(p.periodEnd)}
                     {p.recordedByName && ` · by ${p.recordedByName}`}
                   </span>
