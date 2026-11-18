@@ -6,23 +6,24 @@ export function cx(...classes: (string | false | null | undefined)[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-/** The EduFlow wordmark (book + name); swaps to the light-on-dark artwork in dark mode. */
-export function Logo({ href = "/", size = "md" }: { href?: string; size?: "sm" | "md" | "lg" }) {
-  const h = size === "sm" ? "h-6" : size === "lg" ? "h-9" : "h-7";
+/** The Zaref Campus logo: Zaref's Z and "Campus" (green, mint in dark mode). `tone="dark"` for dark panels. */
+export function Logo({ href = "/", size = "md", tone }: { href?: string; size?: "sm" | "md" | "lg"; tone?: "dark" }) {
+  const z = size === "sm" ? "h-6 w-6" : size === "lg" ? "h-10 w-10" : "h-7 w-7";
+  const text = size === "sm" ? "text-[22px]" : size === "lg" ? "text-[34px]" : "text-[26px]";
   return (
-    <Link href={href} aria-label="EduFlow home" className="inline-flex shrink-0 items-center">
-      <Image src="/images/brand/wordmark-light.png" alt="EduFlow" width={541} height={96} priority className={cx("logo-light w-auto", h)} />
-      <Image src="/images/brand/wordmark-dark.png" alt="" aria-hidden width={534} height={96} priority className={cx("logo-dark w-auto", h)} />
+    <Link href={href} aria-label="Zaref Campus home" className="inline-flex shrink-0 items-center gap-1.5">
+      <Image src="/images/brand/zaref-z.png" alt="" width={512} height={512} priority className={z} />
+      <span className={cx("font-[family-name:var(--font-brand)] font-bold leading-none tracking-[-0.035em]", text, tone === "dark" ? "text-[#3ddc97]" : "text-brand-green")}>Campus</span>
+      <span className="sr-only">Zaref Campus</span>
     </Link>
   );
 }
 
-/** Just the book, for tight spaces such as the phone header. */
+/** Just Zaref's Z, for tight spaces such as the phone header. */
 export function LogoMark({ href = "/", className = "size-8" }: { href?: string; className?: string }) {
   return (
-    <Link href={href} aria-label="EduFlow home" className="inline-flex shrink-0 items-center">
-      <Image src="/images/brand/mark-light.png" alt="EduFlow" width={110} height={110} priority className={cx("logo-light", className)} />
-      <Image src="/images/brand/mark-dark.png" alt="" aria-hidden width={110} height={110} priority className={cx("logo-dark", className)} />
+    <Link href={href} aria-label="Zaref Campus home" className="inline-flex shrink-0 items-center">
+      <Image src="/images/brand/zaref-z.png" alt="Zaref Campus" width={512} height={512} priority className={className} />
     </Link>
   );
 }

@@ -82,7 +82,7 @@ export const WRITE_LANGUAGES: { id: WriteLanguage; label: string }[] = [
   { id: "mr", label: "मराठी" },
 ];
 
-/** The language "Ask EduFlow" answers in ("auto": the question's language). Remembered per browser. */
+/** The language "Ask Zia" answers in ("auto": the question's language). Remembered per browser. */
 export type ChatLanguage = "auto" | WriteLanguage;
 export const CHAT_LANGUAGES: { id: ChatLanguage; label: string; short: string }[] = [
   { id: "auto", label: "Auto", short: "Auto" },

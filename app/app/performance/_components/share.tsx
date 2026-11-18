@@ -88,7 +88,7 @@ export function ShareLeaderboard({ scope, ranked, onClose, onSendParents }: { sc
         {/* The image: fixed light colours so it looks the same everywhere it's shared */}
         <div className="overflow-x-auto rounded-2xl border border-border bg-surface-muted p-3">
           <div ref={cardRef} className="mx-auto w-[400px] overflow-hidden rounded-2xl bg-white text-zinc-900 shadow-sm">
-            <div className="relative bg-[#1b2563] px-6 pb-5 pt-6 text-white">
+            <div className="relative bg-[#002c89] px-6 pb-5 pt-6 text-white">
               <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_100%_0%,rgba(61,220,151,0.25),transparent_60%)]" />
               <p className="relative text-xs font-medium uppercase tracking-[0.18em] text-white/70">{scope.school}</p>
               <p className="relative mt-1 text-2xl font-bold">🏆 {BOARD_TITLE[scope.board]}</p>
@@ -118,7 +118,7 @@ export function ShareLeaderboard({ scope, ranked, onClose, onSendParents }: { sc
             </ol>
             <div className="flex items-center justify-between border-t border-zinc-100 px-6 py-3 text-[11px] text-zinc-500">
               <span>{scope.board === "overall" ? "70% marks + 30% attendance" : scope.board === "marks" ? "Average test marks" : "Attendance rate"}</span>
-              <span>EduFlow</span>
+              <span>Zaref Campus</span>
             </div>
           </div>
         </div>

@@ -177,7 +177,7 @@ export default function LoginPage() {
       subtitle="Sign in to manage your school."
       footer={
         <>
-          New to EduFlow?{" "}
+          New to Zaref Campus?{" "}
           <Link href="/register" className="font-medium text-accent hover:underline">
             Start a 7-day free trial
           </Link>

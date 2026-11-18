@@ -20,7 +20,7 @@ export function Dashboard({ onOpenSchool, onGo }: { onOpenSchool: (id: string) =
 
   return (
     <>
-      <PageHeader title="Dashboard" description="How EduFlow is growing, and which schools need attention." icon="M4 13h6V4H4zM14 20h6v-9h-6zM14 4v3h6V4zM4 20h6v-3H4z" />
+      <PageHeader title="Dashboard" description="How Zaref Campus is growing, and which schools need attention." icon="M4 13h6V4H4zM14 20h6v-9h-6zM14 4v3h6V4zM4 20h6v-3H4z" />
       {res.error && <Alert>{res.error}</Alert>}
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -114,7 +114,7 @@ export function Dashboard({ onOpenSchool, onGo }: { onOpenSchool: (id: string) =
         <ActionList title="Expired" empty="No expired schools." rows={d?.lists.expired} onOpen={onOpenSchool} meta={(s) => endsText(s.subscription)} />
         <ActionList
           title="Quiet or never used"
-          empty="Every school is using EduFlow."
+          empty="Every school is using Zaref Campus."
           rows={d?.lists.quiet}
           onOpen={onOpenSchool}
           meta={(s) => (s.lastActiveAt ? `Last seen ${new Date(s.lastActiveAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}` : HEALTH_META[s.health].label)}

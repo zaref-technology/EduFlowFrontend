@@ -71,7 +71,7 @@ export function InstallAppButton({ className, onDone }: { className?: string; on
         className="flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left text-sm hover:bg-surface-muted"
       >
         <Icon d={PHONE_ICON} className="text-accent" />
-        <span className="flex-1">Install EduFlow app</span>
+        <span className="flex-1">Install Zaref Campus app</span>
       </button>
       {iosHelp && (
         <p className="mx-2.5 mb-1 rounded-lg bg-surface-muted px-3 py-2 text-xs text-muted">
@@ -91,7 +91,14 @@ export function PwaRuntime() {
   const [waiting, setWaiting] = useState<ServiceWorker | null>(null);
 
   useEffect(() => {
-    if (process.env.NODE_ENV !== "production" || !("serviceWorker" in navigator)) return;
+    if (!("serviceWorker" in navigator)) return;
+    if (process.env.NODE_ENV !== "production") {
+      // Development: a worker left over from a production build on this address would keep
+      // serving old CSS and JS from its cache, so remove it and its caches
+      navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((r) => r.unregister()));
+      if ("caches" in window) caches.keys().then((keys) => keys.forEach((k) => caches.delete(k)));
+      return;
+    }
     let reloading = false;
     const onController = () => {
       if (reloading) return;
@@ -126,7 +133,7 @@ export function PwaRuntime() {
         <Icon d="M20 11a8 8 0 10-2.3 5.7M20 4v7h-7" />
       </span>
       <p className="min-w-0 flex-1 text-sm">
-        <span className="font-semibold">A new version of EduFlow is ready.</span>
+        <span className="font-semibold">A new version of Zaref Campus is ready.</span>
       </p>
       <Button size="sm" onClick={() => waiting.postMessage("SKIP_WAITING")}>
         Refresh
@@ -160,7 +167,7 @@ export function InstallCard({ className }: { className?: string }) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/icons/icon-192.png" alt="" className="size-11 shrink-0 rounded-xl" />
       <div className="min-w-0 flex-1">
-        <p className="font-semibold">Install the EduFlow app</p>
+        <p className="font-semibold">Install the Zaref Campus app</p>
         <p className="text-sm text-muted">
           {state === "ios" && iosHelp ? (
             <>

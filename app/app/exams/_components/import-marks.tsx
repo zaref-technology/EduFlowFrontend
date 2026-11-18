@@ -74,11 +74,11 @@ export function ImportMarksDrawer({
       [`${exam.name} · Class ${classLabel(exam.grade, exam.section)} · how to fill`],
       [""],
       ["1. Type each student's marks under the subject. Don't go above the maximum shown in the heading."],
-      ["2. Write AB for a student who was absent. Leave a cell empty to keep what's already in EduFlow."],
+      ["2. Write AB for a student who was absent. Leave a cell empty to keep what's already in Zaref Campus."],
       ["3. Half marks are fine (e.g. 42.5)."],
       ["4. Don't change the Admission no column: it's how each row is matched to the student."],
       [canRemark ? "5. Remarks (optional) appear on the student's report card." : "5. Only the subjects you teach are in this file."],
-      ["6. Save the file, then in EduFlow open the test → Import marks → Upload."],
+      ["6. Save the file, then in Zaref Campus open the test → Import marks → Upload."],
     ];
     await downloadSpreadsheet(`${baseName}-template`, [header, ...rows], "xlsx", { sheetName: "Marks", extraSheets: [{ name: "How to fill", rows: help }] });
   }

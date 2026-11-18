@@ -29,8 +29,8 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: SITE.title, description: SITE.description },
 };
 
-// The glow used across the page (the same colours as the EduFlow AI section)
-const GLOW = "conic-gradient(from 180deg at 50% 50%, #8f9be8, #3ddc97, #fbbf24, #f472b6, #8f9be8)";
+// The glow used across the page (the same colours as the Zia section)
+const GLOW = "conic-gradient(from 180deg at 50% 50%, #5b9dff, #3ddc97, #fbbf24, #f472b6, #5b9dff)";
 const GRADIENT_TEXT = "text-glow";
 const CTA = "inline-flex h-12 items-center justify-center gap-2 rounded-full bg-foreground px-7 text-base font-semibold text-background transition-[background-color,transform] hover:bg-foreground/85 active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
 const CTA_GHOST = "inline-flex h-12 items-center justify-center gap-2 rounded-full border border-foreground/15 px-7 text-base font-medium text-foreground transition-[background-color,transform] hover:bg-foreground/[0.06] active:scale-[0.97]";
@@ -71,11 +71,11 @@ const INCLUDED = [
 const FAQ = [
   {
     q: `How does the ${TRIAL_DAYS}-day free trial work?`,
-    a: `Create an account and start using EduFlow straight away. The trial lasts ${TRIAL_DAYS} days, needs no credit card, and everything you add stays when you choose a plan.`,
+    a: `Create an account and start using Zaref Campus straight away. The trial lasts ${TRIAL_DAYS} days, needs no credit card, and everything you add stays when you choose a plan.`,
   },
   {
     q: "Do I need to install anything?",
-    a: "No. EduFlow runs in the browser on any phone, tablet or computer. If you like, install it as an app from the browser (Android: Install app; iPhone: Share → Add to Home Screen) for an icon and full-screen use.",
+    a: "No. Zaref Campus runs in the browser on any phone, tablet or computer. If you like, install it as an app from the browser (Android: Install app; iPhone: Share → Add to Home Screen) for an icon and full-screen use.",
   },
   {
     q: "Does it work without internet?",
@@ -91,7 +91,7 @@ const FAQ = [
   },
   {
     q: "How do WhatsApp messages reach parents?",
-    a: "Out of the box, EduFlow opens WhatsApp with the message ready and you tap Send. Free, no setup. Schools with a WhatsApp Business account can switch on automatic sending with delivered and read ticks.",
+    a: "Out of the box, Zaref Campus opens WhatsApp with the message ready and you tap Send. Free, no setup. Schools with a WhatsApp Business account can switch on automatic sending with delivered and read ticks.",
   },
   {
     q: "Can we use our own logo on receipts and report cards?",
@@ -102,8 +102,8 @@ const FAQ = [
     a: "Yes. They can sign in with a one-time code sent by SMS to the number on their account, or with their email and password.",
   },
   {
-    q: "What is EduFlow AI, and who can use it?",
-    a: "An assistant inside EduFlow that answers questions from your records (in English, Hindi or Marathi), records fees or attendance after you confirm, writes report-card remarks and parent messages, and makes presentations. It's part of the Pro plan; an owner or admin turns it on. To answer, the records needed are sent to Google's Gemini AI, and each member only gets answers from what their role can see.",
+    q: "What is Zia, and who can use it?",
+    a: "An assistant inside Zaref Campus that answers questions from your records (in English, Hindi or Marathi), records fees or attendance after you confirm, writes report-card remarks and parent messages, and makes presentations. It's part of the Pro plan; an owner or admin turns it on. To answer, the records needed are sent to Google's Gemini AI, and each member only gets answers from what their role can see.",
   },
   {
     q: "Is our data safe?",
@@ -115,7 +115,7 @@ const FAQ = [
   },
 ];
 
-/** Structured data for search engines and AI assistants: who makes EduFlow, what it is, and the FAQ. */
+/** Structured data for search engines and AI assistants: who makes Zaref Campus, what it is, and the FAQ. */
 const JSON_LD = {
   "@context": "https://schema.org",
   "@graph": [
@@ -184,7 +184,7 @@ function SectionTitle({ eyebrow, title, body, center }: { eyebrow: string; title
 /** A framed piece of product UI, used as illustration. */
 function Frame({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cx("overflow-hidden rounded-[24px] border border-foreground/[0.09] bg-surface shadow-[0_40px_100px_-40px_rgba(143,155,232,0.45)]", className)}>
+    <div className={cx("overflow-hidden rounded-[24px] border border-foreground/[0.09] bg-surface shadow-[0_40px_100px_-40px_rgba(10,95,230,0.45)]", className)}>
       <div className="flex items-center gap-1.5 border-b border-foreground/[0.06] bg-foreground/[0.02] px-4 py-2.5">
         <span className="size-2.5 rounded-full bg-border" />
         <span className="size-2.5 rounded-full bg-border" />
@@ -646,13 +646,13 @@ export default function Home() {
           <div className="relative mx-auto max-w-6xl px-4 pb-28 pt-20 text-center sm:px-6 sm:pt-28">
             <a href="#ai" className="inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-foreground/[0.04] px-3.5 py-1.5 text-xs font-medium text-foreground/70 backdrop-blur transition-colors hover:border-foreground/20 hover:text-foreground">
               <span className="rounded-full bg-[#128c4a] px-1.5 py-px text-[10px] font-semibold text-white">NEW</span>
-              EduFlow AI: ask, write and present →
+              Meet Zia, your AI assistant: ask, write and present →
             </a>
             <h1 className="mx-auto mt-8 max-w-4xl text-5xl font-semibold tracking-[-0.05em] text-balance sm:text-7xl sm:leading-[1.02] lg:text-[5.5rem]">
               Fees, attendance and parents. <span className={GRADIENT_TEXT}>All in one place.</span>
             </h1>
             <p className="mx-auto mt-7 max-w-2xl text-lg leading-8 text-pretty text-muted sm:text-xl">
-              EduFlow helps schools, tuition centres and coaching institutes collect fees on time, take attendance in a minute, publish results and keep every
+              Zaref Campus helps schools, tuition centres and coaching institutes collect fees on time, take attendance in a minute, publish results and keep every
               parent in the loop, from any phone or computer.
             </p>
             <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
@@ -707,7 +707,7 @@ export default function Home() {
           <FeatureBento />
         </section>
 
-        {/* EduFlow AI */}
+        {/* Zia */}
         <AiShowcase />
 
         {/* Spotlights */}
@@ -721,7 +721,7 @@ export default function Home() {
                 "Monthly, quarterly or yearly installments with one-tap concessions",
                 "Cash, UPI, card, bank transfer or cheque, with part payments and advance",
                 "Receipts with your logo and the amount in words, as PDF, image or print",
-                "Fees paid before EduFlow carried over, so nobody is asked twice",
+                "Fees paid before Zaref Campus carried over, so nobody is asked twice",
                 "One tap to see every overdue student and remind their parents",
               ]}
               visual={<FeesVisual />}
@@ -800,11 +800,11 @@ export default function Home() {
         <section id="trial" className="scroll-mt-20 px-4 pb-28 sm:px-6 sm:pb-36">
           <div className="ai-reveal relative mx-auto max-w-5xl overflow-hidden rounded-[36px] border border-foreground/10 bg-foreground/[0.035] px-6 py-16 text-foreground sm:px-14">
             <div aria-hidden className="pointer-events-none absolute -right-32 -top-32 size-96 rounded-full opacity-30 blur-3xl" style={{ background: GLOW }} />
-            <div aria-hidden className="pointer-events-none absolute -bottom-40 -left-24 size-96 rounded-full bg-[#2b3a8c]/40 blur-3xl" />
+            <div aria-hidden className="pointer-events-none absolute -bottom-40 -left-24 size-96 rounded-full bg-[#0a5fe6]/40 blur-3xl" />
             <div className="relative grid items-center gap-10 lg:grid-cols-[1.2fr_1fr]">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.16em] text-brand-green">Free trial</p>
-                <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-balance sm:text-5xl">Try EduFlow free for {TRIAL_DAYS} days</h2>
+                <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-balance sm:text-5xl">Try Zaref Campus free for {TRIAL_DAYS} days</h2>
                 <p className="mt-4 max-w-md text-foreground/70">Set up your institute, import your students and collect your first fee before the week is out. No credit card needed.</p>
                 <Link href="/register" className={cx(CTA, "mt-9")}>
                   Start your free trial

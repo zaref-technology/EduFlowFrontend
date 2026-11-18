@@ -1,4 +1,4 @@
-// Paying for EduFlow online: Plan & billing data and Razorpay Checkout.
+// Paying for Zaref Campus online: Plan & billing data and Razorpay Checkout.
 import { api } from "@/lib/api";
 import type { Access, PlatformPlan } from "@/lib/platform";
 
@@ -91,12 +91,12 @@ export async function payForPlan(planId: string, cycle: Cycle): Promise<BillingO
       order_id: order.orderId,
       amount: order.amount,
       currency: order.currency,
-      name: "EduFlow",
+      name: "Zaref Campus",
       description: `${order.planName} plan · ${order.cycle === "yearly" ? "1 year" : "1 month"}`,
       image: `${window.location.origin}/icons/icon-192.png`,
       prefill: order.prefill,
       notes: { school: order.school },
-      theme: { color: "#2b3a8c" },
+      theme: { color: "#0a5fe6" },
       handler: (r: RazorpayResponse) => {
         api<BillingOverview>("/api/billing/confirm", { method: "POST", body: { orderId: r.razorpay_order_id, paymentId: r.razorpay_payment_id, signature: r.razorpay_signature } }).then(resolve, reject);
       },

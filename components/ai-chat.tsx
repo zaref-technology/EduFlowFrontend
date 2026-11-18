@@ -118,11 +118,11 @@ function useAskVisible() {
 /** Opens the chat panel; with a question, asks it in a new chat (e.g. from the daily summary). */
 export const openAsk = (question?: string) => window.dispatchEvent(new CustomEvent("eduflow:ask", { detail: question ? { question } : null }));
 
-/** "Ask EduFlow" in the top bar: a labelled button on desktop, an icon on phones. */
+/** "Ask Zia" in the top bar: a labelled button on desktop, an icon on phones. */
 export function AskButton({ compact }: { compact?: boolean }) {
   if (!useAskVisible()) return null;
   return compact ? (
-    <button onClick={() => openAsk()} aria-label="Ask EduFlow" className="grid size-9 place-items-center rounded-full text-accent active:bg-accent-soft">
+    <button onClick={() => openAsk()} aria-label="Ask Zia" className="grid size-9 place-items-center rounded-full text-accent active:bg-accent-soft">
       <Icon d={SPARKLE_ICON} className="size-5" />
     </button>
   ) : (
@@ -131,7 +131,7 @@ export function AskButton({ compact }: { compact?: boolean }) {
       className="flex h-9 shrink-0 items-center gap-2 rounded-lg border border-accent/30 bg-accent-soft px-3 text-sm font-medium text-accent transition-colors hover:border-accent/60"
     >
       <Icon d={SPARKLE_ICON} />
-      Ask EduFlow
+      Ask Zia
     </button>
   );
 }
@@ -401,7 +401,7 @@ function ChatPanel({ role, store, startWith, onStarted, onClose }: { role: strin
               <Icon d={SPARKLE_ICON} className={cx("size-4", busy && "motion-safe:animate-spin-slow")} />
             </span>
           )}
-          <span className="min-w-0 truncate">{view === "history" ? "Your chats" : title || "Ask EduFlow"}</span>
+          <span className="min-w-0 truncate">{view === "history" ? "Your chats" : title || "Ask Zia"}</span>
           <span className="ml-auto flex shrink-0 items-center gap-0.5 pl-2">
             {view === "chat" && (
               <button onClick={() => setView("history")} aria-label="Chat history" title="Chat history" className={headerButton}>

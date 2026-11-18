@@ -359,7 +359,7 @@ export function LedgerDrawer({
                         <span className="flex items-center gap-2">
                           <span className="font-mono text-sm font-medium">{p.receiptNo}</span>
                           {p.voided && <Badge tone="danger">Void</Badge>}
-                          {p.kind === "opening" && <Badge>Paid before EduFlow</Badge>}
+                          {p.kind === "opening" && <Badge>Paid before Zaref Campus</Badge>}
                         </span>
                         <span className="block text-xs text-muted">
                           {formatDay(p.date, "short")} · {MODE_LABEL[p.mode]}

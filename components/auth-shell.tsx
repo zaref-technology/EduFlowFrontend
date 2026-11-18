@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { useState, type InputHTMLAttributes, type ReactNode } from "react";
 import { PASSWORD_RULES } from "./password-rules";
 import { ThemeToggle } from "./theme-toggle";
@@ -28,13 +26,13 @@ export function AuthShell({ title, subtitle, children, footer }: { title: string
   return (
     <main className="grid min-h-dvh flex-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
       {/* Brand panel: fixed brand colours so it looks the same in light and dark mode */}
-      <aside className="relative hidden overflow-hidden bg-[#1b2563] text-white lg:flex lg:flex-col lg:justify-between lg:p-12">
-        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_100%_0%,rgba(61,220,151,0.22),transparent_60%),radial-gradient(ellipse_70%_60%_at_0%_100%,rgba(143,155,232,0.35),transparent_60%)]" />
+      <aside className="relative hidden overflow-hidden bg-[#081426] text-white lg:flex lg:flex-col lg:justify-between lg:p-12">
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_100%_0%,rgba(61,220,151,0.22),transparent_60%),radial-gradient(ellipse_70%_60%_at_0%_100%,rgba(10,95,230,0.35),transparent_60%)]" />
         <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] [background-size:44px_44px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
 
-        <Link href="/" aria-label="EduFlow home" className="relative inline-flex w-fit">
-          <Image src="/images/brand/wordmark-dark.png" alt="EduFlow" width={534} height={96} priority className="h-8 w-auto" />
-        </Link>
+        <div className="relative w-fit">
+          <Logo tone="dark" size="lg" />
+        </div>
 
         <div className="relative max-w-md">
           <h2 className="text-3xl font-semibold leading-tight tracking-tight xl:text-4xl">

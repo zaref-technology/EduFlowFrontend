@@ -23,13 +23,13 @@ export default async function OpengraphImage() {
           padding: "72px 80px",
           background: "#050609",
           backgroundImage:
-            "radial-gradient(circle at 85% 10%, rgba(143,155,232,0.45), transparent 45%), radial-gradient(circle at 15% 100%, rgba(61,220,151,0.30), transparent 45%), radial-gradient(circle at 100% 100%, rgba(244,114,182,0.25), transparent 40%)",
+            "radial-gradient(circle at 85% 10%, rgba(10,95,230,0.45), transparent 45%), radial-gradient(circle at 15% 100%, rgba(61,220,151,0.30), transparent 45%), radial-gradient(circle at 100% 100%, rgba(244,114,182,0.25), transparent 40%)",
           color: "#f5f5f7",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
           <img src={iconSrc} width={72} height={72} style={{ borderRadius: 18 }} alt="" />
-          <div style={{ display: "flex", fontSize: 40, fontWeight: 700, letterSpacing: -1 }}>EduFlow</div>
+          <div style={{ display: "flex", fontSize: 40, fontWeight: 700, letterSpacing: -1 }}>Zaref Campus</div>
           <div style={{ display: "flex", marginLeft: 8, fontSize: 22, color: "#9b9ea8", letterSpacing: 4 }}>{SITE.tagline.toUpperCase()}</div>
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -41,7 +41,7 @@ export default async function OpengraphImage() {
               fontWeight: 700,
               letterSpacing: -3,
               lineHeight: 1.1,
-              backgroundImage: "linear-gradient(90deg, #aab3ef, #3ddc97 45%, #fbbf24 80%, #f472b6)",
+              backgroundImage: "linear-gradient(90deg, #5b9dff, #3ddc97 45%, #fbbf24 80%, #f472b6)",
               backgroundClip: "text",
               color: "transparent",
             }}

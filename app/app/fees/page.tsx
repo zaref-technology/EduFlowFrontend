@@ -69,7 +69,7 @@ function FeesView() {
   // Bumped after any change so every list refetches
   const [refreshKey, setRefreshKey] = useState(0);
   const refresh = () => setRefreshKey((k) => k + 1);
-  // In the URL, so a link (e.g. from Ask EduFlow) can open a receipt and Back closes it
+  // In the URL, so a link (e.g. from Ask Zia) can open a receipt and Back closes it
   const receiptId = params.get("receipt");
   const setReceiptId = (id: string | null) => go({ receipt: id }, id !== null);
   const [registerKey, setRegisterKey] = useState(0);

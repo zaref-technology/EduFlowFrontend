@@ -249,8 +249,8 @@ function LogoUploader({ school, onChange, onError }: { school: School; onChange:
       const out = (await res.json().catch(() => null)) as { secure_url?: string; error?: { message: string } } | null;
       if (!res.ok || !out?.secure_url) {
         const reason = out?.error?.message ?? "";
-        // The platform's Cloudinary key can't upload: only EduFlow can fix that
-        throw new Error(/permission|forbidden/i.test(reason) ? "Logo upload is set up but not allowed yet on EduFlow's side. Ask EduFlow support (Console → Settings → Test connection)." : reason || "Upload failed. Try again.");
+        // The platform's Cloudinary key can't upload: only Zaref Campus can fix that
+        throw new Error(/permission|forbidden/i.test(reason) ? "Logo upload is set up but not allowed yet on Zaref Campus's side. Ask Zaref Campus support (Console → Settings → Test connection)." : reason || "Upload failed. Try again.");
       }
       const { school: saved } = await api<{ school: School }>("/api/school/logo", { method: "PUT", body: { url: out.secure_url } });
       onChange(saved, "Logo saved. It now appears on receipts and report cards.");
@@ -289,7 +289,7 @@ function LogoUploader({ school, onChange, onError }: { school: School; onChange:
         <p className="text-sm font-semibold">Logo</p>
         <p className="text-xs text-muted">
           {school.logoUploads === false && !school.logoUrl
-            ? "Logo upload isn't switched on yet. Ask EduFlow support."
+            ? "Logo upload isn't switched on yet. Ask Zaref Campus support."
             : `Shown on receipts and report cards. Pick a PNG, JPG or WebP; you crop it to a square and it's saved at ${LOGO_SIZE} × ${LOGO_SIZE} px.`}
         </p>
       </div>

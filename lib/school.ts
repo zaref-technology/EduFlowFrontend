@@ -26,7 +26,7 @@ export interface School {
   receiptNote: string;
   /** Logo on Cloudinary ("" = none) */
   logoUrl: string;
-  /** Whether logo upload is available (set up by EduFlow) */
+  /** Whether logo upload is available (set up by Zaref Campus) */
   logoUploads?: boolean;
   /** How fee receipts look (Settings → Receipts) */
   receipt?: ReceiptSettings;

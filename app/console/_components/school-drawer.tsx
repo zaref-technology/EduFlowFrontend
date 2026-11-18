@@ -756,7 +756,7 @@ function TeamSection({ id, d, busy, run }: Ctx) {
         </ul>
       </Block>
 
-      <Block title="Add member" hint="Someone who already has an EduFlow account.">
+      <Block title="Add member" hint="Someone who already has a Zaref Campus account.">
         <form
           className="flex flex-wrap gap-2"
           onSubmit={async (e) => {
@@ -879,7 +879,7 @@ function DataSection({ id, d, busy, run, onClose }: Ctx) {
 
   return (
     <>
-      <Block title="Export all data" hint="Everything this school has in EduFlow as one JSON file (for a data request or before deleting).">
+      <Block title="Export all data" hint="Everything this school has in Zaref Campus as one JSON file (for a data request or before deleting).">
         <Button variant="secondary" loading={busy === "export"} onClick={exportData}>
           <Icon d={ICONS.download} />
           Download export

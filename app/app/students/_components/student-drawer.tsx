@@ -384,7 +384,7 @@ function FeesPaidSection({ value: f, onChange, error }: { value: FeesPaidDraft; 
             {(
               [
                 ["opening", "Paid earlier", "Has a paper receipt. Not counted in today's collection."],
-                ["receipt", "Collecting now", "Gives an EduFlow receipt."],
+                ["receipt", "Collecting now", "Gives a Zaref Campus receipt."],
               ] as const
             ).map(([kind, label, hint]) => (
               <button

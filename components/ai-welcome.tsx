@@ -1,6 +1,6 @@
 "use client";
 
-// The "Ask EduFlow" start screen: a greeting, what the assistant can do, starter questions
+// The "Ask Zia" start screen: a greeting, what the assistant can do, starter questions
 // and example actions, in the chosen reply language. Motion is skipped for reduced motion.
 import { Icon, cx } from "./ui";
 import type { WriteLanguage } from "@/lib/ai";
@@ -44,6 +44,8 @@ const SUGGESTION_LOOK: Record<string, [string, Tone][]> = {
 
 const TEXT: Record<WriteLanguage, {
   greet: [string, string, string];
+  /** The assistant introducing itself */
+  intro: string;
   headline: (school: string) => string;
   pills: [string, string, string];
   ask: string;
@@ -56,6 +58,7 @@ const TEXT: Record<WriteLanguage, {
 }> = {
   en: {
     greet: ["Good morning", "Good afternoon", "Good evening"],
+    intro: "I'm Zia",
     headline: (s) => `What can I do for ${s} today?`,
     pills: ["Live school records", "Prepares changes, you confirm", "English · हिन्दी · मराठी"],
     ask: "Ask",
@@ -63,11 +66,12 @@ const TEXT: Record<WriteLanguage, {
     doHint: "Nothing is saved until you confirm",
     fill: "Use",
     history: "Your earlier chats",
-    trust: "Uses only what your role can see in EduFlow. Every change waits for your confirmation.",
+    trust: "Uses only what your role can see in Zaref Campus. Every change waits for your confirmation.",
     actions: { fee: "Record ₹1,000 fee for Sara", attendance: "Mark Riya absent today", note: "Note about Aman: great improvement in maths" },
   },
   hi: {
     greet: ["सुप्रभात", "नमस्ते", "शुभ संध्या"],
+    intro: "मैं Zia हूँ",
     headline: (s) => `आज ${s} के लिए क्या करूँ?`,
     pills: ["स्कूल का लाइव डेटा", "बदलाव तैयार, पुष्टि आप करें", "English · हिन्दी · मराठी"],
     ask: "पूछें",
@@ -75,11 +79,12 @@ const TEXT: Record<WriteLanguage, {
     doHint: "आपकी पुष्टि के बिना कुछ सेव नहीं होता",
     fill: "लिखें",
     history: "पिछली बातचीत",
-    trust: "सिर्फ़ वही जानकारी जो आपकी भूमिका EduFlow में देख सकती है। हर बदलाव आपकी पुष्टि के बाद ही।",
+    trust: "सिर्फ़ वही जानकारी जो आपकी भूमिका Zaref Campus में देख सकती है। हर बदलाव आपकी पुष्टि के बाद ही।",
     actions: { fee: "सारा की ₹1,000 फीस जमा करो", attendance: "रिया को आज अनुपस्थित मार्क करो", note: "अमन के बारे में नोट: गणित में अच्छा सुधार" },
   },
   mr: {
     greet: ["सुप्रभात", "नमस्कार", "शुभ संध्याकाळ"],
+    intro: "मी Zia",
     headline: (s) => `आज ${s} साठी काय करू?`,
     pills: ["शाळेची थेट माहिती", "बदल तयार, पुष्टी तुम्ही करा", "English · हिन्दी · मराठी"],
     ask: "विचारा",
@@ -87,7 +92,7 @@ const TEXT: Record<WriteLanguage, {
     doHint: "तुमच्या पुष्टीशिवाय काहीही सेव्ह होत नाही",
     fill: "लिहा",
     history: "मागील संभाषणे",
-    trust: "फक्त तुमच्या भूमिकेला EduFlow मध्ये दिसणारी माहिती. प्रत्येक बदल तुमच्या पुष्टीनंतरच.",
+    trust: "फक्त तुमच्या भूमिकेला Zaref Campus मध्ये दिसणारी माहिती. प्रत्येक बदल तुमच्या पुष्टीनंतरच.",
     actions: { fee: "साराची ₹1,000 फी जमा करा", attendance: "रियाला आज गैरहजर मार्क करा", note: "अमनबद्दल नोंद: गणितात चांगली सुधारणा" },
   },
 };
@@ -142,7 +147,7 @@ export function ChatWelcome({
         </div>
         <p className="text-sm text-muted motion-safe:animate-rise" style={stagger(0)}>
           {greet}
-          {first ? `, ${first}` : ""} 👋
+          {first ? `, ${first}` : ""} 👋 <span className="font-medium text-foreground">{t.intro}</span>
         </p>
         <h2
           className="mt-1 max-w-md bg-gradient-to-r from-foreground via-accent to-violet-500 bg-clip-text text-2xl font-semibold tracking-tight text-transparent text-balance motion-safe:animate-rise"

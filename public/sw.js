@@ -1,4 +1,4 @@
-// EduFlow service worker: makes the app installable, loads it fast, and shows a friendly
+// Zaref Campus service worker: makes the app installable, loads it fast, and shows a friendly
 // page when there's no internet. It never stores API responses (your school's data) or
 // anything under /api: those always go to the network.
 const VERSION = "eduflow-v2";

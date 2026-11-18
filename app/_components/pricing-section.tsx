@@ -65,7 +65,7 @@ export function PricingSection({ trialDays, compare = false }: { trialDays: numb
           </div>
         )}
       </div>
-      <p className="mt-6 text-center text-sm text-muted">Prices are per school. Try EduFlow free for {trialDays} days, no credit card needed.</p>
+      <p className="mt-6 text-center text-sm text-muted">Prices are per school. Try Zaref Campus free for {trialDays} days, no credit card needed.</p>
       {compare && plans && plans.length > 1 && (
         <div className="mt-24">
           <h2 className="text-center text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">Compare plans</h2>

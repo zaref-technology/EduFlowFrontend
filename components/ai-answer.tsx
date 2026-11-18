@@ -1,6 +1,6 @@
 "use client";
 
-// How "Ask EduFlow" answers are shown: a small, safe markdown renderer (paragraphs, lists,
+// How "Ask Zia" answers are shown: a small, safe markdown renderer (paragraphs, lists,
 // tables, **bold**, `code`, links into the app only; never HTML), tables with an
 // expanded view (search, sort, CSV), and a quick look at a student without leaving the chat.
 import Link from "next/link";

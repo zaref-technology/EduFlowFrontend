@@ -95,7 +95,7 @@ export function PlanBanners({ canManage }: { canManage: boolean }) {
   if (!status) return null;
   const sub = status.subscription;
   const announcements = status.announcements.filter((a: Announcement) => !dismissed.includes(a.id));
-  const renew = supportLink(status, "Hi, I'd like to renew our EduFlow plan.");
+  const renew = supportLink(status, "Hi, I'd like to renew our Zaref Campus plan.");
 
   const dismiss = (id: string) => {
     const next = [...dismissed, id];
@@ -111,7 +111,7 @@ export function PlanBanners({ canManage }: { canManage: boolean }) {
   if (sub.readOnly) {
     items.push(
       <Banner key="ro" tone="danger">
-        <p className="font-semibold">{sub.status === "suspended" ? "This school's EduFlow account is on hold" : "Your EduFlow plan has ended"}</p>
+        <p className="font-semibold">{sub.status === "suspended" ? "This school's Zaref Campus account is on hold" : "Your Zaref Campus plan has ended"}</p>
         <p className="text-muted">
           Everything is still here and you can view it, but nothing can be added or changed.{" "}
           {canManage ? (
@@ -140,7 +140,7 @@ export function PlanBanners({ canManage }: { canManage: boolean }) {
         <span className="font-semibold">
           Free trial: {sub.daysLeft === 0 ? "ends today" : sub.daysLeft === 1 ? "1 day left" : `${sub.daysLeft} days left`}.
         </span>{" "}
-        {soon ? "Choose a plan to keep everything running." : `You're trying the ${sub.planName ?? "EduFlow"} plan.`}{" "}
+        {soon ? "Choose a plan to keep everything running." : `You're trying the ${sub.planName ?? "Zaref Campus"} plan.`}{" "}
         <Link href="/app/settings/billing" className="font-semibold text-accent hover:underline">
           See plans →
         </Link>

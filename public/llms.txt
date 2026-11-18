@@ -1,6 +1,6 @@
-# EduFlow
+# Zaref Campus
 
-> EduFlow is school management software for schools, tuition centres and coaching institutes in India. It runs in the browser on any phone, tablet or computer, and can be installed as an app. Made by Zaref (https://zaref.in).
+> Zaref Campus is school management software for schools, tuition centres and coaching institutes in India. It runs in the browser on any phone, tablet or computer, and can be installed as an app. Made by Zaref (https://zaref.in).
 
 Website: https://eduflow.zaref.in
 Free trial: 7 days, no credit card (https://eduflow.zaref.in/register)
@@ -12,7 +12,7 @@ Free trial: 7 days, no credit card (https://eduflow.zaref.in/register)
 - Tests and results: marks entry or Excel import, grades (CBSE or simple), class ranks, report cards and progress reports.
 - WhatsApp: receipts, fee reminders, absence alerts and report cards sent to parents, by click-to-send or automatically through the WhatsApp Business API.
 - Also: student profiles and Excel import, homework and syllabus, timetable, notices, Excel reports, roles (owner, admin, teacher, accountant) and several branches under one login.
-- EduFlow AI (Pro plan): answers questions from the school's records in English, Hindi or Marathi; records fees or attendance after the user confirms; writes report-card remarks and personal parent messages; makes presentations with charts and pictures; takes voice questions.
+- Zia, the AI assistant (Pro plan): answers questions from the school's records in English, Hindi or Marathi; records fees or attendance after the user confirms; writes report-card remarks and personal parent messages; makes presentations with charts and pictures; takes voice questions.
 
 ## Who it's for
 

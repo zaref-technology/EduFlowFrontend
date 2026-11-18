@@ -3,10 +3,10 @@
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://eduflow.zaref.in").replace(/\/+$/, "");
 
 export const SITE = {
-  name: "EduFlow",
-  title: "EduFlow: School management software for fees, attendance and parents",
+  name: "Zaref Campus",
+  title: "Zaref Campus: School management software for fees, attendance and parents",
   description:
-    "EduFlow helps schools, tuition centres and coaching institutes in India collect fees, take attendance, publish report cards and message parents on WhatsApp, with an AI assistant built in. 7-day free trial.",
+    "Zaref Campus helps schools, tuition centres and coaching institutes in India collect fees, take attendance, publish report cards and message parents on WhatsApp, with an AI assistant built in. 7-day free trial.",
   tagline: "Manage · Track · Grow",
   maker: { name: "Zaref", url: "https://zaref.in" },
 };

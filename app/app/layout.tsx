@@ -259,7 +259,7 @@ export default function AppLayout({ children }: LayoutProps<"/app">) {
       >
         <div className={cx("flex items-center gap-2 pb-3 pt-4", collapsed ? "flex-col px-3" : "justify-between pl-5 pr-3")}>
           {collapsed ? (
-            <Link href="/app/dashboard" aria-label="EduFlow home" className="grid size-10 place-items-center">
+            <Link href="/app/dashboard" aria-label="Zaref Campus home" className="grid size-10 place-items-center">
               <Image src="/images/brand/icon-192.png" alt="" width={36} height={36} className="size-9 rounded-lg" />
             </Link>
           ) : (

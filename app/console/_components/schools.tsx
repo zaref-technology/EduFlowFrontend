@@ -30,7 +30,7 @@ export function Schools({ onOpenSchool }: { onOpenSchool: (id: string) => void }
 
   return (
     <>
-      <PageHeader title="Schools" description="Plans, renewals and how much each school uses EduFlow." icon="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" />
+      <PageHeader title="Schools" description="Plans, renewals and how much each school uses Zaref Campus." icon="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" />
 
       <div className="mb-4 space-y-3">
         <div className="flex flex-wrap gap-2">

@@ -72,7 +72,7 @@ export interface Payment {
   student: { fullName: string; admissionNo: string; grade: string; section: string; guardianName: string };
   date: string;
   amount: number;
-  /** "opening": paid before the school used EduFlow (not counted in collections) */
+  /** "opening": paid before the school used Zaref Campus (not counted in collections) */
   kind?: "receipt" | "opening";
   /** Part of this payment not on any due yet */
   advance?: number;

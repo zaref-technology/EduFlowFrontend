@@ -261,7 +261,7 @@ function GettingStarted({ canManage, canMark, seesFees }: { canManage: boolean; 
   return (
     <section className="rounded-xl border border-accent/30 bg-accent-soft/50 p-4 sm:p-5">
       <h2 className="font-semibold">Get your school ready</h2>
-      <p className="mt-0.5 text-sm text-muted">A few steps and EduFlow is running.</p>
+      <p className="mt-0.5 text-sm text-muted">A few steps and Zaref Campus is running.</p>
       <ol className="mt-4 grid gap-2 sm:grid-cols-2">
         {steps.map((s, i) => (
           <li key={s.href}>

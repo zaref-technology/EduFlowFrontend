@@ -135,7 +135,7 @@ export const SETTINGS_SECTIONS: SettingsSection[] = [
   {
     id: "ai",
     label: "AI assistant",
-    hint: "Ask EduFlow, drafts",
+    hint: "Ask Zia, drafts",
     description: "Let your staff ask questions about the school's records and draft notices and messages with AI.",
     icon: SPARKLE_ICON,
     group: "Plan",
@@ -146,8 +146,8 @@ export const SETTINGS_SECTIONS: SettingsSection[] = [
   {
     id: "billing",
     label: "Plan & billing",
-    hint: "Your EduFlow plan",
-    description: "Your EduFlow plan, what it includes, when it renews, and how to upgrade.",
+    hint: "Your Zaref Campus plan",
+    description: "Your Zaref Campus plan, what it includes, when it renews, and how to upgrade.",
     icon: "M3 7h18v10H3zM3 11h18M7 15h3",
     group: "Plan",
     adminOnly: true,

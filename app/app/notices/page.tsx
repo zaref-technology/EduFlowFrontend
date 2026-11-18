@@ -272,7 +272,7 @@ function NoticeEditor({ isAdmin, onClose, onSaved }: { isAdmin: boolean; onClose
       <div className="grid grid-cols-2 gap-2">
         {(
           [
-            ["staff", "Staff", "Shown in EduFlow to the whole team"],
+            ["staff", "Staff", "Shown in Zaref Campus to the whole team"],
             ["parents", "Parents", "Sent to families on WhatsApp"],
           ] as const
         ).map(([v, label, hint]) => (

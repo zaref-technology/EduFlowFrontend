@@ -169,7 +169,7 @@ function PlanEditor({ draft: initial, onClose, onSaved }: { draft: Draft; onClos
           rows={4}
           value={d.highlights}
           onChange={(e) => setD({ ...d, highlights: e.target.value })}
-          placeholder={"Ask EduFlow AI anything\nFee reminders sent automatically"}
+          placeholder={"Ask Zia anything\nFee reminders sent automatically"}
           className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm outline-none focus:border-accent focus:ring-4 focus:ring-accent/15"
         />
       </Field>

@@ -58,8 +58,8 @@ export function ReceiptDocument({
       )}
       <SchoolLetterhead
         name={school.name}
-        // Fees paid before EduFlow always say so; otherwise the title can be hidden
-        title={opening ? "Fees paid before EduFlow" : show.title ? cfg.title : ""}
+        // Fees paid before Zaref Campus always say so; otherwise the title can be hidden
+        title={opening ? "Fees paid before Zaref Campus" : show.title ? cfg.title : ""}
         showLogo={show.logo}
         showName={show.schoolName}
         showContact={show.contact}
@@ -166,8 +166,8 @@ export function ReceiptDocument({
         <dl className="mt-3 space-y-1 text-xs">
           {opening && (
             <div>
-              <dt className="inline text-zinc-500">Recorded in EduFlow: </dt>
-              <dd className="inline">paid before the school started using EduFlow{p.reference ? ` (original receipt ${p.reference})` : ""}.</dd>
+              <dt className="inline text-zinc-500">Recorded in Zaref Campus: </dt>
+              <dd className="inline">paid before the school started using Zaref Campus{p.reference ? ` (original receipt ${p.reference})` : ""}.</dd>
             </div>
           )}
           {p.note && (
@@ -200,7 +200,7 @@ export function ReceiptDocument({
         </div>
       )}
       {note && <p className="mt-5 border-t border-dashed border-zinc-300 pt-2 text-[11px] text-zinc-600">{note}</p>}
-      {show.footer && <p className="mt-4 text-center text-[10px] text-zinc-400">Computer-generated receipt · EduFlow</p>}
+      {show.footer && <p className="mt-4 text-center text-[10px] text-zinc-400">Computer-generated receipt · Zaref Campus</p>}
     </div>
   );
 }

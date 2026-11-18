@@ -234,11 +234,11 @@ function AddMemberDrawer({ roles, school, onClose, onAdded }: { roles: Role[]; s
 
   const invite = done
     ? [
-        `Hi ${done.name.split(/\s+/)[0]}, you've been added to ${school} on EduFlow as ${aRole(role)}.`,
+        `Hi ${done.name.split(/\s+/)[0]}, you've been added to ${school} on Zaref Campus as ${aRole(role)}.`,
         "",
         `Sign in: ${signInUrl}`,
         `Email: ${email.trim().toLowerCase()}`,
-        done.created ? `Temporary password: ${password}` : "Password: the one you already use for EduFlow",
+        done.created ? `Temporary password: ${password}` : "Password: the one you already use for Zaref Campus",
         ...(done.created ? ["", "Please change your password after signing in (Settings → My account)."] : []),
       ].join("\n")
     : "";
@@ -258,7 +258,7 @@ function AddMemberDrawer({ roles, school, onClose, onAdded }: { roles: Role[]; s
       <Drawer title="Member added" onClose={onClose}>
         <Alert tone="success">
           {done.name} can now sign in to {school}.
-          {!done.created && " They already had an EduFlow account, so they keep their current password."}
+          {!done.created && " They already had a Zaref Campus account, so they keep their current password."}
         </Alert>
         <div>
           <p className="mb-2 text-sm font-medium">Send them their sign-in details</p>
@@ -306,8 +306,8 @@ function AddMemberDrawer({ roles, school, onClose, onAdded }: { roles: Role[]; s
 
         <div className="space-y-4 rounded-xl border border-border p-4">
           <div>
-            <p className="text-sm font-medium">New to EduFlow?</p>
-            <p className="text-xs text-muted">Fill these in to create their account. If they already use EduFlow (for another school), leave them empty: they keep their password.</p>
+            <p className="text-sm font-medium">New to Zaref Campus?</p>
+            <p className="text-xs text-muted">Fill these in to create their account. If they already use Zaref Campus (for another school), leave them empty: they keep their password.</p>
           </div>
           <Field label="Full name" htmlFor="m-name" error={errors.name}>
             <Input id="m-name" autoComplete="off" value={name} onChange={(e) => setName(e.target.value)} maxLength={100} />

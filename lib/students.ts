@@ -72,7 +72,7 @@ export const STUDENT_FIELDS = [
 export type StudentField = (typeof STUDENT_FIELDS)[number]["key"];
 
 /**
- * Import-only columns: fees a new student already paid (recorded as paid before EduFlow,
+ * Import-only columns: fees a new student already paid (recorded as paid before Zaref Campus,
  * kept as advance until a fee plan is assigned). Not part of the student export.
  */
 export const FEE_IMPORT_FIELDS = [

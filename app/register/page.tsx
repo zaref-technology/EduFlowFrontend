@@ -81,7 +81,7 @@ export default function RegisterPage() {
   return (
     <AuthShell
       title="Start your free trial"
-      subtitle="7 days of EduFlow for your whole school."
+      subtitle="7 days of Zaref Campus for your whole school."
       footer={
         <>
           Already have an account?{" "}

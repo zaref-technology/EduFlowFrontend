@@ -41,7 +41,7 @@ export default function SettingsPage() {
           <PageIcon d={SETTINGS_ICON} />
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
-            <p className="mt-1 text-sm text-muted">{isAdmin ? "Your school, your team and how EduFlow works for you." : "Your account and preferences."}</p>
+            <p className="mt-1 text-sm text-muted">{isAdmin ? "Your school, your team and how Zaref Campus works for you." : "Your account and preferences."}</p>
           </div>
         </div>
         {sections.length > 3 && (

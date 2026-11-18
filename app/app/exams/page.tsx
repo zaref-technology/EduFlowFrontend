@@ -149,7 +149,7 @@ export default function ExamsPage() {
                 <Icon d="M9 4h6M8 4H6v16h12V4h-2M9 10h6M9 14h6M9 18h3" className="size-6" />
               </span>
               <p className="mt-4 font-medium">{grade || month || q ? "No tests match" : "No tests yet"}</p>
-              <p className="mx-auto mt-1 max-w-sm text-sm text-muted">Create a test for a class, enter marks, and EduFlow works out totals, grades and ranks for you.</p>
+              <p className="mx-auto mt-1 max-w-sm text-sm text-muted">Create a test for a class, enter marks, and Zaref Campus works out totals, grades and ranks for you.</p>
               <Button className="mt-5" onClick={() => setCreating(true)}>
                 <Icon d={ICONS.plus} />
                 New test

@@ -10,14 +10,14 @@ const TRIAL_DAYS = 7;
 
 export const metadata: Metadata = {
   title: "Pricing",
-  description: `EduFlow plans for schools, tuition centres and coaching institutes. Pay monthly, or yearly and save, with UPI, card or netbanking. ${TRIAL_DAYS}-day free trial, no credit card.`,
+  description: `Zaref Campus plans for schools, tuition centres and coaching institutes. Pay monthly, or yearly and save, with UPI, card or netbanking. ${TRIAL_DAYS}-day free trial, no credit card.`,
   alternates: { canonical: "/pricing" },
-  openGraph: { type: "website", url: "/pricing", siteName: SITE.name, title: "EduFlow pricing", locale: "en_IN" },
+  openGraph: { type: "website", url: "/pricing", siteName: SITE.name, title: "Zaref Campus pricing", locale: "en_IN" },
 };
 
 // Questions about paying (every answer matches how billing works in the app)
 const BILLING_FAQ = [
-  { q: "Can we try EduFlow before paying?", a: `Yes. Every school starts with a ${TRIAL_DAYS}-day free trial with no credit card. Choose a plan any time from Settings → Plan & billing; everything you added during the trial stays.` },
+  { q: "Can we try Zaref Campus before paying?", a: `Yes. Every school starts with a ${TRIAL_DAYS}-day free trial with no credit card. Choose a plan any time from Settings → Plan & billing; everything you added during the trial stays.` },
   { q: "How do we pay?", a: "Online, from Settings → Plan & billing in the app: UPI, debit or credit card, or netbanking, through Razorpay. Your plan is extended the moment the payment goes through, and it appears in your payment history." },
   { q: "Monthly or yearly?", a: "Either. Paying for a year costs less than twelve monthly payments; the yearly price shows how much you save." },
   { q: "What happens when we renew?", a: "Renewing the same plan adds the new period after your current one ends, so you never lose paid days." },

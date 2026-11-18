@@ -15,7 +15,7 @@ import { SettingsCard } from "./card";
 const CHECK = "M5 12l5 5L20 7";
 const day = (iso: string) => new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 
-/** The school's EduFlow plan: what it includes, when it ends, and paying to renew or upgrade (Razorpay). */
+/** The school's Zaref Campus plan: what it includes, when it ends, and paying to renew or upgrade (Razorpay). */
 export function BillingSettings() {
   const status = useTenantStatus();
   const res = useResource(() => api<BillingOverview>("/api/billing"), "billing");
@@ -63,7 +63,7 @@ export function BillingSettings() {
     const label = current ? (renewing ? `Renew · ${formatMoney(price)}` : `Pay ${formatMoney(price)}`) : sub.status === "trial" || sub.status === "none" ? `Get ${p.name} · ${formatMoney(price)}` : `Switch to ${p.name} · ${formatMoney(price)}`;
     if (!data.onlinePayments) {
       return (
-        <a href={ask(`Hi, we'd like the EduFlow ${p.name} plan (${shown}).`)} target="_blank" rel="noopener noreferrer" className={cx(buttonClass(p.popular ? "primary" : "secondary"), "w-full")}>
+        <a href={ask(`Hi, we'd like the Zaref Campus ${p.name} plan (${shown}).`)} target="_blank" rel="noopener noreferrer" className={cx(buttonClass(p.popular ? "primary" : "secondary"), "w-full")}>
           <Icon d={WA_ICON} />
           {current ? "Renew with support" : `Get ${p.name}`}
         </a>
@@ -78,7 +78,7 @@ export function BillingSettings() {
 
   return (
     <div className="space-y-6">
-      <SettingsCard title="Your plan" description="What your school's EduFlow subscription includes.">
+      <SettingsCard title="Your plan" description="What your school's Zaref Campus subscription includes.">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
@@ -91,7 +91,7 @@ export function BillingSettings() {
             </p>
           </div>
           {!data.onlinePayments && (
-            <a href={ask(sub.status === "trial" ? "Hi, we'd like to start a paid EduFlow plan." : "Hi, I'd like to renew our EduFlow plan.")} target="_blank" rel="noopener noreferrer" className={buttonClass("primary")}>
+            <a href={ask(sub.status === "trial" ? "Hi, we'd like to start a paid Zaref Campus plan." : "Hi, I'd like to renew our Zaref Campus plan.")} target="_blank" rel="noopener noreferrer" className={buttonClass("primary")}>
               <Icon d={WA_ICON} />
               {sub.status === "active" || sub.status === "none" ? "Contact support" : sub.status === "trial" ? "Choose a plan" : "Renew now"}
             </a>
@@ -124,7 +124,7 @@ export function BillingSettings() {
       {data.plans.length > 0 && (
         <SettingsCard
           title={renewing ? "Renew or change plan" : "Choose a plan"}
-          description={data.onlinePayments ? "Pay securely with UPI, card or netbanking through Razorpay. Your plan is extended the moment the payment goes through." : "Prices per school. Payments go through EduFlow support for now."}
+          description={data.onlinePayments ? "Pay securely with UPI, card or netbanking through Razorpay. Your plan is extended the moment the payment goes through." : "Prices per school. Payments go through Zaref Campus support for now."}
           action={<CycleSwitch cycle={shown} onChange={setCycle} plans={data.plans} />}
         >
           {message && <Alert tone={message.tone}>{message.text}</Alert>}
@@ -142,7 +142,7 @@ export function BillingSettings() {
       )}
 
       {data.payments.length > 0 && (
-        <SettingsCard title="Payment history" description="What your school has paid for EduFlow.">
+        <SettingsCard title="Payment history" description="What your school has paid for Zaref Campus.">
           <ul className="divide-y divide-border">
             {data.payments.map((p) => (
               <li key={p.id} className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm first:pt-0 last:pb-0">

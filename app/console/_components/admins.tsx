@@ -181,7 +181,7 @@ function AddAdmin({ onClose, onAdded }: { onClose: () => void; onAdded: (list: A
     >
       {error && <Alert>{error}</Alert>}
       <Alert tone="warning">A super admin can see every school&apos;s data, change plans, delete schools and add more admins.</Alert>
-      <Field label="Email" htmlFor="sa-email" hint={isNew ? undefined : "If they already have an EduFlow account, it becomes a super admin. Otherwise you'll set a name and password."}>
+      <Field label="Email" htmlFor="sa-email" hint={isNew ? undefined : "If they already have a Zaref Campus account, it becomes a super admin. Otherwise you'll set a name and password."}>
         <Input id="sa-email" type="email" value={email} onChange={(e) => { setEmail(e.target.value); setIsNew(false); }} placeholder="name@example.com" autoFocus />
       </Field>
       {isNew && (

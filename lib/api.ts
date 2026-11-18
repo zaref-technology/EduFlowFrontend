@@ -1,4 +1,4 @@
-// Thin client for the EduFlow API.
+// Thin client for the Zaref Campus API.
 // The access token lives in memory only; the refresh token is an HttpOnly cookie
 // set by the API on /api/auth, so every auth call must use credentials: "include".
 

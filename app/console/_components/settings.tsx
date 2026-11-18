@@ -51,7 +51,7 @@ const SETTINGS_PAGES = [
   {
     href: "/console/settings/ai",
     label: "AI assistant (Gemini)",
-    description: "Ask EduFlow and Write with AI for Pro schools: Gemini key, model and monthly limit per school.",
+    description: "Ask Zia and Write with AI for Pro schools: Gemini key, model and monthly limit per school.",
     icon: "M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8zM5 3l.6 1.4L7 5l-1.4.6L5 7l-.6-1.4L3 5l1.4-.6z",
   },
 ] as const;
@@ -153,7 +153,7 @@ export function SupportSettings() {
     try {
       res.setData(await api<Settings>("/api/admin/settings", { method: "PUT", body: { supportWhatsapp: values.supportWhatsapp, supportEmail: values.supportEmail } }));
       setForm(null);
-      setMessage({ tone: "success", text: "Saved. Schools see the new contact the next time they open EduFlow." });
+      setMessage({ tone: "success", text: "Saved. Schools see the new contact the next time they open Zaref Campus." });
     } catch (err) {
       setMessage({ tone: "danger", text: errorMessage(err) });
     } finally {
@@ -295,7 +295,7 @@ export function PaymentsSettings() {
   return (
     <>
       <SettingsBack />
-      <PageHeader title="Online payments (Razorpay)" description="How schools pay for their EduFlow plan." icon={SETTINGS_PAGES[0].icon} />
+      <PageHeader title="Online payments (Razorpay)" description="How schools pay for their Zaref Campus plan." icon={SETTINGS_PAGES[0].icon} />
       {res.error && <Alert>{res.error}</Alert>}
       {res.data ? <RazorpayCard settings={res.data} onSaved={res.setData} /> : <Skeleton className="h-72 max-w-2xl" />}
     </>
@@ -507,7 +507,7 @@ export function AiSettingsPage() {
   return (
     <>
       <SettingsBack />
-      <PageHeader title="AI assistant (Gemini)" description="Ask EduFlow and Write with AI, for schools whose plan includes the AI assistant." icon={SETTINGS_PAGES[4].icon} />
+      <PageHeader title="AI assistant (Gemini)" description="Ask Zia and Write with AI, for schools whose plan includes the AI assistant." icon={SETTINGS_PAGES[4].icon} />
       {res.error && <Alert>{res.error}</Alert>}
       <div className="max-w-3xl space-y-6">
         {res.data ? <AiCard settings={res.data} onSaved={res.setData} /> : <Skeleton className="h-96" />}

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Logo } from "@/components/ui";
 import Link from "next/link";
 
 /** The public website's footer (home and pricing pages). */
@@ -7,8 +7,8 @@ export function SiteFooter() {
     <footer className="border-t border-foreground/[0.06]">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
-          <Image src="/images/brand/logo-light.png" alt="EduFlow: Manage · Track · Grow" width={983} height={200} className="logo-light h-12 w-auto" />
-          <Image src="/images/brand/logo-dark.png" alt="" aria-hidden width={965} height={200} className="logo-dark h-12 w-auto" />
+          <Logo size="lg" />
+          <p className="mt-2 text-xs font-semibold tracking-[0.25em] text-muted">MANAGE · TRACK · GROW</p>
           <p className="mt-4 max-w-xs text-sm text-muted">The simple way to run a school, tuition centre or coaching institute.</p>
         </div>
         <nav aria-label="Product" className="text-sm">
@@ -30,7 +30,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-5 text-sm text-muted sm:flex-row sm:px-6">
-          <span>© EduFlow · Manage · Track · Grow</span>
+          <span>© Zaref Campus · Manage · Track · Grow</span>
           <span>
             Built by{" "}
             <a href="https://zaref.in" target="_blank" rel="noopener noreferrer" className="font-semibold text-foreground underline-offset-4 hover:text-accent hover:underline">

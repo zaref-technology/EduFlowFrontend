@@ -52,7 +52,7 @@ export function AiSettings() {
 
   return (
     <div className="space-y-6">
-      <SettingsCard title="Ask EduFlow" description="An assistant that answers questions about your school's records, and helps write notices and messages." action={<Badge tone={badge.tone}>{badge.label}</Badge>}>
+      <SettingsCard title="Ask Zia" description="An assistant that answers questions about your school's records, and helps write notices and messages." action={<Badge tone={badge.tone}>{badge.label}</Badge>}>
         {error && <Alert>{error}</Alert>}
         {status.state === "unavailable" ? (
           <p className="text-sm text-muted">The AI assistant isn&apos;t available right now. Please check again later.</p>
@@ -103,7 +103,7 @@ export function AiSettings() {
             <label className="flex items-start gap-3 rounded-2xl border border-border bg-surface-muted px-4 py-3 text-sm">
               <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5 size-4 accent-[var(--accent)]" />
               <span>
-                I understand that to answer, EduFlow sends the question and the records it needs (such as student names, attendance, marks and fee amounts) to Google&apos;s Gemini AI.
+                I understand that to answer, Zaref Campus sends the question and the records it needs (such as student names, attendance, marks and fee amounts) to Google&apos;s Gemini AI.
                 The assistant can only read; it can&apos;t change or send anything.
               </span>
             </label>
@@ -116,7 +116,7 @@ export function AiSettings() {
       </SettingsCard>
 
       {status.state !== "unavailable" && (
-        <SettingsCard title="Who sees what" description="The assistant only uses what each person can already see in EduFlow.">
+        <SettingsCard title="Who sees what" description="The assistant only uses what each person can already see in Zaref Campus.">
           <dl className="divide-y divide-border text-sm">
             {CAN_SEE.map(([who, what]) => (
               <div key={who} className="grid gap-1 py-2.5 first:pt-0 last:pb-0 sm:grid-cols-[10rem_1fr]">

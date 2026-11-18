@@ -63,10 +63,10 @@ export function generatePassword() {
   return chars.join("");
 }
 
-/** WhatsApp link with someone's EduFlow login (they pick the contact if no phone is given). */
+/** WhatsApp link with someone's Zaref Campus login (they pick the contact if no phone is given). */
 export function loginShareLink({ name, email, password, phone }: { name: string; email: string; password: string; phone?: string }) {
   const site = typeof window === "undefined" ? "" : window.location.origin;
-  const text = [`Hi ${name.split(" ")[0]}, here are your EduFlow login details:`, "", `Link: ${site}/login`, `Email: ${email}`, `Password: ${password}`, "", "Please change your password after signing in (Settings → My account)."].join("\n");
+  const text = [`Hi ${name.split(" ")[0]}, here are your Zaref Campus login details:`, "", `Link: ${site}/login`, `Email: ${email}`, `Password: ${password}`, "", "Please change your password after signing in (Settings → My account)."].join("\n");
   const digits = (phone ?? "").replace(/\D/g, "");
   const to = digits.length === 10 ? `91${digits}` : digits;
   return `https://wa.me/${to}?text=${encodeURIComponent(text)}`;

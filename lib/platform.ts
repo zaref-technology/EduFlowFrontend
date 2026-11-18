@@ -1,4 +1,4 @@
-// EduFlow subscription (what a school's plan allows) and the super admin console's data.
+// Zaref Campus subscription (what a school's plan allows) and the super admin console's data.
 
 export type SubStatus = "none" | "trial" | "active" | "overdue" | "expired" | "suspended";
 export type Feature = "whatsappApi" | "homework" | "timetable" | "performance" | "aiAssistant";
@@ -43,7 +43,7 @@ export const FEATURE_LABEL: Record<Feature, string> = {
   homework: "Homework & syllabus",
   timetable: "Timetable",
   performance: "Performance & leaderboards",
-  aiAssistant: "AI assistant (Ask EduFlow)",
+  aiAssistant: "AI assistant (Ask Zia)",
 };
 
 export const STATUS_META: Record<SubStatus, { label: string; tone: "neutral" | "accent" | "success" | "danger" }> = {

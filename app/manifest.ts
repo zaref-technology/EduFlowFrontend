@@ -1,18 +1,18 @@
 import type { MetadataRoute } from "next";
 
-/** Lets EduFlow be installed as an app (home screen, Start menu, dock). */
+/** Lets Zaref Campus be installed as an app (home screen, Start menu, dock). */
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/app",
-    name: "EduFlow — School management",
-    short_name: "EduFlow",
+    name: "Zaref Campus — School management",
+    short_name: "Zaref Campus",
     description: "Attendance, fees, tests and parents on WhatsApp, for schools and tuition centres.",
     start_url: "/app/dashboard?source=pwa",
     scope: "/",
     display: "standalone",
     orientation: "portrait",
     background_color: "#f8f8f6",
-    theme_color: "#2b3a8c",
+    theme_color: "#0a5fe6",
     lang: "en-IN",
     categories: ["education", "productivity", "business"],
     icons: [

@@ -1,4 +1,4 @@
-// Landing page: EduFlow AI. A full-width section in the spirit of Apple's product pages
+// Landing page: Zia. A full-width section in the spirit of Apple's product pages
 // (big type, a soft multicolour glow, glass panels). Every mock-up shows a feature that exists
 // in the product. Server component; motion is CSS only and skipped for reduced motion.
 import { existsSync } from "node:fs";
@@ -7,12 +7,12 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import { cx } from "@/components/ui";
 
-// A real picture for the slide mock-up (e.g. one made with "Make with AI" in EduFlow), if it's there
+// A real picture for the slide mock-up (e.g. one made with "Make with AI" in Zaref Campus), if it's there
 const SLIDE_PHOTO = "/images/landing/slide-plants.jpg";
 
 const SPARK = "M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z";
 // The glow and headline colours: the brand's light navy, green and a warm amber
-const GLOW = "conic-gradient(from 180deg at 50% 50%, #8f9be8, #3ddc97, #fbbf24, #f472b6, #8f9be8)";
+const GLOW = "conic-gradient(from 180deg at 50% 50%, #5b9dff, #3ddc97, #fbbf24, #f472b6, #5b9dff)";
 
 function Glyph({ d, className }: { d: string; className?: string }) {
   return (
@@ -41,7 +41,7 @@ function Card({ title, body, children, className }: { title: string; body: strin
 }
 
 const Bubble = ({ children, me }: { children: ReactNode; me?: boolean }) => (
-  <div className={cx("max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-6", me ? "ml-auto rounded-br-md bg-[#2b3a8c] text-white" : "rounded-bl-md bg-foreground/[0.07] text-foreground/85")}>
+  <div className={cx("max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-6", me ? "ml-auto rounded-br-md bg-[#0a5fe6] text-white" : "rounded-bl-md bg-foreground/[0.07] text-foreground/85")}>
     {children}
   </div>
 );
@@ -70,7 +70,7 @@ function ChatHero() {
             <span className="grid size-8 place-items-center rounded-xl text-foreground" style={{ background: GLOW }}>
               <Glyph d={SPARK} className="size-4 text-[#0b0d13]" />
             </span>
-            <span className="text-sm font-semibold text-foreground">Ask EduFlow</span>
+            <span className="text-sm font-semibold text-foreground">Ask Zia</span>
             <span className="ml-auto rounded-full border border-foreground/10 px-2.5 py-0.5 text-[11px] font-medium text-foreground/50">English · हिंदी · मराठी</span>
           </div>
           <div className="space-y-4 pt-5">
@@ -171,15 +171,15 @@ function SlideMock() {
   const hasSlidePhoto = existsSync(path.join(process.cwd(), "public", SLIDE_PHOTO));
   return (
     <div className="relative">
-      <div className="aspect-[16/9] overflow-hidden rounded-2xl bg-white shadow-[0_30px_80px_-30px_rgba(143,155,232,0.5)]">
+      <div className="aspect-[16/9] overflow-hidden rounded-2xl bg-white shadow-[0_30px_80px_-30px_rgba(10,95,230,0.5)]">
         <div className="grid h-full grid-cols-[1fr_1.1fr] gap-4 p-[6%]">
           <div className="flex flex-col justify-center">
             <p className="text-[clamp(13px,2.2vw,22px)] font-bold tracking-tight text-[#141b3a]">How plants make food</p>
-            <span className="mt-2 h-1 w-8 rounded-full bg-[#2b3a8c]" />
+            <span className="mt-2 h-1 w-8 rounded-full bg-[#0a5fe6]" />
             <ul className="mt-3 space-y-1.5 text-[clamp(8px,1.1vw,12px)] text-zinc-600">
               {["Leaves take in sunlight", "Roots bring up water", "Air gives carbon dioxide"].map((b) => (
                 <li key={b} className="flex items-center gap-1.5">
-                  <span className="size-1.5 rounded-sm bg-[#2b3a8c]" />
+                  <span className="size-1.5 rounded-sm bg-[#0a5fe6]" />
                   {b}
                 </li>
               ))}
@@ -289,13 +289,13 @@ export function AiShowcase() {
         <div className="ai-reveal mx-auto max-w-3xl text-center">
           <p className="inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-foreground/[0.04] px-3.5 py-1.5 text-xs font-medium text-foreground/70 backdrop-blur">
             <Glyph d={SPARK} className="size-3.5 text-[#fbbf24]" />
-            EduFlow AI · in the Pro plan
+            Meet Zia · your AI assistant · in the Pro plan
           </p>
           <h2 className="mt-7 text-5xl font-semibold tracking-[-0.045em] text-balance sm:text-7xl sm:leading-[1.02]">
             Your school, <span className="text-glow">now with answers.</span>
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-pretty text-foreground/60 sm:text-xl">
-            Ask about any student, fee or result in plain words, in English, हिंदी or मराठी. EduFlow AI answers from your own records and does the busywork, always with your OK.
+            Ask about any student, fee or result in plain words, in English, हिंदी or मराठी. Zia answers from your own records and does the busywork, always with your OK.
           </p>
         </div>
 
@@ -325,7 +325,7 @@ export function AiShowcase() {
           >
             <LanguagesMock />
           </Card>
-          <Card className="md:col-span-3" title="Just ask out loud" body="Tap the mic and speak. Ask how to do anything in EduFlow and get the exact steps for your role.">
+          <Card className="md:col-span-3" title="Just ask out loud" body="Tap the mic and speak. Ask how to do anything in Zaref Campus and get the exact steps for your role.">
             <VoiceMock />
           </Card>
         </div>
