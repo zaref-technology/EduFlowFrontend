@@ -9,6 +9,8 @@ import { useAiStatus } from "@/lib/ai";
 import { loadSchool } from "@/lib/school";
 import { THEMES, type Slide, type ThemeId } from "@/lib/slides";
 
+
+// just add thsi 
 export const SLIDES_ICON = "M3 4h18v12H3zM12 16v4M8 20h8M7 8h6M7 12h10";
 
 /** The school's name and logo for the slides. */
