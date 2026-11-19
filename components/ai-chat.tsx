@@ -137,7 +137,7 @@ export function AskButton({ compact }: { compact?: boolean }) {
 }
 
 /** The chat panel, mounted once in the app layout and opened by AskButton (or Ctrl J). */
-export function AskEduFlow() {
+export function AskZia() {
   const { session } = useAuth();
   const visible = useAskVisible();
   const [open, setOpen] = useState(false);

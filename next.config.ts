@@ -33,6 +33,8 @@ const nextConfig: NextConfig = {
   // "/app" has no page of its own; the dashboard is home
   async redirects() {
     return [
+      // The old address: every page moves permanently to campus.zaref.in (keeps links and search rankings)
+      { source: "/:path*", has: [{ type: "host", value: "eduflow.zaref.in" }], destination: "https://campus.zaref.in/:path*", permanent: true },
       { source: "/app", destination: "/app/dashboard", permanent: false },
       // Presentations open at /app/slides/edit?id=…; older links had the id in the path
       { source: "/app/slides/:id([a-f0-9]{24})", destination: "/app/slides/edit?id=:id", permanent: false },

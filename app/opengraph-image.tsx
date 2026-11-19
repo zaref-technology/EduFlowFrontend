@@ -9,7 +9,7 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function OpengraphImage() {
-  const icon = await readFile(path.join(process.cwd(), "public/icons/icon-512.png"));
+  const icon = await readFile(path.join(process.cwd(), "public/images/brand/zaref-z.png"));
   const iconSrc = `data:image/png;base64,${icon.toString("base64")}`;
   return new ImageResponse(
     (
@@ -28,8 +28,10 @@ export default async function OpengraphImage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-          <img src={iconSrc} width={72} height={72} style={{ borderRadius: 18 }} alt="" />
-          <div style={{ display: "flex", fontSize: 40, fontWeight: 700, letterSpacing: -1 }}>Zaref Campus</div>
+          <img src={iconSrc} width={76} height={76} alt="" />
+          <div style={{ display: "flex", fontSize: 42, fontWeight: 700, letterSpacing: -1 }}>
+            Zaref<span style={{ marginLeft: 12, color: "#3ddc97" }}>Campus</span>
+          </div>
           <div style={{ display: "flex", marginLeft: 8, fontSize: 22, color: "#9b9ea8", letterSpacing: 4 }}>{SITE.tagline.toUpperCase()}</div>
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -50,7 +52,7 @@ export default async function OpengraphImage() {
           </div>
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 26, color: "#9b9ea8" }}>
-          <div style={{ display: "flex" }}>Fees · Attendance · Report cards · WhatsApp · AI assistant</div>
+          <div style={{ display: "flex" }}>Fees · Attendance · Report cards · WhatsApp · Zia AI</div>
           <div style={{ display: "flex", color: "#f5f5f7", background: "rgba(255,255,255,0.08)", padding: "10px 22px", borderRadius: 999 }}>7-day free trial</div>
         </div>
       </div>

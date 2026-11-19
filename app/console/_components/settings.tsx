@@ -425,7 +425,7 @@ function OtpCard({ settings, onSaved }: { settings: Settings; onSaved: (s: Setti
             <Input id="otp-key" type="password" value={form.apiKey} onChange={(e) => setForm({ ...form, apiKey: e.target.value })} placeholder={o.keySet ? "••••••••••••" : "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"} autoComplete="new-password" spellCheck={false} />
           </Field>
           <Field label="OTP template name" htmlFor="otp-template" hint="Optional. Empty = 2Factor's default message.">
-            <Input id="otp-template" value={form.template} onChange={(e) => setForm({ ...form, template: e.target.value })} placeholder="e.g. EduFlowOTP" spellCheck={false} />
+            <Input id="otp-template" value={form.template} onChange={(e) => setForm({ ...form, template: e.target.value })} placeholder="e.g. ZarefOTP" spellCheck={false} />
           </Field>
         </div>
         <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3">

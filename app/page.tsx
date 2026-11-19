@@ -14,6 +14,8 @@ export const metadata: Metadata = {
   title: { absolute: SITE.title },
   description: SITE.description,
   keywords: [
+    "Zaref Campus",
+    "Zia AI assistant",
     "school management software",
     "school ERP India",
     "fee management software",
@@ -143,7 +145,7 @@ const JSON_LD = {
         "Tests, grades, ranks and report cards",
         "WhatsApp messages to parents",
         "Excel import and export",
-        "AI assistant in English, Hindi and Marathi",
+        "Zia, an AI assistant in English, Hindi and Marathi",
         "AI presentations and report-card remarks",
       ],
       publisher: { "@id": `${SITE_URL}/#organization` },

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { AskButton, AskEduFlow } from "@/components/ai-chat";
+import { AskButton, AskZia } from "@/components/ai-chat";
 import { CommandPalette, openPalette, type PaletteItem } from "@/components/command-palette";
 import { Drawer } from "@/components/data";
 import { PlanBanners, useTenantStatus } from "@/components/plan-banner";
@@ -393,7 +393,7 @@ export default function AppLayout({ children }: LayoutProps<"/app">) {
       </div>
 
       <CommandPalette pages={pages} actions={actions} />
-      <AskEduFlow />
+      <AskZia />
 
       {/* Phones: bottom tab bar */}
       <nav

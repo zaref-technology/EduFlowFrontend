@@ -1,9 +1,9 @@
 # Zaref Campus
 
-> Zaref Campus is school management software for schools, tuition centres and coaching institutes in India. It runs in the browser on any phone, tablet or computer, and can be installed as an app. Made by Zaref (https://zaref.in).
+> Zaref Campus is school management software for schools, tuition centres and coaching institutes in India. It runs in the browser on any phone, tablet or computer, and can be installed as an app. Made by Zaref (https://zaref.in). Its AI assistant is called Zia.
 
-Website: https://eduflow.zaref.in
-Free trial: 7 days, no credit card (https://eduflow.zaref.in/register)
+Website: https://campus.zaref.in
+Free trial: 7 days, no credit card (https://campus.zaref.in/register)
 
 ## What it does
 
@@ -20,6 +20,6 @@ Schools, tuition centres, coaching institutes and academies, from one branch to 
 
 ## Pages
 
-- [Home and features](https://eduflow.zaref.in/)
-- [Start a free trial](https://eduflow.zaref.in/register)
-- [Log in](https://eduflow.zaref.in/login)
+- [Home and features](https://campus.zaref.in/)
+- [Start a free trial](https://campus.zaref.in/register)
+- [Log in](https://campus.zaref.in/login)
